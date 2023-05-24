@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>排菜软件_学校菜谱_单位菜谱_智能排菜系统</title>
+    <meta name="keywords" content="排菜软件,学校菜谱,单位菜谱,集体餐菜谱,团体餐菜谱,智能排菜系统">
+    <meta name="description" content="一款智能排菜软件，可自动核算成本生产采购清单，可以分析菜谱的营养价值，节约成本的减少浪费">
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+
+    <script>
+      (function (documents, windows) {
+        let domElement= documents.documentElement,
+          resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+          setRem = function () {
+            let clientWidth = domElement.clientWidth;
+            if (!clientWidth) return;
+            if (clientWidth >= 1920) {
+              domElement.style.fontSize = 100 + 'px';
+              localStorage.setItem('rem',100);
+            }  else {
+              domElement.style.fontSize = 100 * (clientWidth / 1920) + 'px';
+              localStorage.setItem('rem',100 * (clientWidth / 1920));
+                    }
+          };
+    
+        if (!documents.addEventListener) return;
+        setRem();
+        windows.addEventListener(resizeEvt, setRem, false);
+        documents.addEventListener('DOMContentLoaded', setRem, false);
+      })(document, window);
+    </script>
+  </body>
+</html>
