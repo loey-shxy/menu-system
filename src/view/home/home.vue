@@ -486,7 +486,7 @@ export default {
 .dishes .item-content-dishes {
   margin-top: .25rem;
   display: flex;
-  gap: .28rem;
+  gap: .25rem;
 }
 
 .item-content-dishes .dishes-item {

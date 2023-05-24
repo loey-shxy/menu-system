@@ -1177,11 +1177,14 @@
 }
 .nutrition-content {
     margin-top: .3rem;
-    padding: .3rem .4rem;
+    padding: .3rem .25rem;
     background: #ffffff;
     border-radius: 0.03rem;
     -webkit-box-shadow: 0 0.02rem 0.12rem 0 rgb(0 0 0 / 8%);
     box-shadow: 0 0.02rem 0.12rem 0 rgb(0 0 0 / 8%);
+}
+.nutrition-content /deep/ thead th {
+  color: #666;
 }
 .super {
     color: #ec635e;
