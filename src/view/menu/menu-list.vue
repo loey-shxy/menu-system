@@ -1,90 +1,127 @@
 <!--菜谱列表 -->
 
 <template>
-    <div class="list-wrap card">
-        <!--查询条件 start-->
-        <div class="condition flex">
-            <div class="condition-item flex">
-                <p>标题</p>
-                <el-input v-model="condition.title" maxlength=20 placeholder="请输入标题"></el-input>
-            </div>
-            <div class="condition-item flex" v-if="!$route.query.type">
-                <p style="width:1rem;">会员名称</p>
-                <el-input v-model="condition.memberName" maxlength=20 placeholder="请输入会员名称"></el-input>
-            </div>
-            
-            <!--<div class="condition-item flex" v-if="config.userMessage.userType !== 1 && $route.query.type === 'my'">-->
-                <!--<p>编制人</p>-->
-                <!--<el-input v-model="condition.producer" maxlength=20 placeholder="请输入编制人"></el-input>-->
-            <!--</div>-->
-            <div class="operation flex">
-                <div class="search btn background-color" @click="search()" >查询</div>
-                <!--<div v-if="config.userMessage.userType !== 1  && $route.query.type === 'my' " style="margin: 0 .2rem;" class="search btn background-color" @click="arrange('1')">智能排菜</div>-->
-                <!--<div v-if="config.userMessage.userType !== 1  && $route.query.type === 'my'" class="search btn background-color" @click="arrange('2')">手动排菜</div>-->
-            </div>
+    <div class="list-wrap">
+        <div class="header">
+          <div class="title">我的菜谱</div>
+          <!--查询条件 start-->
+          <div class="condition flex">
+              <div class="condition-item flex">
+                  <el-input size="mini" class="search" v-model="condition.title" maxlength=20 placeholder="请输入标题" @keyup.native.enter="search" @change="search">
+                    <div slot="suffix" class="search-icon" @click="search"></div>
+                  </el-input>
+              </div>
+              <div class="condition-item flex" v-if="!$route.query.type">
+                  <el-input size="mini" class="search" v-model="condition.memberName" maxlength=20 placeholder="请输入会员名称" @keyup.native.enter="search" @change="search">
+                    <div slot="suffix" class="search-icon" @click="search"></div>
+                  </el-input>
+              </div>
+              
+              <!--<div class="condition-item flex" v-if="config.userMessage.userType !== 1 && $route.query.type === 'my'">-->
+                  <!--<p>编制人</p>-->
+                  <!--<el-input v-model="condition.producer" maxlength=20 placeholder="请输入编制人"></el-input>-->
+              <!--</div>-->
+              <div class="operation flex">
+                <el-badge is-dot class="item">
+                  <el-button type="primary" size="mini" @click="viewNewMenu">收到菜谱</el-button>
+                </el-badge>
+                  <!--<div v-if="config.userMessage.userType !== 1  && $route.query.type === 'my' " style="margin: 0 .2rem;" class="search btn background-color" @click="arrange('1')">智能排菜</div>-->
+                  <!--<div v-if="config.userMessage.userType !== 1  && $route.query.type === 'my'" class="search btn background-color" @click="arrange('2')">手动排菜</div>-->
+              </div>
+          </div>
+          <!--查询条件 end-->
         </div>
-        <!--查询条件 end-->
         
-        <!--列表 start-->
-        <div class="overflow-table">
-            <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table" >
-                <el-table-column label="序号" width="80" align="center">
-                    <template slot-scope="scope">
-                        <span style="">{{ scope.$index + 1  + condition.pageSize * (condition.pageNo - 1 )}} </span>
+        <div class="table-wrap">
+          <!--列表 start-->
+          <div class="overflow-table">
+              <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table" border>
+                  <el-table-column label="序号" width="80" align="center">
+                      <template slot-scope="scope">
+                          <span style="">{{ scope.$index + 1  + condition.pageSize * (condition.pageNo - 1 )}} </span>
+                      </template>
+                  </el-table-column>
+                  <el-table-column prop="title" show-overflow-tooltip label="标题"  align="center">
+                    <template slot-scope="{ row }">
+                      {{ row.title }}
+                      <i class="el-icon-sort"></i>
                     </template>
-                </el-table-column>
-                <el-table-column prop="title" show-overflow-tooltip label="标题"  align="center"  > </el-table-column>
-                <!--<el-table-column prop="producer" show-overflow-tooltip label="制谱人"  align="center"  > </el-table-column>-->
-                <!--<el-table-column prop="reviewer" show-overflow-tooltip label="审核人"  align="center"  > </el-table-column>-->
-                <!--<el-table-column prop="approve" show-overflow-tooltip label="审批人"  align="center"  > </el-table-column>-->
-                <!-- <el-table-column v-if="!$route.query.type || $route.query.type === 'my'" prop="shareName" show-overflow-tooltip label="分享状态"  align="center"  > </el-table-column> -->
-                <el-table-column v-if="$route.query.type === 'share'" prop="shareUserName" show-overflow-tooltip label="分享人"  align="center"  > </el-table-column>
-                <el-table-column prop="createTime" show-overflow-tooltip label="创建时间"  align="center"  width="200"> </el-table-column>
-                <el-table-column v-if="config.userMessage.userType === 1" prop="createUserName" show-overflow-tooltip label="创建人"  align="center"  > </el-table-column>
-                <el-table-column label="操作" width="280" align="center">
-                    <template slot-scope="scope" >
-                        <el-button  @click="view(scope.row)" type="text" size="small" >查看</el-button>
-                        <el-button style="color:#ff8836 !important;" v-if="config.userMessage.userType !== 1 && $route.query.type === 'my'&& scope.row.share < 2 "  @click="share(scope.row)" type="text" size="small" >
-                            <span v-if="scope.row.share === 0">分享</span>
-                            <span v-else-if="scope.row.share === 1">撤销分享</span>
-                        </el-button>
-    
-    
-                        <el-button style="color:#ff8836 !important;" v-if="config.userMessage.userType === 1 && $route.query.type !== 'share'&& scope.row.share < 2 "  @click="share(scope.row)" type="text" size="small" >
-                            <span v-if="scope.row.share === 0">分享</span>
-                            <span v-else-if="scope.row.share === 1">撤销分享</span>
-                        </el-button>
+                  </el-table-column>
+                  <el-table-column prop="type"  width="200" show-overflow-tooltip label="菜谱类型"  align="center"  > </el-table-column>
+                  <!--<el-table-column prop="producer" show-overflow-tooltip label="制谱人"  align="center"  > </el-table-column>-->
+                  <!--<el-table-column prop="reviewer" show-overflow-tooltip label="审核人"  align="center"  > </el-table-column>-->
+                  <!--<el-table-column prop="approve" show-overflow-tooltip label="审批人"  align="center"  > </el-table-column>-->
+                  <!-- <el-table-column v-if="!$route.query.type || $route.query.type === 'my'" prop="shareName" show-overflow-tooltip label="分享状态"  align="center"  > </el-table-column> -->
+                  <el-table-column v-if="$route.query.type === 'share'" prop="shareUserName" show-overflow-tooltip label="分享人"  align="center"  > </el-table-column>
+                  <el-table-column prop="createTime" show-overflow-tooltip label="创建时间"  align="center"  width="200"> </el-table-column>
+                  <el-table-column v-if="config.userMessage.userType === 1" prop="createUserName" show-overflow-tooltip label="创建人"  align="center"  > </el-table-column>
+                  <el-table-column label="操作" width="350" align="center">
+                      <template slot-scope="scope" >
+                          <el-button  @click="view(scope.row)" type="text" size="small" style="color: #2270FF !important;">查看</el-button>
+                          <el-button style="color:#FF3276 !important;" v-if="config.userMessage.userType !== 1 && $route.query.type === 'my'&& scope.row.share < 2 "  @click="shareMenu(scope.row)" type="text" size="small" >
+                              <span v-if="scope.row.share === 0">分享</span>
+                              <!-- <span v-else-if="scope.row.share === 1">撤销分享</span> -->
+                          </el-button>
+      
+      
+                          <el-button style="color:#FF3276 !important;" v-if="config.userMessage.userType === 1 && $route.query.type !== 'share'&& scope.row.share < 2 "  @click="shareMenu(scope.row)" type="text" size="small" >
+                              <span v-if="scope.row.share === 0">分享</span>
+                              <!-- <span v-else-if="scope.row.share === 1">撤销分享</span> -->
+                          </el-button>
+                          
                         
-                       
-                        <el-button style="color:#45bfdd !important;" v-if="config.userMessage.userType !== 1 && $route.query.type === 'my'"  @click="edit(scope.row)" type="text" size="small" >编辑</el-button>
-                        <el-button style="color:#45bfdd !important;" v-if="config.userMessage.userType === 1 && $route.query.type !== 'share'"  @click="edit(scope.row)" type="text" size="small" >编辑</el-button>
-                        
-                        <el-button style="color:#ec635e !important;" v-if="config.userMessage.userType !== 1 && $route.query.type === 'share'"  @click="clone(scope.row)" type="text" size="small" >克隆</el-button>
-                        <el-button style="color:#ffa82c !important;" v-if="config.userMessage.userType === 2 && $route.query.type === 'my'"  @click="clone(scope.row,'my')" type="text" size="small" >克隆</el-button>
-                        
-                        <el-button style="color:#ec635e !important;" v-if="(config.userMessage.userType !== 1 && $route.query.type === 'my') || (config.userMessage.userType === 1 && $route.query.type === 'share')"  @click="del(scope.row)" type="text" size="small" >删除</el-button>
+                          <el-button style="color:#FFA247 !important;" v-if="config.userMessage.userType !== 1 && $route.query.type === 'my'"  @click="edit(scope.row)" type="text" size="small" >编辑</el-button>
+                          <el-button style="color:#FFA247 !important;" v-if="config.userMessage.userType === 1 && $route.query.type !== 'share'"  @click="edit(scope.row)" type="text" size="small" >编辑</el-button>
+                          
+                          <el-button style="color:#5DC8B0 !important;" v-if="config.userMessage.userType !== 1 && $route.query.type === 'share'"  @click="clone(scope.row)" type="text" size="small" >克隆</el-button>
+                          <el-button style="color:#5DC8B0 !important;" v-if="config.userMessage.userType === 2 && $route.query.type === 'my'"  @click="clone(scope.row,'my')" type="text" size="small" >克隆</el-button>
+                          
+                          <el-button style="color:#FF4343 !important;" v-if="(config.userMessage.userType !== 1 && $route.query.type === 'my') || (config.userMessage.userType === 1 && $route.query.type === 'share')"  @click="del(scope.row)" type="text" size="small" >删除</el-button>
 
-                    </template>
-                </el-table-column>
-            </el-table>
+                      </template>
+                  </el-table-column>
+              </el-table>
+          </div>
+          <!--列表 end-->
+          
+          
+          <!--分页 start-->
+          <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
+                        :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
+          </el-pagination>
+          <!--分页 end-->
         </div>
-        <!--列表 end-->
-        
-        
-        <!--分页 start-->
-        <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
-                       :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
-        </el-pagination>
-        <!--分页 end-->
+
+        <el-dialog
+        :title="dialog.title"
+        :visible.sync="dialog.visible"
+        :width="dialog.width"
+        :class="['custom-dialog', dialog.type === 'share' && 'share-dialog']"
+        :show-close="false"
+        >
+        <NewMenu v-if="dialog.type === 'menu'" />
+        <ShareMenu v-if="dialog.type === 'share'" />
+      </el-dialog>
     </div>
 </template>
 
 <script>
+  import NewMenu from './new-menu.vue'
+  import ShareMenu from './share-menu.vue'
 	export default {
 		name: "dishes-list",
+    components: {
+      NewMenu,
+      ShareMenu
+    },
 		data() {
 			return {
-				
+				dialog: {
+          visible: false,
+          title: '收到菜谱',
+          type: 'menu',
+          width: '11.05rem'
+        },
 				condition:{
 					pageNo:1,
 					pageSize: 15,
@@ -250,8 +287,6 @@
 						});
 				});
 			},
-   
-   
 			
 			//克隆校验
 			checkCloneMenu() {
@@ -288,9 +323,25 @@
 						id: data.id
 					}
 				})
-			}
+			},
 			
-			
+			viewNewMenu() {
+        this.dialog = {
+          visible: true,
+          type: 'menu',
+          width: '11.05rem',
+          title: '收到菜谱'
+        }
+      },
+      shareMenu(record) {
+        this.dialog = {
+          visible: true,
+          type: 'share',
+          width: '6.58rem',
+          title: '请选择分享对象',
+          record
+        }
+      }
 		}
 	}
 </script>

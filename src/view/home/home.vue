@@ -10,7 +10,7 @@
           <div class="note-item" v-for="item in noteList" :key="item.id">{{ item.msg }}</div>
         </div>
       </div>
-      <div class="more">全部公告</div>
+      <div class="more" @click="toMessage">全部公告</div>
     </div>
 
     <!-- 共享菜品 start -->
@@ -358,6 +358,11 @@ export default {
 
       }
       window.open(link.href, '_blank');
+    },
+    toMessage() {
+      this.$router.push({
+        name: 'message'
+      })
     }
   }
 

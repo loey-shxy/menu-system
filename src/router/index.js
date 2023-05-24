@@ -176,9 +176,12 @@ export default new Router({
           name: 'new-detail',
           component: resolve => require(['@/view/basic/new-detail'], resolve)
         },
-  
+        {
+          path: '/message',
+          name: 'message',
+          component: resolve => require(['@/view/message/message.vue'], resolve)
+        }
       ]
     }
-    
   ]
 })

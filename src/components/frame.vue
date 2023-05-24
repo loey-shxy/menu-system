@@ -36,11 +36,9 @@
       <el-main>
         <div class="overflow-view">
           <div class="header flex justify-end align-item-center">
-            <div class="search">
-              <el-input placeholder="请输入关键字" v-model="searchContent" @keyup.native.enter="search">
-                <div slot="suffix" class="search-icon" @click="search()"></div>
-              </el-input>
-            </div>
+            <el-input class="search" placeholder="请输入关键字" v-model="searchContent" @keyup.native.enter="search">
+              <div slot="suffix" class="search-icon" @click="search"></div>
+            </el-input>
             <div class="user-wrap flex">
               <div class="user-logo">
                 <img src="../assets/img/home/user.png" alt="">
@@ -52,8 +50,10 @@
                         <p>{{config.userMessage.trueName}} <img src="../assets/img/home/vip.png" alt=""> </p>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item command="user">个人信息</el-dropdown-item>
-                        <el-dropdown-item v-if="config.userMessage.userType" command="exit">退出系统</el-dropdown-item>
+                        <template v-if="config.userMessage.userType !== 1">
+                          <el-dropdown-item command="user">个人信息</el-dropdown-item>
+                          <el-dropdown-item command="exit">退出系统</el-dropdown-item>
+                        </template>
                         <el-dropdown-item v-else command="login">登录系统</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -397,11 +397,14 @@ export default {
     },
 
     handleCommand(command) {
-      if (command === 'exit') this.exit();
-      else
-        this.$router.replace({
-          path: "login"
-        });
+      switch(command) {
+        case 'user': this.$refs.personInfo.open(); break;
+        case 'exit': this.exit(); break;
+        default:  
+          this.$router.replace({
+            path: "login"
+          });
+      }
     },
 
     //获取消息
@@ -640,27 +643,6 @@ export default {
   line-height: 0.47rem;
 }
 
-.search /deep/ .el-input__inner {
-  width: 3.27rem;
-  height: 0.47rem;
-  line-height: 0.47rem;
-  background-color: #F3F4F9;
-  border-radius: .24rem;
-}
-
-.search /deep/ .el-input__suffix {
-  display: flex;
-  align-items: center;
-  right: 0.2rem;
-}
-
-.search .search-icon {
-  background-image: url(../assets/img/home/search.png);
-  width: .18rem;
-  height: .18rem;
-  background-size: cover;
-}
-
 .user-wrap {
   width: 3rem;
   height: 0.47rem;
@@ -728,6 +710,7 @@ export default {
 }
 
 .view {
-  padding: 0.27rem;
+  padding: 0.25rem;
+  min-height: calc(100% - 1.96rem);
 }
 </style>

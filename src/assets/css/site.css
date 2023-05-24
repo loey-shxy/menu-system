@@ -287,6 +287,29 @@
 /*}*/
 /*===============================左侧菜单结束====================================  */
 /*===============================列表开始====================================  */
+.search .el-input__inner {
+  width: 3.27rem;
+  height: 0.47rem;
+  line-height: 0.47rem;
+  background-color: #F3F4F9;
+  border-radius: .24rem;
+}
+
+.search .el-input__suffix {
+  display: flex;
+  align-items: center;
+  right: 0.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.search .search-icon {
+  background-image: url(../img/home/search.png);
+  width: .18rem;
+  height: .18rem;
+  background-size: cover;
+}
+
 .overflow-table {
     height: calc(100% - 1.58rem);
     overflow: auto;
@@ -308,11 +331,28 @@
     padding: 0 .5rem;
     min-height:calc(100% - .2rem);
 }
+
+.list-wrap .header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.list-wrap .header .title {
+  color: #333;
+  font-size: .2rem;
+  font-weight: 800;
+}
+.list-wrap .header>div {
+  flex: 1;
+}
+
 .condition {
-    padding: .3rem 0;
     padding-bottom: .15rem;
     position: relative;
     line-height: .3rem;
+    align-items: baseline;
+    justify-content: flex-end;
 }
 .condition .condition-item {
     margin-right: .2rem;
@@ -321,6 +361,15 @@
     height: .3rem;
     font-size: .14rem;
     color: #666;
+}
+
+.condition .search,
+.condition .search .el-input__inner{
+  background-color: #fff;
+  width: 4.25rem;
+  height: .42rem;
+  line-height: .42rem;
+  border-radius: .21rem;
 }
 .add {
     margin-left: .15rem;
@@ -336,6 +385,10 @@
 .table {
     /*border-top: 1px solid #2f374b;*/
     height: 100%;
+}
+.table thead th {
+  background-color: #F5F7FF;
+  color: #576EEC;
 }
 .table-row-height {
     height: .45rem;
@@ -376,16 +429,18 @@
 
 .btn {
     padding: 0 .12rem;
-    line-height: .4rem;
-   
+    line-height: .38rem;
     text-align: center;
-    border-radius: .05rem;
+    border-radius: .03rem;
     font-size: .14rem;
     cursor: pointer;
     min-width: .58rem;
 }
+.btn+.btn {
+  margin-left: .2rem;
+}
 .menu-hand-page .title-operate .btn{
-   min-width: .85rem;
+  min-width: .85rem;
 }
 .btn:hover, .el-button:hover {
     opacity: 0.8;
@@ -412,6 +467,7 @@
     padding: .17rem 0;
     text-align: center;
     height: .4rem;
+    margin-top: .45rem;
 }
 .el-pagination.is-background .btn-next,
 .el-pagination.is-background .btn-prev,
@@ -455,11 +511,11 @@
 
 .add-page,
 .detail-page {
-    margin-top: .5rem;
+    // margin-top: .5rem;
     margin-bottom:.3rem;
     height: calc(100% - .2rem);
     overflow: auto;
-    border-radius: .2rem;
+    // border-radius: .2rem;
 }
 
 .add-page .scroll-div,
@@ -478,10 +534,9 @@
 .add-page .card,
 .detail-page .card {
     margin: 0;
-    padding: .6rem .6rem .4rem;
+    padding: .3rem .25rem;
     min-height: calc(100% - .98rem);
     height: auto;
-    border-radius: .2rem;
 }
 
 .add-page .el-select,
@@ -638,7 +693,7 @@
 .detail-page .message {
     margin-top: .3rem;
     border:1px solid #ededed;
-    border-radius: .04rem;
+    border-radius: .03rem;
 }
 
 .detail-page .message .el-row {
@@ -786,15 +841,13 @@
 .pass-message .el-form-item {
     margin-bottom: .35rem;
 }
-.list-wrap {
-    margin:0;
+.table-wrap {
+    margin-top: .13rem;
     margin-bottom: 0.3rem;
-    margin-top: 0.5rem;
     background: #fff;
     min-height: 8.5rem;
-    border-radius: 0.08rem;
-    -webkit-box-shadow: 0 0.02rem 0.12rem 0 rgb(0 0 0 / 8%);
-    box-shadow: 0 0.02rem 0.12rem 0 rgb(0 0 0 / 8%);
+    border-radius: 0.03rem;
+    padding: .26rem .23rem;
 }
 
 .dialog .table tr td:first-child{
@@ -948,4 +1001,27 @@
 .el-badge__content.is-fixed.is-dot {
     right: 0.05rem;
     top: 0.05rem;
+}
+.w-100 {
+  width: 100% !important;
+}
+.table .el-icon-sort {
+  color: #576EEC;
+  margin-left: .1rem;
+  cursor: pointer;
+}
+
+.custom-dialog .el-dialog {
+  border-radius: .1rem !important;
+}
+.custom-dialog .el-dialog__header {
+  background-color: #fff;
+}
+.custom-dialog .el-dialog__title {
+  font-size: .16rem;
+  color: #000;
+  font-weight: 800;
+}
+.custom-dialog .el-dialog__body {
+  padding: .35rem .4rem 1rem .4rem;
 }

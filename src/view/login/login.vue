@@ -26,13 +26,13 @@
                                     </el-form-item>
                                 </el-col>
                             </el-row>
-                            <el-row>
+                            <!-- <el-row>
                                 <el-col>
                                     <el-form-item>
                                         <el-select></el-select>
                                     </el-form-item>
                                 </el-col>
-                            </el-row>
+                            </el-row> -->
                             <el-row>
                                 <el-col>
                                     <el-form-item >

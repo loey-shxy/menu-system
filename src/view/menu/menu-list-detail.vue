@@ -6,172 +6,152 @@
             <div class="hover-font item-right" @click="view(2)">查看烹饪视频</div>
         </el-card>
         
-        <el-card class="card">
-            <section class="flex justify-content" style="margin-bottom: .2rem; padding-bottom: .2rem;">
-                <div class="title">查看菜谱</div>
-                <div class="operate flex justify-content">
-                    <div style="margin-right:.2rem;background: #ff8836;color:#fff;border:0" class="cancel btn " @click="showDialog(1)">查看预算价</div>
-                    <div class="save btn" style=" background: #ffa82c;color: #ffffff;border:0" @click="showDialog(2)">查看营养成分</div>
-                    <div v-if="(config.userMessage.userType === 2 || condition.share === 2) && condition.createPurchase === 1" style="margin-left: 20px;" class="save btn background-color" @click="detail(3)">查看采购单</div>
-                    <div v-if="config.userMessage.userType === 2 && condition.createPurchase !== 1" style="margin-left: .2rem;" class="save btn background-color" @click="detail(3)">生成采购单</div>
-                    <div v-if="config.userMessage.userType === 2" style="margin-left: .2rem;background: #45bfdd;color:#fff;" class="save btn " @click="exportMaterialPrice()">查看询价单</div>
-                    <div v-if="config.userMessage.userType === 2 || condition.share === 2" style="margin-left: .2rem;background: #3ab28d;color: #ffffff;" class="save btn  " @click="requestMenuExecl">下载</div>
-                    <!--<a  v-if="config.userMessage.userType === 2 || condition.share === 2" style="margin-left: 20px;" class="save btn background-color " :href="'/api/upload/download?id='+ execlId" download="">下载</a>-->
+        <section class="detail-header flex justify-content">
+            <div class="title">菜谱详情</div>
+            <div class="operate flex justify-content">
+                <div style="background: #FF893A;color:#fff;border:0" class="cancel btn " @click="showDialog(1)">查看预算价</div>
+                <div class="save btn" style=" background: #FFAE3A;color: #fff;border:0" @click="showDialog(2)">查看营养成分</div>
+                <div v-if="(config.userMessage.userType === 2 || condition.share === 2) && condition.createPurchase === 1" class="save btn background-color" @click="detail(3)">查看采购单</div>
+                <div v-if="config.userMessage.userType === 2 && condition.createPurchase !== 1" class="save btn background-color" @click="detail(3)">生成采购单</div>
+                <div v-if="config.userMessage.userType === 2" style="background: #50C69B;color:#fff;" class="save btn " @click="exportMaterialPrice()">查看询价单</div>
+                <div v-if="config.userMessage.userType === 2 || condition.share === 2" style="background: #67B26C;color: #fff;" class="save btn" @click="requestMenuExecl">下载菜谱</div>
+            </div>
+        </section>
+
+        <el-card>
+          <section class="brief-wrap">
+            <div class="info-wrap">
+              <div class="menu-title">{{ condition.title }} </div>
+              <div class="desc">{{condition.remark}}</div>
+            </div>
+            <div class="label-wrap">
+              <div class="label">{{condition.menuTypeDesc}}</div>
+            </div>
+          </section>
+        </el-card>
+
+        <el-card class="card content">
+            <div class="content-header  flex justify-content">
+              <div class="header-title">菜谱日期信息</div>
+              <div class="operations flex justify-content">
+                <div class="save btn background-color" @click="changeTableType">{{ tableType === 'horizontal' ? '切换竖版' : '切换横版' }}</div>
+                <div class="save btn" style=" background: #FF893A;color: #fff;border:0" @click="save">编辑</div>
+                <div class="save btn" style="border:1px solid #DEE0EF;color:#999;" @click="commons.close">关闭</div>
+              </div>
+            </div>
+
+            <section style="margin: .18rem 0;" class="flex justify-content"> 
+                <!-- 横版 -->
+                <div class="horizontal-table" v-if="tableType === 'horizontal'">
+                  <div class="table__head">
+                    <div class="date">日期</div>
+                    <div class="cell" v-for="item in newTabelList" :key="item.date">{{ `${item.date}(${item.week})` }}</div>
+                  </div>
+                  <div class="table__body">
+                    <div class="row">
+                      <div class="date">早<br />餐</div>
+                      <div class="cell" v-for="item in newTabelList" :key="`breakfasts${item.date}`">
+                        <el-tooltip v-for="itemF in item.breakfasts" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
+                            <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
+                                {{itemF.dishesName}}
+                            </div>
+                        </el-tooltip>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="date">午<br />餐</div>
+                      <div class="cell" v-for="item in newTabelList" :key="`lunches${item.date}`">
+                        <el-tooltip v-for="itemF in item.lunches" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
+                            <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
+                                {{itemF.dishesName}}
+                            </div>
+                        </el-tooltip>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="date">晚<br />餐</div>
+                      <div class="cell" v-for="item in newTabelList" :key="`dinners${item.date}`">
+                        <el-tooltip v-for="itemF in item.dinners" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
+                            <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
+                                {{itemF.dishesName}}
+                            </div>
+                        </el-tooltip>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="date">菜<br />量</div>
+                      <div class="cell" v-for="item in newTabelList" :key="`material${item.date}`">
+                        <el-row :gutter="20">
+                              <el-col v-for="itemM in item.materialList" :key="itemM.materialId" style="line-height: .24rem; text-align:left; padding-left:.2rem" >
+                                  <span>{{itemM.materialName}}({{itemM.materialNum}}{{itemM.materialUnitDesc}})</span>
+                              </el-col>
+                          </el-row>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-            </section>
-            
-            <section class="message">
-                <el-row  type="flex">
-                    <el-col class="flex">
-                        <p class="theme-background label"><span>菜谱类型</span></p>
-                        <p class="item-message theme-color flex-one">{{condition.menuTypeDesc}}</p>
-                    </el-col>
-                    
-                    <!--<el-col class="flex">-->
-                        <!--<p class="theme-background label"><span>制谱人</span></p>-->
-                        <!--<p class="item-message theme-color flex-one">{{condition.producer}}</p>-->
-                    <!--</el-col>-->
-                    
-                    <!--<el-col class="flex">-->
-                        <!--<p class="theme-background label"><span>审核人</span></p>-->
-                        <!--<p class="item-message theme-color flex-one">{{condition.reviewer}}</p>-->
-                    <!--</el-col>-->
-                    <!---->
-                    <!--<el-col class="flex">-->
-                        <!--<p class="theme-background label"><span>审批人</span></p>-->
-                        <!--<p class="item-message theme-color flex-one">{{condition.approve}}</p>-->
-                    <!--</el-col>-->
-                </el-row>
-                
-                
-                <el-row  >
-                    
-                    <el-col class="flex">
-                        <p class="theme-background label"><span>标题</span></p>
-                        <p class="item-message theme-color flex-one">{{condition.title}}</p>
-                    </el-col>
-                
-                </el-row>
-                <el-row  >
         
-                    <el-col class="flex">
-                        <p class="theme-background label"><span>备注</span></p>
-                        <p class="item-message theme-color flex-one">{{condition.remark}}</p>
-                    </el-col>
-    
-                </el-row>
-            </section>
-            
-            
-            
-            
-            <section style="margin: .6rem 0;">
-                <!--<el-table  border :data="transDataMenu" class="table"  :show-header="false">-->
-                    <!--<el-table-column align="center" width="100">-->
-                        <!--<template slot-scope="scope">-->
-                            <!--{{scope.row['name0']}}-->
-                        <!--</template>-->
-                    <!--</el-table-column>-->
-                    <!--<el-table-column min-width="150" v-for="(itemCol,indexCol) in condition.dates" :key="itemCol" align="left">-->
-                        <!--<template slot-scope="scope" >-->
-                            <!--<span v-if="scope.$index < 2">{{scope.row['name' + (indexCol + 1)]}}</span>-->
-                            <!--<el-tooltip v-for="itemF in scope.row['name' + (indexCol + 1)]" :key="itemF" v-else class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">-->
-                                <!--<el-button  style="margin:0 .1rem .1rem ;color:#ffac4b !important;border:1px solid #ffb35b;display: block;padding: 0 .1rem;"   @contextmenu.prevent.native="rightClick(itemF,$event)"   type="text" size="small" >-->
-                                    <!--{{itemF.dishesName}}-->
-                                <!--</el-button>-->
-                            <!--</el-tooltip>-->
-                        <!--</template>-->
-                    <!--</el-table-column>-->
-                <!--</el-table>-->
-                
-                <el-table border :data="newTabelList" class="table" >
-                    <el-table-column label="序号" width="50" align="center">
-                        <template slot-scope="scope">
-                            <span style="line-height: .4rem;">{{ scope.$index + 1}} </span>
-                        </template>
-                    </el-table-column>
-                    <!--<el-table-column width="100"  show-overflow-tooltip label="星期" prop="week" align="center"></el-table-column>-->
-                    <!--<el-table-column width="100"  show-overflow-tooltip label="日期" prop="date" align="center"></el-table-column>-->
-                    
-                    <el-table-column prop="date" width="200" label="日期"  align="center"  >
+
+                <!-- 竖版 -->
+                <el-table v-if="tableType === 'vertical'" border :data="newTabelList" class="table menu-table">
+                    <el-table-column prop="date" width="200" label="日期" align="center"  >
                         <template slot-scope="scope" >
-                            <el-date-picker  v-model="scope.row.date" type="date" placeholder="请选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :editable="false"  @change="changeDate(scope.row,scope.$index)"></el-date-picker>
-                            <span style="line-height: .4rem;">{{scope.row.week}} </span>
+                            <p>{{ scope.row.date }}</p>
+                            <p style="line-height: .4rem;">{{scope.row.week}} </p>
                         </template>
                     </el-table-column>
                     
                     <el-table-column min-width="150"  align="center"  label="早餐">
                         <template slot-scope="scope" >
-                            <el-tooltip v-for="itemF in scope.row.breakfasts" :key="itemF"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
-                                <el-button  style="margin:0 auto .1rem ;color:#644912 !important;background:#fdb82c;display: block;padding: 0 .1rem;"   @contextmenu.prevent.native="rightClick(itemF,$event)"  @click="detailDishes(itemF)" type="text" size="small" >
+                            <el-tooltip v-for="itemF in scope.row.breakfasts" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
+                                <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
                                     {{itemF.dishesName}}
-                                </el-button>
+                                </div>
                             </el-tooltip>
                         </template>
                     </el-table-column>
                     <el-table-column min-width="150"  align="center"  label="午餐">
                         <template slot-scope="scope" >
-                            <el-tooltip v-for="itemF in scope.row.lunches" :key="itemF"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
-                                <el-button  style="margin:0 auto .1rem ;color:#644912 !important;background:#fdb82c;display: block;padding: 0 .1rem;"   @contextmenu.prevent.native="rightClick(itemF,$event)"  @click="detailDishes(itemF)" type="text" size="small" >
+                            <el-tooltip v-for="itemF in scope.row.lunches" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
+                              <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
                                     {{itemF.dishesName}}
-                                </el-button>
+                              </div>
                             </el-tooltip>
                         </template>
                     </el-table-column>
                     <el-table-column min-width="150"  align="center"  label="晚餐">
                         <template slot-scope="scope" >
-                            <el-tooltip v-for="itemF in scope.row.dinners" :key="itemF"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
-                                <el-button  style="margin:0 auto .1rem ;color:#644912 !important;background:#fdb82c;display: block;padding: 0 .1rem;"   @contextmenu.prevent.native="rightClick(itemF,$event)"   @click="detailDishes(itemF)" type="text" size="small" >
-                                    {{itemF.dishesName}}
-                                </el-button>
+                            <el-tooltip v-for="itemF in scope.row.dinners" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
+                              <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
+                                  {{itemF.dishesName}}
+                              </div>
                             </el-tooltip>
                         </template>
-                    </el-table-column>
-                    <!--<el-table-column label="菜量" align="center" min-width="150" >-->
-                        <!--<template slot-scope="scope" >-->
-                            <!--<div >-->
-                                <!--<div v-for="item in scope.row.materialList" :key="item" style="margin: 0 auto .05rem;display: block;padding: 0 .1rem;line-height: .35rem;"    type="text" size="small" >-->
-                                    <!--<span>{{item.materialName}}<span class="font-color">({{item.materialNum}}{{item.materialUnitDesc}})</span></span>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--</template>-->
-                    <!--</el-table-column>-->
-    
-                    <el-table-column label="菜量" align="center">
-                        <el-table-column  label="食材名总量" align="center">
-                            <template slot-scope="scope" >
-                                <div >
-                                    <div v-for="(item,index) in scope.row.materialList" :key="item" style="margin: 0 auto .05rem;display: block;line-height: .35rem;"    type="text" size="small" >
-                                        <span v-if="index % 2 === 0">{{item.materialName}}<span class="font-color">({{item.materialNum}}{{item.materialUnitDesc}})</span></span>
-                                    </div>
-                                </div>
-                            </template>
-                        </el-table-column>
-                        <el-table-column  label="食材名总量" align="center">
-                            <template slot-scope="scope" >
-                                <div >
-                                    <div v-for="(item,index) in scope.row.materialList" :key="item" style="margin: 0 auto .05rem;display: block;line-height: .35rem;"    type="text" size="small" >
-                                        <span v-if="index % 2 === 1">{{item.materialName}}<span class="font-color">({{item.materialNum}}{{item.materialUnitDesc}})</span></span>
-                                    </div>
-                                </div>
-                            </template>
-                        </el-table-column>
-    
+                    </el-table-column>    
+                    <el-table-column label="菜量" align="center" width="400">
+                      <template slot-scope="scope" >
+                          <el-row :gutter="20">
+                              <el-col :span="12" v-for="(item,index) in scope.row.materialList" :key="item.materialId" style="line-height: .24rem; text-align:left;" >
+                                  <span>{{item.materialName}}({{item.materialNum}}{{item.materialUnitDesc}})</span>
+                              </el-col>
+                          </el-row>
+                      </template>
                     </el-table-column>
                     
                 </el-table>
-            </section>
-            
-            
-            <section class="message" style="margin: .3rem auto;width:2rem;border:0 !important;">
-                <div class="operate flex justify-content">
-                    <div class="cancel btn " @click="commons.close();">关闭</div>
-                    <div class="save btn background-color" @click="save()">编辑</div>
+                <div class="recommend-wrap">
+                  <el-select v-model="recommendType">
+                    <el-option value="hot" label="推荐菜谱"></el-option>
+                  </el-select>
+
+                  <div class="recommend-menu-list">
+                    <div class="recommend-menu-item" v-for="(item, index) in 10" :key="index">
+                      <div class="img"></div>
+                      <div class="menu-name ell">鱼香肉丝</div>
+                    </div>
+                  </div>
                 </div>
             </section>
-    
-           
-        
         </el-card>
     
     
@@ -320,9 +300,7 @@
 				transDataMenu:[],
 				totalStyle:"",
 				addData: {},
-                
-                newTabelList:[],
-				
+        newTabelList:[],
 				nutritionList:[],
 				titleList:[],
 				priceDataChart:[],
@@ -332,7 +310,8 @@
 					otherRatio:0,
 					meatRatio:0
 				},
-				
+        tableType: 'horizontal',
+        recommendType: ''
 			}
 		},
 		mounted () {
@@ -1046,132 +1025,294 @@
 				context.strokeStyle = "#ee7d7d";
 				context.arc(0.8 * this.utils.readLocalStorage('rem'), 0.8 * this.utils.readLocalStorage('rem'), 0.68 *  this.utils.readLocalStorage('rem') , -0.5 * Math.PI,(2 * ratio - 0.5) * Math.PI,false)
 				context.stroke();
-			}
+			},
 			
-			
-			
+      changeTableType() {
+        if (this.tableType === 'vertical') {
+          this.tableType = 'horizontal'
+        } else {
+          this.tableType = 'vertical'
+        }
+      }
 		}
 	}
 </script>
 
 <style scoped>
-    .total {
-        height: .48rem;
-        border-bottom: 1px solid #EBEEF5;
-        line-height: .48rem;
-    }
-    .total p {
-        text-align: center;
-    }
-    .right-card {
-        position: absolute;
-        width: 1.2rem;
-        left: 6.3rem;
-        line-height: .35rem;
-        z-index: 11;
-    }
-    .right-card .item-right {
-        text-align: center;
-        border-bottom: 1px solid #dcdcdc;
-        cursor: pointer;
-    }
-    .right-card .item-right:last-child {
-        border: none;
-    }
+.detail-header .title {
+  color: #333;
+  font-size: .2rem;
+}
+.detail-header {
+  margin-bottom: .16rem;
+}
+.brief-wrap {
+  margin: .26rem .22rem;
+  display: flex;
+}
+.brief-wrap .label-wrap .label {
+  height: .26rem;
+  line-height: .26rem;
+  padding: 0 .26rem;
+  border-radius: .13rem;
+  text-align: center;
+  background-color: #E6EAFF;
+  color: #576EEC;
+}
+.brief-wrap .info-wrap {
+  flex: 1;
+}
+.brief-wrap .info-wrap .menu-title {
+  color: #333;
+  font-size: .16rem;
+  font-weight: 800;
+}
+.brief-wrap .info-wrap .desc {
+  margin-top: .25rem;
+  color: #999;
+}
+.content {
+  margin-top: .16rem;
+}
+.total {
+    height: .48rem;
+    border-bottom: 1px solid #EBEEF5;
+    line-height: .48rem;
+}
+.total p {
+    text-align: center;
+}
+.right-card {
+    position: absolute;
+    width: 1.2rem;
+    left: 6.3rem;
+    line-height: .35rem;
+    z-index: 11;
+}
+.right-card .item-right {
+    text-align: center;
+    border-bottom: 1px solid #dcdcdc;
+    cursor: pointer;
+}
+.right-card .item-right:last-child {
+    border: none;
+}
 
-    .price-chart{
-        height: 3.5rem;
-    }
-    .nutrient-chart {
-        height: 4rem;
-    }
-    .describe {
-        padding: 0 .12rem;
-        color: #9a9da4;
-        line-height: .3rem;
-        font-size: .14rem;
-    }
-    .pie {
-        position: relative;
-        width: 1.6rem;
-        height:1.6rem;
-    }
-    .circle {
-        height: calc(100% - .5rem);
-        border: .25rem solid #fefaf3;
-        border-radius: 100%;
-    }
-    .pie-name {
-        position: absolute;
-        width:100%;
-        top: 60%;
-        height: .2rem;
-        font-size: .14rem;
-        color: #b6babe;
-        text-align: center;
-    }
-    .percent {
-        position: absolute;
-        top: 38%;
-        text-align: center;
-        width:100%;
-        height: .23rem;
-        font-size: .22rem;
-        color: #f6d483;
-        font-weight: bold;
-    }
-    .other .circle {
-        border-color: #f4fbf4;
-    }
-    .vegetables .circle {
-        border-color: #fef3f3;
-    }
-    .other  .percent {
-        color: #75c177;
-    }
-    .vegetables  .percent {
-        color: #ee7d7d;
-    }
-    .mix {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width:1.6rem;
-        height: 1.6rem;
-    }
-    .cost{
-        /*flex: 2;*/
-        width: 62%;
-    }
+.price-chart{
+    height: 3.5rem;
+}
+.nutrient-chart {
+    height: 4rem;
+}
+.describe {
+    padding: 0 .12rem;
+    color: #9a9da4;
+    line-height: .3rem;
+    font-size: .14rem;
+}
+.pie {
+    position: relative;
+    width: 1.6rem;
+    height:1.6rem;
+}
+.circle {
+    height: calc(100% - .5rem);
+    border: .25rem solid #fefaf3;
+    border-radius: 100%;
+}
+.pie-name {
+    position: absolute;
+    width:100%;
+    top: 60%;
+    height: .2rem;
+    font-size: .14rem;
+    color: #b6babe;
+    text-align: center;
+}
+.percent {
+    position: absolute;
+    top: 38%;
+    text-align: center;
+    width:100%;
+    height: .23rem;
+    font-size: .22rem;
+    color: #f6d483;
+    font-weight: bold;
+}
+.other .circle {
+    border-color: #f4fbf4;
+}
+.vegetables .circle {
+    border-color: #fef3f3;
+}
+.other  .percent {
+    color: #75c177;
+}
+.vegetables  .percent {
+    color: #ee7d7d;
+}
+.mix {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width:1.6rem;
+    height: 1.6rem;
+}
+.cost{
+    /*flex: 2;*/
+    width: 62%;
+}
 
-    .cost, .nutrition {
-    
-        padding: 0.12rem;
-        height: 5.6rem;
-        border-radius: 0.08rem;
-        background: #ffffff;
-        -webkit-box-shadow: 0 0.02rem 0.12rem 0 rgb(0 0 0 / 8%);
-        box-shadow: 0 0.02rem 0.12rem 0 rgb(0 0 0 / 8%);
-    }
-    .nutrition {
-        margin-left: .4rem;
-    }
-    .nutrition-content {
-        margin-top: .3rem;
-        padding: .3rem .4rem;
-        background: #ffffff;
-        border-radius: 0.08rem;
-        -webkit-box-shadow: 0 0.02rem 0.12rem 0 rgb(0 0 0 / 8%);
-        box-shadow: 0 0.02rem 0.12rem 0 rgb(0 0 0 / 8%);
-    }
-    .super {
-        color: #ec635e;
-    }
-    .middle {
-        color: #3ab28d;
-    }
-    .low {
-        color: #ffa82c;
-    }
-  
+.cost, .nutrition {
+
+    padding: 0.12rem;
+    height: 5.6rem;
+    border-radius: 0.03rem;
+    background: #ffffff;
+    -webkit-box-shadow: 0 0.02rem 0.12rem 0 rgb(0 0 0 / 8%);
+    box-shadow: 0 0.02rem 0.12rem 0 rgb(0 0 0 / 8%);
+}
+.nutrition {
+    margin-left: .4rem;
+}
+.nutrition-content {
+    margin-top: .3rem;
+    padding: .3rem .4rem;
+    background: #ffffff;
+    border-radius: 0.03rem;
+    -webkit-box-shadow: 0 0.02rem 0.12rem 0 rgb(0 0 0 / 8%);
+    box-shadow: 0 0.02rem 0.12rem 0 rgb(0 0 0 / 8%);
+}
+.super {
+    color: #ec635e;
+}
+.middle {
+    color: #3ab28d;
+}
+.low {
+    color: #ffa82c;
+}
+.content-header {
+  display: flex;
+}
+.header-title {
+  color: #333;
+  font-size: .16rem;
+  font-weight: 800;
+}
+.recommend-wrap {
+  width: 2.6rem;
+  background: #F3F4F9;
+  padding: .12rem .15rem;
+  margin-left: .18rem;
+}
+.recommend-menu-list .recommend-menu-item {
+  margin-top: .15rem;
+  background-color: #fff;
+  border-radius: .03rem;
+  display: flex;
+  align-items: center;
+  padding: .05rem;
+}
+.recommend-menu-item .img {
+  width: .64rem;
+  height: .48rem;
+  background: #F3F4F9;
+  border-radius: .03rem;
+  overflow: hidden;
+}
+.recommend-menu-item .menu-name {
+  color: #666;
+  margin-left: .12rem;
+}
+.recommend-wrap /deep/ .el-input__inner {
+  height: .38rem;
+  line-height: .38rem;
+  border-radius: .19rem;
+}
+.dishes-item {
+  width: 1.78rem;
+  height: .24rem;
+  border-radius: .12rem;
+  color: #fff;
+}
+.dishes-item+.dishes-item {
+  margin-top: .12rem;
+}
+.dishes-item:nth-of-type(2n) {
+  background-color: #FF7774;
+}
+.dishes-item:nth-of-type(2n+1) {
+  background-color: #FFC274;
+}
+.menu-table /deep/ tr td:first-child,
+.menu-table /deep/ thead th {
+  background-color: #EFF1FF;
+}
+.menu-table /deep/ tr td:first-child {
+  color: #576EEC;
+  font-size: .16rem;
+}
+
+.menu-table /deep/ td.el-table__cell, 
+.menu-table /deep/ th.el-table__cell.is-leaf {
+  border-color: #DEE0EF;
+}
+.horizontal-table {
+  flex: 1;
+  border: 1px solid #DEE0EF;
+}
+.horizontal-table .table__head,
+.horizontal-table .table__body .row {
+  display: flex;
+}
+
+.horizontal-table .table__head .cell {
+  flex: 1;
+}
+.table__body .date,
+.table__head .date {
+  width: .58rem;
+}
+.table__body .date,
+.table__head .cell,
+.table__head .date {
+  background-color: #EFF1FF;
+  text-align: center;
+  border-right: 1px solid #DEE0EF;
+  border-bottom: 1px solid #DEE0EF;
+  color: #576EEC;
+}
+
+.table__head .date,
+.table__head .cell,
+.table__body .date,
+.table__body .cell {
+  text-align: center;
+  padding: .2rem 0;
+}
+.table__body .row .date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.table__body .row .cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: 1px solid #DEE0EF;
+}
+.table__body .row:last-child .date,
+.table__body .row:last-child .cell {
+  border-bottom: none;
+}
+
+.table__body .row:last-child .date {
+  background-color: #576EEC;
+  color: #fff;
+}
+.table__body .row .cell:not(:last-child) {
+  border-right: 1px solid #DEE0EF;
+}
 </style>
