@@ -41,113 +41,114 @@
             </div>
 
             <section style="margin: .18rem 0;" class="flex justify-content"> 
-                <!-- 横版 -->
-                <div class="horizontal-table" v-if="tableType === 'horizontal'">
-                  <div class="table__head">
-                    <div class="date">日期</div>
-                    <div class="cell" v-for="item in newTabelList" :key="item.date">{{ `${item.date}(${item.week})` }}</div>
-                  </div>
-                  <div class="table__body">
-                    <div class="row">
-                      <div class="date">早<br />餐</div>
-                      <div class="cell" v-for="item in newTabelList" :key="`breakfasts${item.date}`">
-                        <el-tooltip v-for="itemF in item.breakfasts" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
-                            <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
-                                {{itemF.dishesName}}
-                            </div>
-                        </el-tooltip>
-                      </div>
+                <div class="menu-table-wrap">
+                  <!-- 横版 -->
+                  <div class="horizontal-table" v-if="tableType === 'horizontal'">
+                    <div class="table__head">
+                      <div class="date">日期</div>
+                      <div class="cell" v-for="item in newTabelList" :key="item.date">{{ `${item.date}(${item.week})` }}</div>
                     </div>
-                    <div class="row">
-                      <div class="date">午<br />餐</div>
-                      <div class="cell" v-for="item in newTabelList" :key="`lunches${item.date}`">
-                        <el-tooltip v-for="itemF in item.lunches" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
-                            <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
-                                {{itemF.dishesName}}
-                            </div>
-                        </el-tooltip>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="date">晚<br />餐</div>
-                      <div class="cell" v-for="item in newTabelList" :key="`dinners${item.date}`">
-                        <el-tooltip v-for="itemF in item.dinners" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
-                            <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
-                                {{itemF.dishesName}}
-                            </div>
-                        </el-tooltip>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="date">菜<br />量</div>
-                      <div class="cell" v-for="item in newTabelList" :key="`material${item.date}`">
-                        <el-row :gutter="20">
-                              <el-col v-for="itemM in item.materialList" :key="itemM.materialId" style="line-height: .24rem; text-align:left; padding-left:.2rem" >
-                                  <span>{{itemM.materialName}}({{itemM.materialNum}}{{itemM.materialUnitDesc}})</span>
-                              </el-col>
-                          </el-row>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-        
-
-                <!-- 竖版 -->
-                <el-table v-if="tableType === 'vertical'" border :data="newTabelList" class="table th-color menu-table">
-                    <el-table-column prop="date" width="200" label="日期" align="center"  >
-                        <template slot-scope="scope" >
-                            <p>{{ scope.row.date }}</p>
-                            <p style="line-height: .4rem;">{{scope.row.week}} </p>
-                        </template>
-                    </el-table-column>
-                    
-                    <el-table-column min-width="150"  align="center"  label="早餐">
-                        <template slot-scope="scope" >
-                            <el-tooltip v-for="itemF in scope.row.breakfasts" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
-                                <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
-                                    {{itemF.dishesName}}
-                                </div>
-                            </el-tooltip>
-                        </template>
-                    </el-table-column>
-                    <el-table-column min-width="150"  align="center"  label="午餐">
-                        <template slot-scope="scope" >
-                            <el-tooltip v-for="itemF in scope.row.lunches" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
-                              <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
-                                    {{itemF.dishesName}}
-                              </div>
-                            </el-tooltip>
-                        </template>
-                    </el-table-column>
-                    <el-table-column min-width="150"  align="center"  label="晚餐">
-                        <template slot-scope="scope" >
-                            <el-tooltip v-for="itemF in scope.row.dinners" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
+                    <div class="table__body">
+                      <div class="row">
+                        <div class="date">早<br />餐</div>
+                        <div class="cell" v-for="item in newTabelList" :key="`breakfasts${item.date}`">
+                          <el-tooltip v-for="itemF in item.breakfasts" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
                               <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
                                   {{itemF.dishesName}}
                               </div>
-                            </el-tooltip>
-                        </template>
-                    </el-table-column>    
-                    <el-table-column label="菜量" align="center" width="400">
-                      <template slot-scope="scope" >
+                          </el-tooltip>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="date">午<br />餐</div>
+                        <div class="cell" v-for="item in newTabelList" :key="`lunches${item.date}`">
+                          <el-tooltip v-for="itemF in item.lunches" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
+                              <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
+                                  {{itemF.dishesName}}
+                              </div>
+                          </el-tooltip>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="date">晚<br />餐</div>
+                        <div class="cell" v-for="item in newTabelList" :key="`dinners${item.date}`">
+                          <el-tooltip v-for="itemF in item.dinners" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
+                              <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
+                                  {{itemF.dishesName}}
+                              </div>
+                          </el-tooltip>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="date">菜<br />量</div>
+                        <div class="cell" v-for="item in newTabelList" :key="`material${item.date}`">
                           <el-row :gutter="20">
-                              <el-col :span="12" v-for="(item,index) in scope.row.materialList" :key="item.materialId" style="line-height: .24rem; text-align:left;" >
-                                  <span>{{item.materialName}}({{item.materialNum}}{{item.materialUnitDesc}})</span>
-                              </el-col>
-                          </el-row>
-                      </template>
-                    </el-table-column>
-                    
-                </el-table>
-                <div class="recommend-wrap">
+                                <el-col v-for="itemM in item.materialList" :key="itemM.materialId" style="line-height: .24rem; text-align:left; padding-left:.2rem" >
+                                    <span>{{itemM.materialName}}({{itemM.materialNum}}{{itemM.materialUnitDesc}})</span>
+                                </el-col>
+                            </el-row>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+          
+                  <!-- 竖版 -->
+                  <el-table v-if="tableType === 'vertical'" border :data="newTabelList" class="table th-color menu-table">
+                      <el-table-column prop="date" width="200" label="日期" align="center"  >
+                          <template slot-scope="scope" >
+                              <p>{{ scope.row.date }}</p>
+                              <p style="line-height: .4rem;">{{scope.row.week}} </p>
+                          </template>
+                      </el-table-column>
+                      
+                      <el-table-column min-width="150"  align="center"  label="早餐">
+                          <template slot-scope="scope" >
+                              <el-tooltip v-for="itemF in scope.row.breakfasts" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
+                                  <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
+                                      {{itemF.dishesName}}
+                                  </div>
+                              </el-tooltip>
+                          </template>
+                      </el-table-column>
+                      <el-table-column min-width="150"  align="center"  label="午餐">
+                          <template slot-scope="scope" >
+                              <el-tooltip v-for="itemF in scope.row.lunches" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
+                                <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
+                                      {{itemF.dishesName}}
+                                </div>
+                              </el-tooltip>
+                          </template>
+                      </el-table-column>
+                      <el-table-column min-width="150"  align="center"  label="晚餐">
+                          <template slot-scope="scope" >
+                              <el-tooltip v-for="itemF in scope.row.dinners" :key="itemF.dishesId"  class="item" effect="dark" :content="'单价:' + itemF.price + '*' +itemF.dishesNum + '份'" placement="right">
+                                <div class="dishes-item" @contextmenu.prevent="rightClick(itemF,$event)"  @click="detailDishes(itemF)">
+                                    {{itemF.dishesName}}
+                                </div>
+                              </el-tooltip>
+                          </template>
+                      </el-table-column>    
+                      <el-table-column label="菜量" align="center" width="400">
+                        <template slot-scope="scope" >
+                            <el-row :gutter="20">
+                                <el-col :span="12" v-for="(item,index) in scope.row.materialList" :key="item.materialId" style="line-height: .24rem; text-align:left;" >
+                                    <span>{{item.materialName}}({{item.materialNum}}{{item.materialUnitDesc}})</span>
+                                </el-col>
+                            </el-row>
+                        </template>
+                      </el-table-column>
+                      
+                  </el-table>
+                </div>
+                <div class="recommend-wrap" :style="{maxHeight: recommendHeight }">
                   <el-select v-model="recommendType">
-                    <el-option value="hot" label="推荐菜谱"></el-option>
+                    <el-option value="hot" label="推荐菜谱" v-for="type in dishesTypeList" :key="type.val" :value="type.val" :label="type.name"></el-option>
                   </el-select>
 
                   <div class="recommend-menu-list">
-                    <div class="recommend-menu-item" v-for="(item, index) in 10" :key="index">
+                    <div class="recommend-menu-item" v-for="item in recommendList" :key="item.dishesId">
                       <div class="img"></div>
-                      <div class="menu-name ell">鱼香肉丝</div>
+                      <div class="menu-name ell">{{ item.dishesName }}</div>
                     </div>
                   </div>
                 </div>
@@ -311,18 +312,67 @@
 					meatRatio:0
 				},
         tableType: 'horizontal',
-        recommendType: ''
+        recommendType: '',
+        dishesList: [],
+        dishesTypeList: [],
+        menuTableHeight: 0
 			}
 		},
 		mounted () {
 			
 			this.requestData();
+			this.requestDishesData();
+			this.requestDishesType();
 			document.body.addEventListener('click', ()=> {
 				this.styleCard = "display:none;";
 			})
 		},
+
+    computed: {
+      recommendList() {
+        if (this.recommendType) {
+          return this.dishesList.filter(item => item.dishesType === this.recommendType)
+        }
+        return this.dishesList
+      },
+      recommendHeight() {
+        if (this.menuTableHeight) {
+          return this.menuTableHeight / 100 + 'rem'
+        }
+        return '10rem'
+      }
+    },
 		
 		methods: {
+      //获取菜品列表
+			requestDishesData(val) {
+				this.utils.ajax({
+					url: '/api/background/Dishes/getDishes',
+					data:  {
+						dishesType: '',
+						name: val,
+						suitPerson:  '',
+						shareDishes:0
+					}
+				},(res) => {
+					if(res.success){
+						this.dishesList = res.data;
+					}
+				});
+			},
+
+      //获取菜品类型
+			requestDishesType() {
+				this.utils.ajax({
+					url: '/api/background/DishesClass/getClasses',
+				},(res) => {
+					if(res.success){
+						this.dishesTypeList = res.data;
+						// this.foodTypeList   = res.data;
+					}
+				});
+			},
+
 			//菜单类型
 			requestMenuType(data) {
 				this.utils.ajax({
@@ -372,7 +422,10 @@
 						this.requestPrice('init');
 						this.getMenuNutritious();
 						
-						
+						this.$nextTick(() => {
+              const el = document.querySelector('.menu-table-wrap')
+              this.menuTableHeight = el.clientHeight
+            })
 					}
 				});
 			},
@@ -1212,5 +1265,8 @@
 }
 .dishes-item:nth-of-type(2n+1) {
   background-color: #FFC274;
+}
+.menu-table-wrap {
+  flex: 1;
 }
 </style>

@@ -78,8 +78,12 @@
                                     <el-select filterable clearable v-el-select-lazyloading="lazyloading" v-model="item.dishesId">
                                         <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
                                     </el-select>
+                                    <i class="el-icon-circle-close"></i>
                                 </div>
-                                <el-button round plain class="block" @click="addFood(4,scope.$index)">添加菜品</el-button>
+                                <div class="cell-dishes">
+                                  <el-button round plain class="block" @click="addFood(4,scope.$index)">添加菜品</el-button>
+                                    <i class="el-icon-circle-close"></i>
+                                </div>
                             </div>
                         </template>
                     </el-table-column>
@@ -98,8 +102,12 @@
                                         <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName">
                                         </el-option>
                                     </el-select>
+                                    <i class="el-icon-circle-close"></i>
                                 </div>
-                                <el-button plain round class="block" @click="addFood(5,scope.$index)">添加菜品</el-button>
+                                <div class="cell-dishes">
+                                  <el-button round plain class="block" @click="addFood(4,scope.$index)">添加菜品</el-button>
+                                    <i class="el-icon-circle-close"></i>
+                                </div>
                             </div>
                         </template>
                     
@@ -115,11 +123,15 @@
                         <template slot-scope="scope" >
                             <div>
                                 <div v-for="(item,index) in scope.row.dinners" :key="item.dishesId" class="cell-dishes">
-                                      <el-select filterable clearable v-el-select-lazyloading="lazyloading" v-model="item.dishesId">
-                                        <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
-                                      </el-select>
+                                    <el-select filterable clearable v-el-select-lazyloading="lazyloading" v-model="item.dishesId">
+                                      <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
+                                    </el-select>
+                                    <i class="el-icon-circle-close"></i>
                                 </div>
-                                <el-button plain round class="block" @click="addFood(6,scope.$index)">添加菜品</el-button>
+                                <div class="cell-dishes">
+                                  <el-button round plain class="block" @click="addFood(4,scope.$index)">添加菜品</el-button>
+                                    <i class="el-icon-circle-close"></i>
+                                </div>
                             </div>
                         </template>
                     </el-table-column>
@@ -161,8 +173,12 @@
                             <el-select filterable clearable v-model="item.dishesId">
                               <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
                             </el-select>
+                            <i class="el-icon-circle-close"></i>
                           </div>
-                          <el-button plain round class="block">添加菜品</el-button>
+                          <div class="cell-dishes">
+                            <el-button plain round class="block">添加菜品</el-button>
+                            <i class="el-icon-circle-close"></i>
+                          </div>
                         </div>
                       </div>
                       <div class="row">
@@ -178,8 +194,12 @@
                             <el-select filterable clearable v-el-select-lazyloading="lazyloading" v-model="item.dishesId">
                               <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
                             </el-select>
+                            <i class="el-icon-circle-close"></i>
                           </div>
-                          <el-button plain round class="block">添加菜品</el-button>
+                          <div class="cell-dishes">
+                            <el-button plain round class="block">添加菜品</el-button>
+                            <i class="el-icon-circle-close"></i>
+                          </div>
                         </div>
                       </div>
                       <div class="row">
@@ -195,8 +215,12 @@
                             <el-select filterable clearable v-model="item.dishesId">
                               <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
                             </el-select>
+                            <i class="el-icon-circle-close"></i>
                           </div>
-                          <el-button plain round class="block">添加菜品</el-button>
+                          <div class="cell-dishes">
+                            <el-button plain round class="block">添加菜品</el-button>
+                            <i class="el-icon-circle-close"></i>
+                          </div>
                         </div>
                       </div>
                       <div class="row">
@@ -807,7 +831,6 @@
             if (this.dishesSelectList.length) {
               this.filterDishesList()
             }
-            // this.dishesSelectList = this.dishesList.slice(0, this.dishesPage.pageSize)
 					}
 				});
 			},

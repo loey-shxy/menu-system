@@ -100,7 +100,14 @@
         :show-close="false"
         >
         <NewMenu v-if="dialog.type === 'menu'" />
-        <ShareMenu v-if="dialog.type === 'share'" />
+
+        <template v-if="dialog.type === 'share'">
+          <ShareMenu />
+          <div  slot="footer" class="operate flex justify-end">
+            <div class="save btn medium background-color">确定分享</div>
+            <div class="save btn medium default" @click="close">关闭</div>
+          </div>
+        </template>
       </el-dialog>
     </div>
 </template>
@@ -341,11 +348,21 @@
           title: '请选择分享对象',
           record
         }
+      },
+      close() {
+        this.dialog.visible = false
       }
 		}
 	}
 </script>
 
 <style scoped>
+.share-dialog /deep/ .el-dialog__body {
+  padding: 0 .2rem .2rem;
+}
 
+.share-dialog /deep/ .el-dialog__header {
+  padding: .2rem;
+  margin-bottom: 0;
+}
 </style>

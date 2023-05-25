@@ -376,6 +376,21 @@
 .horizontal-table .cell-dishes,
 .table .cell-dishes {
   margin-bottom: .1rem;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.cell-dishes .el-icon-circle-close {
+  font-size: .2rem;
+  margin-left: .1rem;
+  cursor: pointer;
+  color: #666;
+}
+.cell-dishes .el-icon-circle-close:hover {
+  color: #FF5252;
+}
+.cell-dishes:last-child .el-icon-circle-close {
+  visibility: hidden;
 }
 .btn {
     padding: 0 .12rem;
@@ -387,6 +402,11 @@
     cursor: pointer;
     min-width: .58rem;
     box-sizing: border-box;
+    color: #999;
+    min-width: .84rem;
+}
+.btn.default {
+  border: 1px solid #DEE0EF;
 }
 .btn.medium {
   height: .34rem;
@@ -396,7 +416,7 @@
   margin-left: .2rem;
 }
 .menu-hand-page .title-operate .btn{
-  min-width: .85rem;
+  min-width: .84rem;
 }
 .btn:hover, .el-button:hover {
     opacity: 0.8;
@@ -642,7 +662,7 @@
 }
 /*===============================首页 end====================================  */
 .end-time .el-form-item__content {
-    margin-left: .07rem !important;
+    // margin-left: .07rem !important;
 }
 
 /*===============================详情 start====================================  */
@@ -712,7 +732,7 @@
 }
 .end-time .el-date-editor.el-input,
 .end-time .el-date-editor.el-input__inner {
-    max-width: calc(100% - .15rem)
+    // max-width: calc(100% - .15rem)
 }
 
 .add-page .cancel,
