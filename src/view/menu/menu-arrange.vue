@@ -1,11 +1,9 @@
 <!--智能排菜 -->
 <template>
     <div class="add-page menu-arrange-page">
-        
-        
         <el-card class="card">
+              <div class="header-title">智能排菜</div>
             <el-form :model="condition" ref="form" :rules="rules"  label-position="left" label-width="1.3rem">
-                <div class="title">智能排菜</div>
                 <el-row type="flex" :gutter="100">
                     <el-col >
                         <el-form-item label="菜谱标题" prop="menuTitle">
@@ -21,16 +19,22 @@
                 </el-row>
                 <el-row type="flex " class="menu-arrange-time" :gutter="100">
                     <el-col class="flex" :span="12">
-                        <div class="flex-one">
-                            <el-form-item label="日期"  prop="startTime">
-                                <el-date-picker  v-model="condition.startTime" type="date" placeholder="请选择起始日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :editable="false"  ></el-date-picker>
+                        <!-- <div class="flex-one"> -->
+                            <el-form-item label="日期">
+                                <el-row>
+                                  <el-col :span="11">
+                                    <el-form-item prop="startTime">
+                                      <el-date-picker style="width: 100%;" v-model="condition.startTime" type="date" placeholder="请选择起始日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :editable="false"  ></el-date-picker>
+                                    </el-form-item>
+                                  </el-col>
+                                  <el-col :span="2" style="text-align: center;">-</el-col>
+                                  <el-col :span="11">
+                                    <el-form-item prop="endTime" class="end-time">
+                                        <el-date-picker style="width: 100%;" v-model="condition.endTime" type="date" placeholder="请选择截止日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :editable="false" ></el-date-picker>
+                                    </el-form-item>
+                                  </el-col>
+                                </el-row>
                             </el-form-item>
-                        </div>
-                        <div class="flex-one">
-                            <el-form-item prop="endTime" class="end-time" style="display: flex;margin-left:0;align-items:flex-start">
-                                - <el-date-picker v-model="condition.endTime" type="date" placeholder="请选择截止日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :editable="false" ></el-date-picker>
-                            </el-form-item>
-                        </div>
                     </el-col>
                     
                     <el-col :span="12">
@@ -93,8 +97,8 @@
                     </el-col>
                 </el-row>
                 <div class="operate flex justify-content">
-                    <div class="cancel btn " @click="$router.back();">取消</div>
-                    <div class="save btn background-color" @click="save()">生成菜谱</div>
+                    <div class="cancel btn " @click="$router.back">取消</div>
+                    <div class="save btn background-color" @click="save">生成菜谱</div>
                 </div>
             </el-form>
         </el-card>
@@ -402,5 +406,10 @@
 </script>
 
 <style scoped>
-
+.header-title {
+  color: #333;
+  font-size: .16rem;
+  font-weight: 800;
+  margin-bottom: .3rem;
+}
 </style>

@@ -35,7 +35,7 @@
         <div class="table-wrap">
           <!--列表 start-->
           <div class="overflow-table">
-              <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table" border>
+              <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table th-color" border>
                   <el-table-column label="序号" width="80" align="center">
                       <template slot-scope="scope">
                           <span style="">{{ scope.$index + 1  + condition.pageSize * (condition.pageNo - 1 )}} </span>
@@ -100,7 +100,14 @@
         :show-close="false"
         >
         <NewMenu v-if="dialog.type === 'menu'" />
-        <ShareMenu v-if="dialog.type === 'share'" />
+
+        <template v-if="dialog.type === 'share'">
+          <ShareMenu />
+          <div  slot="footer" class="operate flex justify-end">
+            <div class="save btn medium background-color">确定分享</div>
+            <div class="save btn medium default" @click="close">关闭</div>
+          </div>
+        </template>
       </el-dialog>
     </div>
 </template>
@@ -341,11 +348,21 @@
           title: '请选择分享对象',
           record
         }
+      },
+      close() {
+        this.dialog.visible = false
       }
 		}
 	}
 </script>
 
 <style scoped>
+.share-dialog /deep/ .el-dialog__body {
+  padding: 0 .2rem .2rem;
+}
 
+.share-dialog /deep/ .el-dialog__header {
+  padding: .2rem;
+  margin-bottom: 0;
+}
 </style>
