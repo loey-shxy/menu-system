@@ -9,6 +9,15 @@
     font-size:.14rem;
 }
 
+::-webkit-scrollbar {
+  width: .1rem;
+  background-color: #fff;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #576EEC;
+  border-radius: .05rem;
+}
 
 html,body {
     height:100%;

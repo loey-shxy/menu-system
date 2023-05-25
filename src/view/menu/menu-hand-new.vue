@@ -4,198 +4,231 @@
             <div class="hover-font item-right" @click="view(1)">查看菜品信息</div>
             <div class="hover-font item-right" @click="view(2)">查看烹饪视频</div>
         </el-card>
-    
-    
-        <!--菜品 start-->
-        <section class="dishes" style="height: auto;min-height:3rem;">
-            <div class="header flex">
-                <div :class="selectType === 0 ?'active font-color name' : 'name' "  @click="selectDishesType(0)">常用菜品</div>
-                <div :class="selectType === 1 ?'active font-color name' : 'name' "  @click="selectDishesType(1)">推荐菜品</div>
-                <div :class="selectType === 2 ?'active font-color name' : 'name' "  @click="selectDishesType(2)">热门菜品</div>
-            </div>
-            <div class="item-content-dishes flex " style="flex-wrap:wrap;">
-                <div class="dishes-item" style="margin-bottom: .2rem;" @click="view(3,item)" v-for="item in dishesListCom">
-                    <img :src="config.fileUrl + item.picFilePath">
-                    <p>{{item.name}}</p>
-                </div>
+
+        <section class="flex justify-content detail-header">
+            <div v-if="!$route.query.id" class="title">手动排菜</div>
+            <div v-else class="title">编辑菜谱</div>
+            <div class="operate flex justify-content title-operate">
+                <div  class="cancel btn  background-color"  style="margin-right:.2rem;" @click="showDialog(1)">计算预算价</div>
+                <div style="margin:0 .2rem;background-color: #3ab28d !important;" class="save btn background-color" @click="showDialog(2)">设置就餐人数</div>
+                <div style="background-color: #ff8836 !important;" class="save btn background-color" @click="showDialog(3)">查看营养成分</div>
             </div>
         </section>
-        <!--菜品 end-->
-        
-        
-        <section class="flex">
-            <el-card class="card flex-one scroll-card" style="padding:.4rem .3rem;">
-            <el-form :model="condition" ref="form" :rules="rules"  label-position="right" label-width="1.2rem">
-                <section class="flex justify-content" style="margin-bottom: .2rem; padding-bottom: .2rem;">
-                    <div v-if="!$route.query.id" class="title">手动排菜</div>
-                    <div v-else class="title">编辑菜谱</div>
-                    <div class="operate flex justify-content title-operate">
-                        <div  class="cancel btn  background-color"  style="margin-right:.2rem;" @click="showDialog(1)">计算预算价</div>
-                        <div style="margin:0 .2rem;background-color: #3ab28d !important;" class="save btn background-color" @click="showDialog(2)">设置就餐人数</div>
-                        <div style="background-color: #ff8836 !important;" class="save btn background-color" @click="showDialog(3)">查看营养成分</div>
-                    </div>
-                </section>
-                
-                <section>
-                    <el-row style="margin-bottom:.12rem;" type="flex">
-                        <el-col>
-                            <el-form-item label="菜谱类型"  prop="menuType">
-                                <el-select v-model="condition.menuType">
-                                    <el-option  v-for="item in menuTypeList" :key="item" :label="item.name" :value="item.val"></el-option>
-                                </el-select>
-                            </el-form-item>
-                        </el-col>
-                        <!--<el-col>-->
-                            <!--<el-form-item label="制谱人" prop="producer">-->
-                                <!--<el-input v-model="condition.producer" maxlength=20 placeholder="请输入制谱人"></el-input>-->
-                            <!--</el-form-item>-->
-                        <!--</el-col>-->
-                    </el-row>
-                   
-                    
-                    <el-row  >
-                        <el-col>
-                            <el-form-item label="标题" prop="title">
-                                <el-input v-model="condition.title" maxlength=50 placeholder="请输入标题"></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-    
-                    <el-row style="margin-bottom:.12rem;" type="flex">
-                        <!--<el-col>-->
-                        <!--<el-form-item label="审核人" prop="reviewer">-->
-                        <!--<el-input v-model="condition.reviewer" maxlength=20 placeholder="请输入审核人"></el-input>-->
-                        <!--</el-form-item>-->
-                        <!--</el-col>-->
-                        <!--<el-col>-->
-                        <!--<el-form-item label="审批人" prop="approve">-->
-                        <!--<el-input v-model="condition.approve" maxlength=20 placeholder="请输入审批人"></el-input>-->
-                        <!--</el-form-item>-->
-                        <!--</el-col>-->
-                        <el-col>
-                            <el-form-item label="备注" prop="remark">
-                                <el-input v-model="condition.remark" maxlength=100 placeholder="请输入备注"></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    
-                </section>
-                
-                <section style="margin-top: .4rem;padding-bottom: .2rem;">
-                    <el-table ref="table" :data="condition.days" border  style="width: 100%" class="table no-empty" :cell-class-name="tableCellClassName">
-                        <el-table-column label="序号" width="50" align="center">
-                            <template slot-scope="scope">
-                                <span style="line-height: .4rem;">{{ scope.$index + 1}} </span>
-                            </template>
-                        </el-table-column>
-                        <!--<el-table-column width="100"  show-overflow-tooltip label="星期"  align="center">-->
-                            <!--<template slot-scope="scope" >-->
-                                <!--<span style="line-height: .4rem;">{{scope.row.week}} </span>-->
-                            <!--</template>-->
-                        <!--</el-table-column>-->
-                        <el-table-column prop="date" width="200" label="日期"  align="center"  >
-                            <template slot-scope="scope" >
-                                <el-date-picker  v-model="scope.row.date" type="date" placeholder="请选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :editable="false"  @change="changeDate(scope.row,scope.$index)"></el-date-picker>
-                                <span style="line-height: .4rem;">{{scope.row.week}} </span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column  label="早餐"   align="center"  >
-                            <template slot-scope="scope" >
-                                <div>
-                                    <div draggable="true" @dragend="endBreakfasts($event,item,index,scope.$index)" v-for="(item,index) in scope.row.breakfasts" :key="item">
-                                        <el-tooltip class="item" effect="dark" :content="'单价:' + item.price + '*' +item.dishesNum + '份'" placement="right">
-                                            <el-button     style="margin: 0 auto .05rem;display: block;padding: 0 .1rem;border:1px solid #6a7079;color: #6a7079 !important;line-height: .35rem;"   @contextmenu.prevent.native="rightClick(item,$event)"      type="text" size="small" >
-                                                <span>{{item.dishesName}}</span>
-                                                <i @click="removeTag(scope.row,scope.$index,index,'breakfasts')" style="border-radius: 100%;color:#ff8836;" class="el-tag__close el-icon-close"></i>
-                                            </el-button>
-                                        </el-tooltip>
-                                    </div>
-                                    <el-button  class="border" style="margin: 0 auto .05rem;display: block;line-height: .4rem;padding:0 .4rem;"    @click="addFood(4,scope.$index)" type="text" size="small" >+请添加早餐</el-button>
-                                </div>
-                            </template>
-                        </el-table-column>
-                        <el-table-column show-overflow-tooltip label="午餐"  align="center"  >
-                            <template slot-scope="scope" >
-                                <div>
-                                    <div draggable="true" @dragend="endLunches($event,item,index,scope.$index)" v-for="(item,index) in scope.row.lunches" :key="item">
-                                        <el-tooltip class="item" effect="dark" :content="'单价:' + item.price + '*' +item.dishesNum + '份'" placement="right">
-                                            <el-button  style="margin: 0 auto .05rem;display: block;padding: 0 .1rem;border:1px solid #6a7079;color: #6a7079 !important;line-height: .35rem;"   @contextmenu.prevent.native="rightClick(item,$event)"    type="text" size="small" >
-                                                <span>{{item.dishesName}}</span>
-                                                <i @click="removeTag(scope.row,scope.$index,index,'lunches')" style="border-radius: 100%;color:#ff8836;" class="el-tag__close el-icon-close"></i>
-                                            </el-button>
-                                        </el-tooltip>
-                                    </div>
-                                    <el-button  style="margin: 0 auto .05rem;display: block;line-height: .4rem;padding:0 .4rem;border:1px solid #b15eec;color: #b15eec !important;"   @click="addFood(5,scope.$index)" type="text" size="small" >+请添加午餐</el-button>
-                                
-                                </div>
-                            </template>
-                        
-                        </el-table-column>
-                        <el-table-column show-overflow-tooltip label="晚餐"  align="center"  >
-                            <template slot-scope="scope" >
-                                <div>
-                                    <div draggable="true" @dragend="endDinner($event,item,index,scope.$index)" v-for="(item,index) in scope.row.dinners" :key="item">
-                                        <el-tooltip class="item" effect="dark" :content="'单价:' + item.price + '*' +item.dishesNum + '份'" placement="right">
-                                            <el-button  style="margin: 0 auto .05rem;display: block;padding: 0 .1rem;border:1px solid #6a7079;color: #6a7079 !important;line-height: .35rem;"   @contextmenu.prevent.native="rightClick(item,$event)"   type="text" size="small" >
-                                                <span>{{item.dishesName}}</span>
-                                                <i @click="removeTag(scope.row,scope.$index,index,'dinners')" style="border-radius: 100%;color:#ff8836;" class="el-tag__close el-icon-close"></i>
-                                            </el-button>
-                                        </el-tooltip>
-                                    </div>
-                                    <el-button  style="margin: 0 auto .05rem;display: block;line-height: .4rem;padding:0 .4rem;border:1px solid #3ab28d;color: #3ab28d !important;"   @click="addFood(6,scope.$index)" type="text" size="small" >+请添加晚餐</el-button>
-                                </div>
-                            </template>
-                        </el-table-column>
-                        <!--<el-table-column label="菜量" align="center">-->
-                            <!--<template slot-scope="scope" >-->
-                                <!--<div >-->
-                                    <!--<div v-for="item in scope.row.materialList" :key="item" style="margin: 0 auto .05rem;display: block;padding: 0 .1rem;line-height: .35rem;"    type="text" size="small" >-->
-                                        <!--<span>{{item.materialName}}<span class="font-color">({{item.materialNum}}{{item.materialUnitDesc}})</span></span>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                            <!--</template>-->
-                        <!--</el-table-column>-->
-                        <el-table-column label="菜量" align="center">
-                            <el-table-column  label="食材名总量" align="center">
-                                <template slot-scope="scope" >
-                                    <div >
-                                        <div v-for="(item,index) in scope.row.materialList" :key="item" style="margin: 0 auto .05rem;display: block;line-height: .35rem;"    type="text" size="small" >
-                                            <span v-if="index % 2 === 0">{{item.materialName}}<span class="font-color">({{item.materialNum}}{{item.materialUnitDesc}})</span></span>
-                                        </div>
-                                    </div>
-                                </template>
-                            </el-table-column>
-                            <el-table-column  label="食材名总量" align="center">
-                                <template slot-scope="scope" >
-                                    <div >
-                                        <div v-for="(item,index) in scope.row.materialList" :key="item" style="margin: 0 auto .05rem;display: block;line-height: .35rem;"    type="text" size="small" >
-                                            <span v-if="index % 2 === 1">{{item.materialName}}<span class="font-color">({{item.materialNum}}{{item.materialUnitDesc}})</span></span>
-                                        </div>
-                                    </div>
-                                </template>
-                            </el-table-column>
-                           
-                        </el-table-column>
-                        <el-table-column label="操作" width="60" align="center">
-                            <template slot-scope="scope" >
-                                <el-button :disabled="scope.$index === 0" style="color:#ec635e !important;border:0 !important;line-height: .4rem; " @click="del(scope.row,scope.$index)" type="text" size="small" >删除</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    
-                    <el-button  class="add-button" style="width: 100%;border: 1px solid #DCDFE6;border-top: 0; color:#ff8836;" @click="add()">新增+</el-button>
-                
-                </section>
-                
-              
-                <div class="operate flex justify-content" style="margin:.3rem auto;">
-                    <div class="cancel btn " @click="$router.back();">取消</div>
-                    <div class="save btn background-color" @click="save()">保存</div>
-                </div>
+
+        <el-card class="card flex-one scroll-card">
+            <div class="card-header">基础信息</div>
+            <el-form :model="condition" ref="form" :rules="rules"  label-position="right" label-width=".8rem">
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="菜谱类型"  prop="menuType">
+                            <el-select v-model="condition.menuType" filterable clearable>
+                                <el-option  v-for="item in menuTypeList" :key="item.name" :label="item.name" :value="item.val"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span="12">
+                        <el-form-item label="标题" prop="title">
+                            <el-input v-model="condition.title" maxlength=50 placeholder="请输入标题"></el-input>
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span="24">
+                        <el-form-item label="备注" prop="remark">
+                            <el-input type="textarea" v-model="condition.remark" maxlength=100 placeholder="请输入备注"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
             </el-form>
         </el-card>
-        
-        </section>
+
+        <el-card class="card">
+          <section>
+            <div class="operate flex justify-end">
+                <div class="save btn medium background-color" @click="changeTableType">{{ tableType === 'horizontal' ? '切换竖版' : '切换横版' }}</div>
+                <div class="save btn medium background-color" @click="save()">保存</div>
+                <div class="cancel medium btn " @click="$router.back();">关闭</div>
+            </div>
+
+            <section style="margin: .18rem 0;" class="flex justify-content">
+              <div class="menu-table-wrap">
+                <!-- 竖版 -->
+                <el-table v-if="tableType === 'vertical'" ref="table" :data="condition.days" border class="table no-empty menu-table th-color edit" :cell-class-name="tableCellClassName">
+                    <el-table-column prop="date" width="220" label="日期"  align="center" >
+                        <template slot-scope="scope" >
+                            <el-date-picker v-model="scope.row.date" type="date" placeholder="请选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :editable="false"  @change="changeDate(scope.row,scope.$index)"></el-date-picker>
+                            <span style="margin-top: .25rem; display: inline-block;">{{scope.row.week}} </span>
+                            <div>
+                              <i class="el-icon-remove icon"></i>
+                              <i class="el-icon-circle-plus icon"></i>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column  align="center">
+                        <template slot="header" slot-scope="scope">
+                          <div class="label font-color">早餐</div>
+                          <div>
+                            <i class="el-icon-remove icon"></i>
+                            <i class="el-icon-circle-plus icon"></i>
+                          </div>
+                        </template>
+                        <template slot-scope="scope" >
+                            <div>
+                                <div v-for="(item, index) in scope.row.breakfasts" :key="item.dishesId" class="cell-dishes">
+                                    <el-select filterable clearable v-el-select-lazyloading="lazyloading" v-model="item.dishesId">
+                                        <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
+                                    </el-select>
+                                </div>
+                                <el-button round plain class="block" @click="addFood(4,scope.$index)">添加菜品</el-button>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column show-overflow-tooltip align="center">
+                      <template slot="header" slot-scope="scope">
+                          <div class="label font-color">午餐</div>
+                          <div>
+                            <i class="el-icon-remove icon"></i>
+                            <i class="el-icon-circle-plus icon"></i>
+                          </div>
+                        </template>
+                        <template slot-scope="scope" >
+                            <div>
+                                <div v-for="(item, index) in scope.row.lunches" :key="item.dishesId" class="cell-dishes">
+                                    <el-select filterable clearable v-el-select-lazyloading="lazyloading" v-model="item.dishesId">
+                                        <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName">
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                                <el-button plain round class="block" @click="addFood(5,scope.$index)">添加菜品</el-button>
+                            </div>
+                        </template>
+                    
+                    </el-table-column>
+                    <el-table-column show-overflow-tooltip align="center">
+                      <template slot="header" slot-scope="scope">
+                          <div class="label font-color">晚餐</div>
+                          <div>
+                            <i class="el-icon-remove icon"></i>
+                            <i class="el-icon-circle-plus icon"></i>
+                          </div>
+                        </template>
+                        <template slot-scope="scope" >
+                            <div>
+                                <div v-for="(item,index) in scope.row.dinners" :key="item.dishesId" class="cell-dishes">
+                                      <el-select filterable clearable v-el-select-lazyloading="lazyloading" v-model="item.dishesId">
+                                        <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
+                                      </el-select>
+                                </div>
+                                <el-button plain round class="block" @click="addFood(6,scope.$index)">添加菜品</el-button>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="菜量" align="center" width="320">
+                        <template slot-scope="scope" >
+                            <el-row :gutter="10">
+                                <el-col :span="12" v-for="item in scope.row.materialList" :key="item.materialId" style="line-height: .24rem; text-align:left;">
+                                    <span>{{item.materialName}}({{item.materialNum}}{{item.materialUnitDesc}})</span>
+                                </el-col>
+                            </el-row>
+                        </template>
+                    </el-table-column>
+                </el-table>
+
+                <!-- 横版 -->
+                <div class="horizontal-table edit" v-if="tableType === 'horizontal'">
+                    <div class="table__head">
+                      <div class="date">日期</div>
+                      <div class="cell" v-for="item in condition.days" :key="item.date">
+                        <!-- {{ `${item.date}(${item.week})` }} -->
+                        <el-date-picker v-model="item.date" type="date" placeholder="请选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" ></el-date-picker>
+                        <div class="thead-icons">
+                          <i class="el-icon-remove icon"></i>
+                          <i class="el-icon-circle-plus icon"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="table__body">
+                      <div class="row">
+                        <div class="date">
+                          <div class="label">早餐</div>
+                          <div>
+                            <i class="el-icon-remove icon"></i>
+                            <i class="el-icon-circle-plus icon"></i>
+                          </div>
+                        </div>
+                        <div class="cell" v-for="day in condition.days" :key="`breakfasts${day.date}`">
+                          <div v-for="item in day.breakfasts" :key="item.dishesId" class="cell-dishes">
+                            <el-select filterable clearable v-model="item.dishesId">
+                              <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
+                            </el-select>
+                          </div>
+                          <el-button plain round class="block">添加菜品</el-button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="date">
+                          <div class="label">午餐</div>
+                          <div>
+                            <i class="el-icon-remove icon"></i>
+                            <i class="el-icon-circle-plus icon"></i>
+                          </div>
+                        </div>
+                        <div class="cell" v-for="day in condition.days" :key="`lunches${day.date}`">
+                          <div v-for="item in day.lunches" :key="item.dishesId" class="cell-dishes">
+                            <el-select filterable clearable v-el-select-lazyloading="lazyloading" v-model="item.dishesId">
+                              <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
+                            </el-select>
+                          </div>
+                          <el-button plain round class="block">添加菜品</el-button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="date">
+                          <div class="label">晚餐</div>
+                          <div>
+                            <i class="el-icon-remove icon"></i>
+                            <i class="el-icon-circle-plus icon"></i>
+                          </div>
+                        </div>
+                        <div class="cell" v-for="day in condition.days" :key="`dinners${day.date}`">
+                          <div v-for="item in day.dinners" :key="item.dishesId" class="cell-dishes">
+                            <el-select filterable clearable v-model="item.dishesId">
+                              <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
+                            </el-select>
+                          </div>
+                          <el-button plain round class="block">添加菜品</el-button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="date">菜<br />量</div>
+                        <div class="cell" v-for="item in condition.days" :key="`material${item.date}`">
+                          <el-row :gutter="20">
+                                <el-col v-for="itemM in item.materialList" :key="itemM.materialId" style="line-height: .24rem; text-align:left; padding-left:.2rem" >
+                                    <span>{{itemM.materialName}}({{itemM.materialNum}}{{itemM.materialUnitDesc}})</span>
+                                </el-col>
+                            </el-row>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+              <div class="recommend-wrap" :style="{maxHeight: recommendHeight}">
+                <el-select v-model="recommendType">
+                  <el-option value="hot" label="推荐菜谱" v-for="type in dishesTypeList" :key="type.val" :value="type.val" :label="type.name"></el-option>
+                </el-select>
+
+                <div class="recommend-menu-list">
+                  <div class="recommend-menu-item" v-for="dishes in recommendList" :key="dishes.dishesId">
+                    <div class="img"></div>
+                    <div class="menu-name ell">{{ dishes.dishesName }}</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- <el-button  class="add-button" style="width: 100%;border: 1px solid #DCDFE6;border-top: 0; color:#ff8836;" @click="add()">新增+</el-button> -->
+          </section>
+        </el-card>
     
         <!--膳食营养成分 start-->
         <section class="nutrition-content" v-if="nutritionList.length">
@@ -337,8 +370,8 @@
                     <div class="title"> 菜品信息</div>
                     <el-row style="margin-bottom:.12rem;">
                         <el-form-item label="菜品"   prop="dishesId">
-                            <el-select  v-model="addData.dishesId" filterable remote   placeholder="请选择菜品"  :remote-method="requestDishesData">
-                                <el-option  v-for="item in dishesList" :key="item" :label="item.dishesName+' ('+item.price.toFixed(2)+'￥)'" :value="item.dishesId"></el-option>
+                            <el-select v-el-select-lazyloading="lazyloading" v-model="addData.dishesId" filterable remote   placeholder="请选择菜品"  :remote-method="requestDishesData">
+                                <el-option  v-for="item in dishesSelectList" :key="item" :label="item.dishesName+' ('+item.price.toFixed(2)+'￥)'" :value="item.dishesId"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-row>
@@ -452,13 +485,32 @@
 <script>
 	export default {
 		name: "menu-hand-new",
+    directives: {
+      'el-select-lazyloading': {
+        bind(el, binding) {
+          const SELECT_DOM = el.querySelector(
+            '.el-select-dropdown .el-select-dropdown__wrap'
+          )
+          SELECT_DOM.addEventListener('scroll', function() {
+            const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
+            if (condition) {
+              binding.value()
+            }
+          })
+        }
+      }
+    },
 		data() {
 			return {
 				styleCard: "display:none;",
 				selectType: 0,     //选择类型
 				dishesListCom:[],
 				nutritionList:[],
-    
+        dishesPage: {
+          pageSize: 8,
+          page: 0
+        },
+        dishesSelectList: [],
     
 				condition: {
 					menuType:"",
@@ -546,9 +598,28 @@
                 titleList: [],   //列表的标题
                 tableData: [],   //营养成分的列表
 				listChart:[],
-				priceDataChart:[]
+				priceDataChart:[],
+        tableType: 'vertical',
+        recommendType: '',
+        menuTableHeight: 0,
 			}
 		},
+
+    computed: {
+      recommendList() {
+        if (this.recommendType) {
+          return this.dishesList.filter(item => item.dishesType === this.recommendType)
+        }
+        return this.dishesList
+      },
+
+      recommendHeight() {
+        if (this.menuTableHeight) {
+          return this.menuTableHeight / 100 + 'rem'
+        }
+        return '10rem'
+      }
+    },
 		
 		mounted () {
 			this.requestData();
@@ -566,6 +637,22 @@
 		},
 		
 		methods: {
+      lazyloading() {
+        if (this.dishesSelectList.length < this.dishesList.length) {
+          this.dishesPage.page++
+          const start = this.dishesPage.pageSize*this.dishesPage.page
+          const end = start + this.dishesPage.pageSize > this.dishesList.length ? this.dishesList.length : start + this.dishesPage.pageSize
+          
+          this.dishesSelectList = [...this.dishesSelectList, ...this.dishesList.slice(start, end)]
+        }
+      },
+      changeTableType() {
+        if (this.tableType === 'vertical') {
+          this.tableType = 'horizontal'
+        } else {
+          this.tableType = 'vertical'
+        }
+      },
 			
 			//请求菜谱详情
 			requestData() {
@@ -585,6 +672,11 @@
 				},(res) => {
 					if(res.success){
 						this.initData(res.data);
+
+            this.$nextTick(() => {
+              const el = document.querySelector('.menu-table-wrap')
+              this.menuTableHeight = el.clientHeight
+            })
 					}
 				});
 			},
@@ -596,9 +688,26 @@
 				this.requestDishesList();
 			},
 			
+      initDishesSelect(data) {
+        const dishes = [...data.breakfasts, ...data.lunches, ...data.dinners]
+        const list = []
+        dishes.forEach(item => {
+          item.forEach(subItem => {
+            if (!list.find(i => i.dishesId === subItem.dishesId)) {
+              list.push(subItem)
+            }
+          })
+        })
+
+        this.dishesSelectList = list
+        if (this.dishesList.length) {
+          this.filterDishesList()
+        }
+      },
 			
 			//数据
 			initData(data) {
+        this.initDishesSelect(data)
 				this.condition.reviewer = data.reviewer;
 				this.condition.producer = data.producer;
 				this.condition.approve  = data.reviewer;
@@ -674,6 +783,13 @@
 				
 			},
 			
+      filterDishesList() {
+        for (let i = this.dishesList.length-1; i >= 0; i--) {
+          if (this.dishesSelectList.find(item => item.dishesId === this.dishesList[i].dishesId)) {
+            this.dishesList.splice(i, 1)
+          }
+        }
+      },
 			
 			//获取菜品列表
 			requestDishesData(val) {
@@ -688,6 +804,10 @@
 				},(res) => {
 					if(res.success){
 						this.dishesList = res.data;
+            if (this.dishesSelectList.length) {
+              this.filterDishesList()
+            }
+            // this.dishesSelectList = this.dishesList.slice(0, this.dishesPage.pageSize)
 					}
 				});
 			},
@@ -1952,6 +2072,14 @@
 </script>
 
 <style scoped>
+
+    .detail-header .title {
+      color: #333;
+      font-size: .2rem;
+    }
+    .detail-header {
+      margin-bottom: .16rem;
+    }
     .right-card {
         position: absolute;
         width: 1.2rem;
@@ -2116,5 +2244,14 @@
     }
     .low {
         color: #ffa82c;
+    }
+    .card-header {
+      font-size: .16rem;
+      color: #333;
+      font-weight: 800;
+      margin-bottom: .38rem;
+    }
+    .menu-table-wrap {
+      flex: 1;
     }
 </style>

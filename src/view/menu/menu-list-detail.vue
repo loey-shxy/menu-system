@@ -34,9 +34,9 @@
             <div class="content-header  flex justify-content">
               <div class="header-title">菜谱日期信息</div>
               <div class="operations flex justify-content">
-                <div class="save btn background-color" @click="changeTableType">{{ tableType === 'horizontal' ? '切换竖版' : '切换横版' }}</div>
-                <div class="save btn" style=" background: #FF893A;color: #fff;border:0" @click="save">编辑</div>
-                <div class="save btn" style="border:1px solid #DEE0EF;color:#999;" @click="commons.close">关闭</div>
+                <div class="save btn medium background-color" @click="changeTableType">{{ tableType === 'horizontal' ? '切换竖版' : '切换横版' }}</div>
+                <div class="save btn medium" style=" background: #FF893A;color: #fff;border:0" @click="save">编辑</div>
+                <div class="save btn medium" style="border:1px solid #DEE0EF;color:#999;" @click="commons.close">关闭</div>
               </div>
             </div>
 
@@ -93,7 +93,7 @@
         
 
                 <!-- 竖版 -->
-                <el-table v-if="tableType === 'vertical'" border :data="newTabelList" class="table menu-table">
+                <el-table v-if="tableType === 'vertical'" border :data="newTabelList" class="table th-color menu-table">
                     <el-table-column prop="date" width="200" label="日期" align="center"  >
                         <template slot-scope="scope" >
                             <p>{{ scope.row.date }}</p>
@@ -180,7 +180,7 @@
     
     
         <!--图表 start-->
-        <section  style="margin-top: .3rem;" class="charts flex" v-if="priceDataChart.length > 1">
+        <section  style="margin-top: .18rem;" class="charts flex" v-if="priceDataChart.length > 1">
             <div class="cost">
                 <div id="priceChart" class="price-chart"></div>
                 <div class="flex" style="margin-top:.2rem;width:100%;justify-content: space-around;">
@@ -1071,9 +1071,6 @@
   margin-top: .25rem;
   color: #999;
 }
-.content {
-  margin-top: .16rem;
-}
 .total {
     height: .48rem;
     border-bottom: 1px solid #EBEEF5;
@@ -1176,7 +1173,7 @@
     margin-left: .4rem;
 }
 .nutrition-content {
-    margin-top: .3rem;
+    margin-top: .18rem;
     padding: .3rem .4rem;
     background: #ffffff;
     border-radius: 0.03rem;
@@ -1200,36 +1197,7 @@
   font-size: .16rem;
   font-weight: 800;
 }
-.recommend-wrap {
-  width: 2.6rem;
-  background: #F3F4F9;
-  padding: .12rem .15rem;
-  margin-left: .18rem;
-}
-.recommend-menu-list .recommend-menu-item {
-  margin-top: .15rem;
-  background-color: #fff;
-  border-radius: .03rem;
-  display: flex;
-  align-items: center;
-  padding: .05rem;
-}
-.recommend-menu-item .img {
-  width: .64rem;
-  height: .48rem;
-  background: #F3F4F9;
-  border-radius: .03rem;
-  overflow: hidden;
-}
-.recommend-menu-item .menu-name {
-  color: #666;
-  margin-left: .12rem;
-}
-.recommend-wrap /deep/ .el-input__inner {
-  height: .38rem;
-  line-height: .38rem;
-  border-radius: .19rem;
-}
+
 .dishes-item {
   width: 1.78rem;
   height: .24rem;
@@ -1244,75 +1212,5 @@
 }
 .dishes-item:nth-of-type(2n+1) {
   background-color: #FFC274;
-}
-.menu-table /deep/ tr td:first-child,
-.menu-table /deep/ thead th {
-  background-color: #EFF1FF;
-}
-.menu-table /deep/ tr td:first-child {
-  color: #576EEC;
-  font-size: .16rem;
-}
-
-.menu-table /deep/ td.el-table__cell, 
-.menu-table /deep/ th.el-table__cell.is-leaf {
-  border-color: #DEE0EF;
-}
-.horizontal-table {
-  flex: 1;
-  border: 1px solid #DEE0EF;
-}
-.horizontal-table .table__head,
-.horizontal-table .table__body .row {
-  display: flex;
-}
-
-.horizontal-table .table__head .cell {
-  flex: 1;
-}
-.table__body .date,
-.table__head .date {
-  width: .58rem;
-}
-.table__body .date,
-.table__head .cell,
-.table__head .date {
-  background-color: #EFF1FF;
-  text-align: center;
-  border-right: 1px solid #DEE0EF;
-  border-bottom: 1px solid #DEE0EF;
-  color: #576EEC;
-}
-
-.table__head .date,
-.table__head .cell,
-.table__body .date,
-.table__body .cell {
-  text-align: center;
-  padding: .2rem 0;
-}
-.table__body .row .date {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.table__body .row .cell {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-bottom: 1px solid #DEE0EF;
-}
-.table__body .row:last-child .date,
-.table__body .row:last-child .cell {
-  border-bottom: none;
-}
-
-.table__body .row:last-child .date {
-  background-color: #576EEC;
-  color: #fff;
-}
-.table__body .row .cell:not(:last-child) {
-  border-right: 1px solid #DEE0EF;
 }
 </style>

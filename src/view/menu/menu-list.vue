@@ -35,7 +35,7 @@
         <div class="table-wrap">
           <!--列表 start-->
           <div class="overflow-table">
-              <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table" border>
+              <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table th-color" border>
                   <el-table-column label="序号" width="80" align="center">
                       <template slot-scope="scope">
                           <span style="">{{ scope.$index + 1  + condition.pageSize * (condition.pageNo - 1 )}} </span>
