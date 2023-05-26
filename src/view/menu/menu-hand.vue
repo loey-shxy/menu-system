@@ -56,7 +56,7 @@
                 
                 <section style="margin-top: .4rem;padding-bottom: .2rem;">
                     <el-table ref="table" :data="condition.days" border  style="width: 100%" class="table no-empty" :cell-class-name="tableCellClassName">
-                        <el-table-column label="序号" width="50" align="center">
+                        <el-table-column label="序号" width="80" align="center">
                             <template slot-scope="scope">
                                 <span style="line-height: .4rem;">{{ scope.$index + 1}} </span>
                             </template>

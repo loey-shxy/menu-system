@@ -1,9 +1,9 @@
 <template>
-    <div class="card list-wrap" style="padding:0">
+    <div class="list-wrap">
         <!--列表 start-->
         <div class="overflow-table">
-            <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table" >
-                <el-table-column label="序号" width="100" align="center">
+            <el-table ref="table" :data="tableData.models" class="table" >
+                <el-table-column label="序号" width="80" align="center">
                     <template slot-scope="scope">
                         <span v-if="scope.row.messageStatus === 0" class="spot"></span>
                         <span style="">{{ scope.$index + 1 }} </span>
@@ -20,15 +20,15 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <!--分页 start-->
+            <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
+            :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
+            </el-pagination>
+            <!--分页 end-->
         </div>
         <!--列表 end-->
         
         
-        <!--分页 start-->
-        <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
-        :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
-        </el-pagination>
-        <!--分页 end-->
     </div>
 </template>
 

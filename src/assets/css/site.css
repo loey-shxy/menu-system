@@ -277,19 +277,24 @@
 }
 
 .condition {
-    padding-bottom: .15rem;
+    padding-bottom: .1rem;
     position: relative;
     line-height: .3rem;
     align-items: baseline;
     justify-content: flex-end;
+    margin-bottom: .1rem;
 }
+
 .condition .condition-item {
     margin-right: .2rem;
-    margin-left: .1rem;
-    line-height: .3rem;
-    height: .3rem;
+    // line-height: .3rem;
+    // height: .3rem;
     font-size: .14rem;
     color: #666;
+}
+
+.condition .condition-item:not(:first-child) {
+  margin-left: .1rem;
 }
 
 .condition .search,
@@ -300,6 +305,22 @@
   line-height: .42rem;
   border-radius: .21rem;
 }
+
+.condition .left,
+.condition .operate {
+  flex: 1;
+}
+.condition-item {
+  margin-left: 0;
+  margin-right: .2rem;
+}
+.condition .el-date-editor,
+.condition-item .el-input__inner {
+  border: none;
+  outline: none;
+  width: 3.1rem !important;
+}
+
 .add {
     margin-left: .15rem;
 }
@@ -307,7 +328,10 @@
     height: calc(100% - 1.58rem);
     overflow: auto;
     position: relative;
+    background-color: #fff;
+    padding: .26rem .22rem;
 }
+
 .senior +  .overflow-table {
     height: calc(100% - 2.05rem);
 }
@@ -411,6 +435,18 @@
 .btn.medium {
   height: .34rem;
   line-height: .34rem;
+}
+.btn.small {
+  height: .28rem;
+  line-height: .28rem;
+}
+.btn.delete {
+  background-color: #FF6C6C;
+  color: #fff;
+}
+.btn.plain {
+  border: 1px solid #576EEC;
+  color: #576EEC;
 }
 .btn+.btn {
   margin-left: .2rem;
@@ -1176,4 +1212,131 @@
 
 .menu-table.edit .el-table__row td:first-child {
   vertical-align: middle;
+}
+
+.dishes .item-content-dishes {
+  margin-top: .25rem;
+  display: flex;
+  gap: .25rem;
+  flex-wrap: wrap;
+}
+
+.item-content-dishes .dishes-item {
+  width: 2.4rem;
+  min-height: 3.7rem;
+  box-sizing: border-box;
+  border-radius: .03rem;
+  border: 1px solid #f3f4f9;
+  box-sizing: border-box;
+  padding: .1rem .1rem .18rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.item-content-dishes .dishes-item img {
+  width: 2.18rem;
+  height: 2.18rem;
+  border-radius: .03rem;
+  overflow: hidden;
+  border: none;
+}
+
+.item-content-dishes .dishes-item p {
+  align-self: start;
+  font-size: .16rem;
+  color: #333;
+  font-weight: 800;
+  margin-top: .18rem;
+}
+
+.item-content-dishes .dishes-item .ingredient {
+  overflow: hidden;
+  align-self: start;
+  margin-top: .1rem;
+  text-overflow: ellipsis;
+}
+
+.item-content-dishes .dishes-item .ingredient .item {
+  display: inline-block;
+  padding: 0 .14rem;
+  border-radius: .08rem;
+  height: .16rem;
+  line-height: .16rem;
+  font-size: .12rem;
+}
+
+.item-content-dishes .dishes-item .ingredient .item:nth-of-type(2n+1) {
+  background-color: #FFF0F0;
+  color: #FF1A1A;
+}
+.item-content-dishes .dishes-item .ingredient .item:nth-of-type(2n) {
+  background-color: #FBF0FF;
+  color: #861AFF;
+}
+
+.item-content-dishes .dishes-item .footer {
+  display: flex;
+  margin-top: .16rem;
+  justify-content: space-between;
+  align-self: start;
+  width: 100%;
+}
+
+.item-content-dishes .dishes-item .footer .time {
+  color: #ABABAB;
+  flex: 1;
+}
+
+.item-content-dishes .dishes-item .footer .quote {
+  width: .65rem;
+  height: .22rem;
+  background: #576EEC;
+  border-radius: .11rem;
+  color: #fff;
+  line-height: .22rem;
+  text-align: center;
+  box-sizing: border-box;
+}
+.supplier-group  {
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.supplier-group .btn {
+  width: .58rem !important;
+  min-width: .58rem !important;
+  padding: 0;
+  text-align: center;
+}
+.supplier-group .logo {
+  width: .34rem;
+  height: .34rem;
+  border-radius: 50%;
+}
+.supplier-group .logo img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.supplier-group .base-info {
+  margin-left: .12rem;
+}
+.base-info .username {
+  font-size: .16rem;
+  color: #333;
+  font-weight: 500;
+}
+.base-info .tel {
+  color: #999;
+  margin-top: .05rem;
+}
+.supplier-list {
+  border-bottom: 1px solid #F3F4F9;
+  padding-bottom: .24rem;
+}
+.supplier-group .el-col {
+  margin-top: .48rem;
+}
+.supplier-group .el-col:nth-of-type(1), 
+.supplier-group .el-col:nth-of-type(2) {
+  margin-top: 0;
 }

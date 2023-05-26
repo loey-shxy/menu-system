@@ -160,7 +160,7 @@
         <section class="nutrition-content" v-if="nutritionList.length">
             <div class="title" style="margin-bottom:.2rem;font-size: .2rem;color: #333;line-height: .25rem;">膳食营养成分分析</div>
             <el-table ref="table" :data="nutritionList"   style="width: 100%" class="table no-empty" >
-                <el-table-column label="序号" width="100" align="center">
+                <el-table-column label="序号" width="80" align="center">
                     <template slot-scope="scope">
                         <span style="">{{ scope.$index + 1  }} </span>
                     </template>

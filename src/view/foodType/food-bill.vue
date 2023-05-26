@@ -25,7 +25,7 @@
             </div>
             
             <div class="operation flex">
-                <div class="search btn background-color" @click="search()">查询</div>
+                <div class="search btn background-color" @click="search()">确定</div>
                 <div class="add btn background-color" style="background-color: #ff8836 !important;" @click="createBill()" >生成清单</div>
             </div>
         </div>
@@ -35,7 +35,7 @@
         <div class="overflow-table">
             <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table" @selection-change="handleSelectionChange">
                 <el-table-column class="no-export" type="selection" width="45"></el-table-column>
-                <el-table-column label="序号" width="100" align="center">
+                <el-table-column label="序号" width="80" align="center">
                     <template slot-scope="scope">
                         <span style="">{{ scope.$index + 1  + condition.pageSize * (condition.pageNo - 1 )}} </span>
                     </template>
@@ -81,7 +81,7 @@
                 <section v-if="dialogType === 2">
                     <div class="bill-title">清单标题：{{tableDataBill.title}}</div>
                     <el-table ref="table" :data="tableDataBill.details"   style="width: 100%" class="table" >
-                        <el-table-column label="序号" width="100" align="center">
+                        <el-table-column label="序号" width="80" align="center">
                             <template slot-scope="scope">
                                 <span style="">{{ scope.$index + 1}} </span>
                             </template>

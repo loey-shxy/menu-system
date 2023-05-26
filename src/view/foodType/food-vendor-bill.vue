@@ -1,36 +1,29 @@
 <!--食材补充列表 -->
 
 <template>
-    <div class="card list-wrap">
+    <div class="list-wrap">
         <!--查询条件 start-->
-        <div class="condition flex">
-            <div class="condition-item flex">
-                <p>标题</p>
+        <div class="condition flex justify-start">
+            <div class="condition-item">
                 <el-input v-model="condition.title" maxlength=20 placeholder="请输入标题"></el-input>
             </div>
-            
-            
-            <div class="condition-item flex">
-                <p>开始日期</p>
-                <el-date-picker  v-model="condition.beginTime" type="date" placeholder="请选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :editable="false"></el-date-picker>
+            <div class="condition-item">
+                <el-date-picker v-model="condition.beginTime" type="date" placeholder="请选择开始日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :editable="false"></el-date-picker>
             </div>
     
-            <div class="condition-item flex">
-                <p>结束日期</p>
-                <el-date-picker  v-model="condition.endTime" type="date" placeholder="请选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :editable="false"></el-date-picker>
+            <div class="condition-item">
+                <el-date-picker  v-model="condition.endTime" type="date" placeholder="请选择结束日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :editable="false"></el-date-picker>
             </div>
-            
-            <div class="operation flex">
-                <div class="search btn background-color" @click="search()">查询</div>
+            <div class="operation">
+                <div class="btn background-color" @click="search">确定</div>
             </div>
         </div>
         <!--查询条件 end-->
         
         <!--列表 start-->
         <div class="overflow-table">
-            <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table">
-               
-                <el-table-column label="序号" width="100" align="center">
+            <el-table ref="table" :data="tableData.models"  class="table th-color" border>
+                <el-table-column label="序号" width="80" align="center">
                     <template slot-scope="scope">
                         <span style="">{{ scope.$index + 1  + condition.pageSize * (condition.pageNo - 1 )}} </span>
                     </template>
@@ -47,21 +40,19 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <!--分页 start-->
+            <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
+                          :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
+            </el-pagination>
+            <!--分页 end-->
         </div>
         <!--列表 end-->
-        
-        
-        <!--分页 start-->
-        <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
-                       :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
-        </el-pagination>
-        <!--分页 end-->
-    
+
         <el-drawer title="详情" :visible.sync="acceptFlag" size="50%" :with-header="false">
             <div style="padding: 0 .5rem;">
                 <div class="bill-title">清单标题：{{tableDataBill.title}}</div>
                 <el-table ref="table" :data="tableDataBill.details"   style="width: 100%" class="table" >
-                    <el-table-column label="序号" width="100" align="center">
+                    <el-table-column label="序号" width="80" align="center">
                         <template slot-scope="scope">
                             <span style="">{{ scope.$index + 1}} </span>
                         </template>

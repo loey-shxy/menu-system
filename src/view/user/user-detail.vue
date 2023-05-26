@@ -3,7 +3,7 @@
     <div class="add-page user-detail-wrap">
         <el-card class="card">
             <el-form  :model="condition" ref="form" :rules="rules"  label-position="right" label-width="1.6rem">
-                <div class="title">基础信息</div>
+                <div class="title" v-if="$route.query.type!=='vendor'">基础信息</div>
                 <el-row type="flex" :gutter="100">
                     <el-col >
                         <el-form-item label="用户名" prop="userName">
@@ -115,16 +115,16 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <div class="operate flex justify-content" v-if="$route.query.type">
+                    <div class="operate flex justify-end" v-if="$route.query.type">
                         <div  class="cancel btn " @click="commons.close()">关闭</div>
                     
                     </div>
                     
-                    <div class="operate flex justify-content" v-else style="width:4.3rem;">
+                    <div class="operate flex justify-end" v-else>
                         <!--<div  class="cancel btn " @click="$router.back();">关闭</div>-->
                         <div style="width:1.2rem;" class="cancel btn background-color" @click="showDialog(1,'修改密码')">修改密码</div>
-                        <div style="margin: 0 .2rem;width:1.2rem;" v-if="editFlag" class="cancel btn background-color" @click="editFlag = false">编辑信息</div>
-                        <div style="margin: 0 .2rem;" v-else class="cancel btn background-color" @click="saveInfo()">保存</div>
+                        <div style="width:1.2rem;" v-if="editFlag" class="cancel btn background-color" @click="editFlag = false">编辑信息</div>
+                        <div v-else class="cancel btn background-color" @click="saveInfo()">保存</div>
                         <div v-if="config.userMessage.userType === 3 " class="btn background-color" @click="showDialog(2,'绑定企业/单位')">入驻企业</div>
                     </div>
                 </section>
@@ -169,7 +169,7 @@
                     
                     <!--入住企业 start-->
                     <section v-else>
-                        <el-table ref="table" :data="tableList"   style="width: 100%" class="table" >
+                        <el-table ref="table" :data="tableList" border class="table" >
                             <el-table-column prop="companyName" show-overflow-tooltip label="企业名称"  align="center"  > </el-table-column>
                             <el-table-column prop="statusDesc" show-overflow-tooltip label="入驻状态"  align="center"  > </el-table-column>
                             <el-table-column label="操作" width="130" align="center">
@@ -187,8 +187,8 @@
                     <!--入住企业 end-->
                 
                 </div>
-                <div class="operation" style="padding-top:0;margin: 0 auto;" v-if="dialogType === 1">
-                    <div class="operation-btn flex" style="margin-top: .3rem;">
+                <div class="operation" v-if="dialogType === 1">
+                    <div class="operation-btn flex justify-end">
                         <div class="save btn background-color" @click="save()">确定</div>
                         <div class="reset btn" style="margin-right:.1rem;" @click="acceptFlag = false">取消</div>
                     </div>
@@ -433,5 +433,16 @@
 </script>
 
 <style scoped>
-
+.title {
+  margin: .3rem 0;
+}
+.operate {
+  margin-top: .3rem;
+}
+.operation {
+  margin-top: .3rem;
+}
+.user-detail-wrap /deep/ .el-card__body {
+  padding: .26rem;
+}
 </style>

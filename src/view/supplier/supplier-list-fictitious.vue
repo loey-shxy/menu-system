@@ -6,8 +6,8 @@
         
         <!--列表 start-->
         <div class="overflow-table">
-            <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table" >
-                <el-table-column label="序号" width="100" align="center">
+            <el-table ref="table" :data="tableData.models" class="table th-color" border>
+                <el-table-column label="序号" width="80" align="center">
                     <template slot-scope="scope">
                         <span style="">{{ scope.$index + 1  + condition.pageSize * (condition.pageNo - 1 )}} </span>
                     </template>
@@ -21,17 +21,14 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <!--分页 start-->
+            <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
+                          :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
+            </el-pagination>
+            <!--分页 end-->
         </div>
         <!--列表 end-->
-        
-        
-        <!--分页 start-->
-        <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
-                       :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
-        </el-pagination>
-        <!--分页 end-->
-    
-    
+
         <!--弹框 start-->
         <el-dialog  title="供应商别名修改" :visible.sync="acceptFlag" class="dialog add-page">
             <el-form :model="addData" ref="rulesForm"  status-icon size="mini"  label-width="1.1rem" :rules="rulesDialog" >

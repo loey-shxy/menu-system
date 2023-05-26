@@ -1,27 +1,64 @@
 <!--供应商列表 -->
 
 <template>
-    <div class="list-wrap card">
+    <div class="list-wrap">
         <!--查询条件 start-->
         <div class="condition flex">
-            <div class="condition-item flex">
-                <p>用户名</p>
-                <el-input v-model="condition.userName" maxlength=20 placeholder="请输入用户名"></el-input>
+            <div class="left flex">
+              <div class="condition-item">
+                  <el-input v-model="condition.userName" maxlength=20 placeholder="请输入用户名"></el-input>
+              </div>
+              <div class="condition-item" v-if="!$route.query.type">
+                  <el-input v-model="condition.tel" maxlength=20 placeholder="请输入手机号码"></el-input>
+              </div>
+              <div class="condition-item">
+                  <div class="btn background-color" @click="search">确定</div>
+              </div>
             </div>
-            <div class="condition-item flex">
-                <p style="width: 1rem;">手机号码</p>
-                <el-input v-model="condition.tel" maxlength=20 placeholder="请输入手机号码"></el-input>
-            </div>
-            <div class="operation flex">
-                <div class="search btn background-color" @click="search()">查询</div>
+
+            <div class="operation" v-if="!$route.query.type">
+              <el-badge is-dot class="item">
+                  <div class="btn background-color">添加好友</div>
+                </el-badge>
             </div>
         </div>
         <!--查询条件 end-->
         
         <!--列表 start-->
         <div class="overflow-table">
-            <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table" >
-                <el-table-column label="序号" width="100" align="center">
+            <div class="supplier-group">
+              <el-row :gutter="150">
+                <el-col :span="12" v-for="item in friends" :key="item.userId">
+                  <div class="supplier-list flex justify-around align-item-end">
+                    <div class="info flex flex-one align-item-center">
+                      <div class="logo"></div>
+                      <div class="base-info">
+                        <div class="username">{{ item.userName }}</div>
+                        <div class="flex justify-content">
+                          <div class="tel">{{ item.tel }}</div>
+                          <div class="tel" v-if="!$route.query.type">{{ item.companyName }}</div>
+                          <div class="tel" v-else>请求添加好友</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="actions flex">
+                      <template v-if="!$route.query.type">
+                        <div class="btn background-color small" @click="view(item)">查看</div>
+                        <div class="btn delete small" @click="del(item)">删除</div>
+                      </template>
+                      <div v-else-if="$route.query.type === 'add'" class="btn background-color small">添加好友</div>
+                      <template v-else-if="$route.query.type === 'apply'">
+                        <div class="btn background-color small">同意</div>
+                        <div class="btn small plain">忽略</div>
+                      </template>
+                    </div>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+
+            <!-- <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table th-color" border>
+                <el-table-column label="序号" width="80" align="center">
                     <template slot-scope="scope">
                         <span style="">{{ scope.$index + 1  + condition.pageSize * (condition.pageNo - 1 )}} </span>
                     </template>
@@ -41,16 +78,16 @@
                     
                     </template>
                 </el-table-column>
-            </el-table>
+            </el-table> -->
+            <!--分页 start-->
+            <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
+                          :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
+            </el-pagination>
+            <!--分页 end-->
         </div>
         <!--列表 end-->
         
         
-        <!--分页 start-->
-        <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
-                       :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
-        </el-pagination>
-        <!--分页 end-->
         
         <!--弹框 start-->
         <el-dialog  title="供应商审批" :visible.sync="acceptFlag" class="dialog add-page">
@@ -126,6 +163,16 @@
 				
 			}
 		},
+
+    computed: {
+      friends() {
+        if (!this.$route.query.type) {
+          return this.tableData.models
+        }
+
+        return this.tableData.models
+      }
+    },
 		mounted () {
 			this.requestData();
 			

@@ -1,34 +1,30 @@
 <!--会员列表 -->
 
 <template>
-    <div class="list-wrap card member-list-wrap">
+    <div class="list-wrap member-list-wrap">
         <!--查询条件 start-->
-        <div class="condition flex">
-            <div class="condition-item flex">
-                <p>用户名</p>
+        <div class="condition flex justify-start">
+            <div class="condition-item">
                 <el-input v-model="condition.userName" maxlength=20 placeholder="请输入用户名"></el-input>
             </div>
-            <div class="condition-item flex">
-                <p  style="width:1rem;">企业名称</p>
+            <div class="condition-item">
                 <el-input v-model="condition.companyName" maxlength=20 placeholder="请输入企业名称"></el-input>
             </div>
-            <div class="condition-item flex">
-                <p>手机号</p>
+            <div class="condition-item">
                 <el-input v-model="condition.tel" maxlength=11 placeholder="请输入手机号"></el-input>
             </div>
-            <div class="condition-item flex">
-                <p style="width:1rem;">真实姓名</p>
+            <div class="condition-item">
                 <el-input v-model="condition.trueName" maxlength=20 placeholder="请输入真实姓名"></el-input>
             </div>
-            <div class="operation flex">
-                <div class="search btn background-color" @click="search()">查询</div>
+            <div class="operation">
+                <div class="btn background-color" @click="search">确定</div>
             </div>
         </div>
         <!--查询条件 end-->
         
         <!--列表 start-->
         <div class="overflow-table">
-            <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table" >
+            <el-table ref="table" :data="tableData.models" class="table th-color" border>
                 <el-table-column label="序号" width="80" align="center">
                     <template slot-scope="scope">
                         <span style="">{{ scope.$index + 1  + condition.pageSize * (condition.pageNo - 1 )}} </span>
@@ -53,15 +49,15 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <!--分页 start-->
+            <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
+                          :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
+            </el-pagination>
+            <!--分页 end-->
         </div>
         <!--列表 end-->
         
         
-        <!--分页 start-->
-        <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
-                       :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
-        </el-pagination>
-        <!--分页 end-->
     
         <!--弹框 start-->
         <el-dialog  title="时间段设置" :visible.sync="acceptFlag" class="dialog add-page">

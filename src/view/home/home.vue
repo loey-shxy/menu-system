@@ -23,7 +23,7 @@
         </div>
         <div class="more" @click="dishesMenu = !dishesMenu">{{ dishesMenu ? '收起' : '更多' }}</div>
       </div>
-      <div class="item-content-dishes flex " style="flex-wrap:wrap;">
+      <div class="item-content-dishes flex">
         <div class="dishes-item" @click="view(item, 2)"
           v-for="item in dishesList">
           <img :src="config.fileUrl + item.picFilePath">
@@ -463,7 +463,7 @@ export default {
   padding-right: .2rem;
   display: flex;
   flex-wrap: wrap;
-  height: .32rem;
+  height: .28rem;
   overflow: hidden;
   gap: .2rem;
   transition: height .3s linear;
@@ -476,94 +476,11 @@ export default {
 
 .menu-list .menu-item.active {
   color: #576EEC;
-  border-bottom: 1px solid #576EEC;
+  border-bottom: 2px solid #576EEC;
 }
 
 .menu-list .menu-item:hover {
   color: #576EEC;
-}
-
-.dishes .item-content-dishes {
-  margin-top: .25rem;
-  display: flex;
-  gap: .25rem;
-}
-
-.item-content-dishes .dishes-item {
-  width: 2.4rem;
-  min-height: 3.7rem;
-  box-sizing: border-box;
-  border-radius: .03rem;
-  border: 1px solid #f3f4f9;
-  box-sizing: border-box;
-  padding: .1rem .1rem .18rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.dishes-item img {
-  width: 2.18rem;
-  height: 2.18rem;
-  border-radius: .03rem;
-  overflow: hidden;
-  border: none;
-}
-
-.dishes-item p {
-  align-self: start;
-  font-size: .16rem;
-  color: #333;
-  font-weight: 800;
-  margin-top: .18rem;
-}
-
-.dishes-item .ingredient {
-  overflow: hidden;
-  align-self: start;
-  margin-top: .1rem;
-  text-overflow: ellipsis;
-}
-
-.dishes-item .ingredient .item {
-  display: inline-block;
-  padding: 0 .14rem;
-  border-radius: .08rem;
-  height: .16rem;
-  line-height: .16rem;
-  font-size: .12rem;
-}
-
-.dishes-item .ingredient .item:nth-of-type(2n+1) {
-  background-color: #FFF0F0;
-  color: #FF1A1A;
-}
-.dishes-item .ingredient .item:nth-of-type(2n) {
-  background-color: #FBF0FF;
-  color: #861AFF;
-}
-
-.dishes-item .footer {
-  display: flex;
-  margin-top: .16rem;
-  justify-content: space-between;
-  align-self: start;
-  width: 100%;
-}
-
-.dishes-item .footer .time {
-  color: #ABABAB;
-  flex: 1;
-}
-
-.dishes-item .footer .quote {
-  width: .65rem;
-  height: .22rem;
-  background: #576EEC;
-  border-radius: .11rem;
-  color: #fff;
-  line-height: .22rem;
-  text-align: center;
-  box-sizing: border-box;
 }
 .menu-content {
   flex-direction: row;

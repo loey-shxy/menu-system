@@ -4,7 +4,7 @@
         <el-card class="card">
             <el-form :model="condition" ref="form" :rules="rules"  label-position="left" label-width=".85rem">
                 <div class="title">{{title}}</div>
-                <div style="padding: 0 .6rem;">
+                <div style="padding: .5rem 0;">
                     <el-row type="flex" :gutter="100">
                         <el-col >
                             <el-form-item label="名称" prop="name">
@@ -41,9 +41,9 @@
                 <section style=" margin-top: .3rem;padding-top: .3rem;">
                     <div class="flex justify-content" style="margin-bottom: .3rem;">
                         <div class="title" >食材列表</div>
-                        <div class="save btn background-color" style="background-color: #ff8836 !important;" @click="add()">添加</div>
+                        <div class="save btn background-color" style="background-color: #ff8836;" @click="add">添加</div>
                     </div>
-                    <div style="padding: 0 1.4rem;">
+                    <div style="padding: 0 0 .3rem;">
                         <el-table ref="table" :data="condition.dishesMaterials"   style="width: 100%" class="table no-empty" >
                             <el-table-column prop="materialName" show-overflow-tooltip label="食材名称"  align="center"  > </el-table-column>
                             <el-table-column prop="materialTypeName" show-overflow-tooltip label="食材类型"  align="center"  > </el-table-column>
@@ -51,8 +51,8 @@
                             <el-table-column prop="typeDesc" show-overflow-tooltip label="食材单位"  align="center"  > </el-table-column>
                             <el-table-column label="操作" width="130" align="center">
                                 <template slot-scope="scope" >
-                                    <el-button  style="color: #45bfdd !important;" @click="add(scope.row,scope.$index)" type="text" size="small" >修改</el-button>
-                                    <el-button  style="color: #ec635e !important;" @click="del(scope.row,scope.$index)" type="text" size="small">删除</el-button>
+                                    <el-button  style="color: #45bfdd;" @click="add(scope.row,scope.$index)" type="text" size="small" >修改</el-button>
+                                    <el-button  style="color: #ec635e;" @click="del(scope.row,scope.$index)" type="text" size="small">删除</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -83,42 +83,15 @@
                             <p class="tip">只能上传jpg/png文件，且不超过5M</p>
                         </el-form-item>
                     </el-col>
-                    
-                    <!--<el-col class="item-condition " >-->
-                        <!--<el-form-item label="小视频" >-->
-                            <!--<video style="width:2.65rem;height:1.5rem;" class="video-div" v-if="condition.videoFileId"  controls=""  name="media">-->
-                                <!--<source :src="'/api/upload/download?id=' + condition.videoFileId" type="video/mp4">-->
-                            <!--</video>-->
-                            <!--<div class="fork" @click="condition.videoFileId = ''" v-if="condition.videoFileId"></div>-->
-                            <!--<el-upload v-else-->
-                                       <!--class="avatar-uploader"-->
-                                       <!--action="/api/upload/uploadVideo"-->
-                                       <!--accept="video/*"-->
-                                       <!--name="video"-->
-                                       <!--:before-upload="beforeVideoUpload"-->
-                                       <!--:on-success="successUploadVideo"-->
-                                       <!--ref="video"-->
-                            <!---->
-                            <!--&gt;-->
-                                <!---->
-                                <!--<div  class="el-upload el-upload&#45;&#45;picture-card">-->
-                                    <!--<el-button  class="upload-btn ">-->
-                                        <!--<div class="empty-video" style="width: 2.22rem;height: 2.22rem;">-->
-                                            <!--<p>上传视频</p>-->
-                                        <!--</div>-->
-                                    <!--</el-button>-->
-                                <!--</div>-->
-                            <!--</el-upload>-->
-                        <!--</el-form-item>-->
-                    <!--</el-col>-->
+                  
                 </el-row>
-                <div class="operate flex justify-content">
-                    <div v-if="$route.query.quote" class="cancel btn " @click="commons.close()">取消</div>
-                    <div v-else class="cancel btn " @click="$router.back();">取消</div>
+                <div class="operate flex justify-end">
                     <div class="save btn background-color" @click="save()">
                         <span v-if="$route.query.quote">引用</span>
                         <span v-else> 保存</span>
                     </div>
+                    <div v-if="$route.query.quote" class="cancel btn " @click="commons.close()">取消</div>
+                    <div v-else class="cancel btn " @click="$router.back();">取消</div>
                 </div>
             
             </el-form>
@@ -589,4 +562,11 @@
         color: red;
     }
     
+    .operate {
+      margin-top: .3rem;
+    }
+    /deep/ .el-upload {
+      width: 2.24rem; 
+      height: 2.24rem;
+    }
 </style>

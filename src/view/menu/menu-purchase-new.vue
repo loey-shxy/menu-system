@@ -9,7 +9,7 @@
                         <el-option v-for="item in vendorListData" :key="item" :label="item.vendorName" :value="item.vendorId" ></el-option>
                     </el-select>
                     <!--<el-input v-model="condition.vendorName" placeholder="请输入供应商姓名"></el-input>-->
-                    <a  style="margin-left: .2rem;" class="save btn background-color " @click="search()">查询</a>
+                    <a  style="margin-left: .2rem;" class="save btn background-color " @click="search()">确定</a>
                     <a  style="margin-left: .2rem;background-color: #ffa82c !important;width:2.4rem;" class="save btn background-color" @click="resetPurchase()">重新生成采购单</a>
                     <a  style="margin-left: .2rem;background-color: #3ab28d !important;width:1.6rem;" class="save btn background-color" @click="send()">一键发送</a>
     

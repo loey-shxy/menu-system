@@ -1,11 +1,11 @@
 <!--基础信息 -->
 
 <template>
-    <div class="card list-wrap" style="padding:0">
+    <div class="list-wrap">
         <!--列表 start-->
         <div class="overflow-table">
-            <el-table ref="table" :data="tableData"   style="width: 100%" class="table" >
-                <el-table-column label="序号" width="100" align="center">
+            <el-table ref="table" :data="tableData"  class="table th-color" border>
+                <el-table-column label="序号" width="80" align="center">
                     <template slot-scope="scope">
                         <span style="">{{ scope.$index + 1 }} </span>
                     </template>

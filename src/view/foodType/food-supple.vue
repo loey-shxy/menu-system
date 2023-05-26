@@ -1,34 +1,35 @@
 <!--食材补充列表 -->
 
 <template>
-    <div class="card list-wrap">
+    <div class="list-wrap">
         <!--查询条件 start-->
         <div class="condition flex">
-            <div class="condition-item flex">
-                <p>名称</p>
-                <el-input v-model="condition.name" maxlength=20 placeholder="请输入名称"></el-input>
-            </div>
-            <div class="condition-item flex">
-                <p>食材类型</p>
-                <el-select v-model="condition.type">
-                    <el-option label="全部" value=""></el-option>
-                    <el-option v-for="item in typeList" :key="item" :label="item.name" :value="item.val"></el-option>
-                </el-select>
-            </div>
-            
-            <div class="condition-item flex">
-                <p>状态</p>
-                <el-select v-model="condition.status">
-                    <el-option label="全部" value=""></el-option>
-                    <el-option label="未提交" value=0></el-option>
-                    <el-option label="审核中" value=1></el-option>
-                    <el-option label="已通过" value=2></el-option>
-                    <el-option label="未通过" value=3></el-option>
-                </el-select>
+            <div class="left flex">
+              <div class="condition-item">
+                  <el-input v-model="condition.name" maxlength=20 placeholder="请输入名称"></el-input>
+              </div>
+              <div class="condition-item">
+                  <el-select placeholder="请选择食材类型" v-model="condition.type">
+                      <el-option label="全部" value=""></el-option>
+                      <el-option v-for="item in typeList" :key="item" :label="item.name" :value="item.val"></el-option>
+                  </el-select>
+              </div>
+              
+              <div class="condition-item">
+                  <el-select placeholder="请选择状态" v-model="condition.status">
+                      <el-option label="全部" value=""></el-option>
+                      <el-option label="未提交" value=0></el-option>
+                      <el-option label="审核中" value=1></el-option>
+                      <el-option label="已通过" value=2></el-option>
+                      <el-option label="未通过" value=3></el-option>
+                  </el-select>
+              </div>
+              <div class="condition-item">
+                <div class="btn background-color" @click="search">确定</div>
+              </div>
             </div>
             
             <div class="operation flex">
-                <div class="search btn background-color" @click="search()">查询</div>
                 <div class="add btn background-color" style="background-color: #ff8836 !important;" @click="add()" >补充食材</div>
             </div>
         </div>
@@ -36,8 +37,8 @@
         
         <!--列表 start-->
         <div class="overflow-table">
-            <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table" >
-                <el-table-column label="序号" width="100" align="center">
+            <el-table ref="table" border :data="tableData.models"   style="width: 100%" class="table th-color" >
+                <el-table-column label="序号" width="80" align="center">
                     <template slot-scope="scope">
                         <span style="">{{ scope.$index + 1  + condition.pageSize * (condition.pageNo - 1 )}} </span>
                     </template>
@@ -62,17 +63,13 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <!--分页 start-->
+            <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
+                          :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
+            </el-pagination>
+            <!--分页 end-->
         </div>
         <!--列表 end-->
-        
-        
-        <!--分页 start-->
-        <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
-                       :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
-        </el-pagination>
-        <!--分页 end-->
-    
-    
     </div>
 </template>
 
@@ -217,5 +214,7 @@
 </script>
 
 <style scoped>
-
+.condition {
+  margin-bottom: .1rem;
+}
 </style>

@@ -1,7 +1,7 @@
 <!--菜品类型 -->
 
 <template>
-    <div class="list-wrap card">
+    <div class="list-wrap">
         <!--列表 start-->
         <el-tree ref="tree" :data="treeList" :expand-on-click-node="false" >
             <span class="custom-tree-node flex" slot-scope="{node, data}" >
@@ -195,5 +195,11 @@
 </script>
 
 <style scoped>
-
+.list-wrap {
+  padding: .3rem .22rem;
+  background-color: #fff;
+}
+.list-wrap /deep/ .el-tree-node__content {
+  padding: .12rem 0;
+}
 </style>

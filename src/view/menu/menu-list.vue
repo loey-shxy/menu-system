@@ -44,7 +44,7 @@
                   <el-table-column prop="title" show-overflow-tooltip label="标题"  align="center">
                     <template slot-scope="{ row }">
                       {{ row.title }}
-                      <i class="el-icon-sort"></i>
+                      <i class="el-icon-sort" v-if="!$route.query.type"></i>
                     </template>
                   </el-table-column>
                   <el-table-column prop="type"  width="200" show-overflow-tooltip label="菜谱类型"  align="center"  > </el-table-column>

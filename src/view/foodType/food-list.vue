@@ -1,32 +1,31 @@
 <!--食材列表 -->
 <template>
-    <div class="list-wrap card">
+    <div class="list-wrap">
         <!--查询条件 start-->
         <div class="condition flex">
-            <div class="condition-item flex">
-                <p>名称</p>
-                <el-input v-model="condition.name" maxlength=20 placeholder="请输入名称"></el-input>
-            </div>
-            <div class="condition-item flex">
-                <p>食材类型</p>
-                <el-select v-model="condition.type">
-                    <el-option label="全部" value=""></el-option>
-                    <el-option v-for="item in typeList" :key="item" :label="item.name" :value="item.val"></el-option>
-                </el-select>
-            </div>
-            
-            <div class="condition-item flex" v-if="config.userMessage.userType === 2">
-                <p>询价食材</p>
-                <el-select v-model="condition.ask">
-                    <el-option label="全部" value=""></el-option>
-                    <el-option label="是" value="1"></el-option>
-                    <el-option label="否" value="0"></el-option>
-                </el-select>
+            <div class="left flex">
+              <div class="condition-item">
+                  <el-input v-model="condition.name" maxlength=20 placeholder="请输入名称"></el-input>
+              </div>
+              <div class="condition-item">
+                  <el-select placeholder="请选择食材类型" clearable v-model="condition.type">
+                      <el-option v-for="item in typeList" :key="item" :label="item.name" :value="item.val"></el-option>
+                  </el-select>
+              </div>
+              
+              <div class="condition-item" v-if="config.userMessage.userType === 2">
+                  <el-select placeholder="请选择询价食材" clearable v-model="condition.ask">
+                      <el-option label="是" value="1"></el-option>
+                      <el-option label="否" value="0"></el-option>
+                  </el-select>
+              </div>
+              <div class="condition-item">
+                <div class="btn background-color" @click="search">确定</div>
+              </div>
             </div>
             <div class="operation flex">
-                <div class="search btn background-color" @click="search()">查询</div>
-                <div class="add btn background-color" style="background-color: #45bfdd !important;" @click="add()" v-if="config.userMessage.userType === 1">新增</div>
-                <div class="add btn background-color" style="background-color: #45bfdd !important;" @click="showDialog({},'3')" v-if="config.userMessage.userType === 3 ">批量提供</div>
+                <div class="add btn background-color" @click="add" v-if="config.userMessage.userType === 1">新增</div>
+                <div class="add btn background-color" @click="showDialog({},'3')" v-if="config.userMessage.userType === 3 ">批量提供</div>
             </div>
         </div>
         <!--查询条件 end-->
@@ -35,7 +34,7 @@
         <div class="overflow-table">
             <el-table v-if="config.userMessage.userType === 1" ref="table" :data="tableData.models"   style="width: 100%" class="table">
                 
-                <el-table-column label="序号" width="100" align="center">
+                <el-table-column label="序号" width="80" align="center">
                     <template slot-scope="scope">
                         <span style="">{{ scope.$index + 1  + condition.pageSize * (condition.pageNo - 1 )}} </span>
                     </template>
@@ -59,9 +58,9 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <el-table v-else-if="config.userMessage.userType === 2" ref="table" :data="tableData.models"   style="width: 100%" class="table" >
+            <el-table v-else-if="config.userMessage.userType === 2" ref="table" border :data="tableData.models" class="table th-color" >
                 
-                <el-table-column label="序号" width="100" align="center">
+                <el-table-column label="序号" width="80" align="center">
                     <template slot-scope="scope">
                         <span style="">{{ scope.$index + 1  + condition.pageSize * (condition.pageNo - 1 )}} </span>
                     </template>
@@ -79,13 +78,13 @@
                 <el-table-column v-if="config.userMessage.userType !== 3" prop="askName" show-overflow-tooltip label="是否询价"  align="center"  > </el-table-column>
                 <!--<el-table-column prop="createTime" show-overflow-tooltip label="创建时间"  align="center"  > </el-table-column>-->
                 <!--<el-table-column prop="updateTime" show-overflow-tooltip label="更新时间"  align="center"  > </el-table-column>-->
-                <el-table-column label="操作" align="center" width="330">
+                <el-table-column label="操作" align="center" width="400">
                     <template slot-scope="scope" >
-                        <el-button  style="margin-bottom: .1rem;" @click="view(scope.row)" type="text" size="small" >查看</el-button>
+                        <el-button @click="view(scope.row)" type="text" size="small" >查看</el-button>
                         <el-button  style="color:#ff8836 !important;" v-if="config.userMessage.userType === 3" @click="showDialog(scope.row,'4')" type="text" size="small" >设置提供信息</el-button>
-                        <el-button  v-if="config.userMessage.userType !== 3" style="margin-bottom: .1rem;color:#ff8836 !important;" @click="showDialog(scope.row,'1')" type="text" size="small" >设置供应商</el-button>
-                        <el-button  v-if="config.userMessage.userType !== 3" style="margin-bottom: .1rem;color:#45bfdd !important;" @click="showDialog(scope.row,'2')" type="text" size="small" >设置价格/单位</el-button>
-                        <el-button  v-if="config.userMessage.userType !== 3 " style="margin-bottom: .1rem;color:#b15eec !important;" @click="ask(scope.row,'3')" type="text" size="small" >
+                        <el-button  v-if="config.userMessage.userType !== 3" style="color:#ff8836 !important;" @click="showDialog(scope.row,'1')" type="text" size="small" >设置供应商</el-button>
+                        <el-button  v-if="config.userMessage.userType !== 3" style="color:#45bfdd !important;" @click="showDialog(scope.row,'2')" type="text" size="small" >设置价格/单位</el-button>
+                        <el-button  v-if="config.userMessage.userType !== 3 " style="color:#b15eec !important;" @click="ask(scope.row,'3')" type="text" size="small" >
                             <span v-if="scope.row.ask === 0">设置询价食材</span>
                             <span v-else style="width:.92rem;display: block;">取消询价</span>
                         </el-button>
@@ -93,9 +92,9 @@
                 </el-table-column>
             </el-table>
             
-            <el-table v-else ref="table" :data="tableData.models"   style="width: 100%" class="table" @selection-change="handleSelectionChange">
+            <el-table border v-else ref="table" :data="tableData.models"   style="width: 100%" class="table th-color" @selection-change="handleSelectionChange">
                 <el-table-column fixed="left" class="no-export" type="selection" width="45"></el-table-column>
-                <el-table-column label="序号" width="100" align="center">
+                <el-table-column label="序号" width="80" align="center">
                     <template slot-scope="scope">
                         <span style="">{{ scope.$index + 1  + condition.pageSize * (condition.pageNo - 1 )}} </span>
                     </template>
@@ -119,15 +118,15 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <!--分页 start-->
+            <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
+                          :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
+            </el-pagination>
+            <!--分页 end-->
         </div>
         <!--列表 end-->
         
         
-        <!--分页 start-->
-        <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
-                       :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
-        </el-pagination>
-        <!--分页 end-->
         
         
         <!--弹框 start-->
@@ -574,5 +573,7 @@
 </script>
 
 <style scoped>
-
+.condition {
+  margin: 0 auto .2rem;
+}
 </style>

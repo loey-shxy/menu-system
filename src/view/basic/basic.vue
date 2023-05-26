@@ -14,7 +14,7 @@
             </div>
             
             <div class="operation flex">
-                <div class="search btn background-color" @click="search()">查询</div>
+                <div class="search btn background-color" @click="search()">确定</div>
                 <div class="add btn background-color" style="background-color: #ff8836 !important;" @click="add()" >新增</div>
             </div>
         </div>
@@ -23,7 +23,7 @@
         <!--列表 start-->
         <div class="overflow-table">
             <el-table ref="table" :data="tableData.models"   style="width: 100%" class="table" >
-                <el-table-column label="序号" width="100" align="center">
+                <el-table-column label="序号" width="80" align="center">
                     <template slot-scope="scope">
                         <span style="">{{ scope.$index + 1  + condition.pageSize * (condition.pageNo - 1 )}} </span>
                     </template>
