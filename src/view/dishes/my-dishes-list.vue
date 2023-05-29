@@ -51,9 +51,6 @@
                 
                 <div class="operation flex">
                     <div v-if="!$route.query.type " class="btn background-color" @click="add">添加菜品</div>
-                    <el-badge is-dot class="item" style="margin-left: .12rem;">
-                      <div class="btn background-color">收到菜品</div>
-                    </el-badge>
                 </div>
             </div>
             <!--查询条件 end-->
@@ -108,15 +105,32 @@
               <!--分页 end-->
             </el-card>
         </div>
+
+        <el-dialog
+        title="请选择分享对象"
+        :visible.sync="dialog.visible"
+        width="6.58rem"
+        class="custom-dialog share-dialog"
+        :show-close="false"
+        >
+          <ShareMenu />
+          <div  slot="footer" class="operate flex justify-end">
+            <div class="save btn medium background-color">确定分享</div>
+            <div class="save btn medium default" @click="close">关闭</div>
+          </div>
+      </el-dialog>
     </div>
 </template>
 
 <script>
+  import ShareMenu from '../menu/share-menu.vue'
 	export default {
 		name: "my-dishes-list",
+    components: {
+      ShareMenu
+    },
 		data() {
 			return {
-				
 				condition:{
 					pageNo:1,
 					pageSize: 7
@@ -125,16 +139,18 @@
 				},
 				typeList:[],
 				dishesList:[],
-                selectType: 0,     //选择类型
+        selectType: 0,     //选择类型
 				vendorList: [],    //供应商
 				tableItemData:{    //列表
 					models:[
-                        {"name":'豆腐',"num":1,unit:'斤',"price":1.2},
-                        {"name":'豆腐',"num":1,unit:'斤',"price":1.2},
-                        {"name":'豆腐',"num":1,unit:'斤',"price":1.2},
-                    ]
-                }
-				
+                {"name":'豆腐',"num":1,unit:'斤',"price":1.2},
+                {"name":'豆腐',"num":1,unit:'斤',"price":1.2},
+                {"name":'豆腐',"num":1,unit:'斤',"price":1.2},
+            ]
+        },
+				dialog: {
+          visible: false
+        }
 			}
 		},
 		watch: {
@@ -265,50 +281,57 @@
 			},
             
             //分享菜品
-			shareFun(data) {
-				this.$prompt('请输入备注', '分享', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-				}).then(({ value }) => {
-					if(value && value.length > 20) {
-						this.$message({
-							type: 'info',
-							message: '长度不能超过20'
-						});
-						return;
-                    }
-					this.utils.ajax({
-						url: '/api/background/Dishes/share',
-						data: {
-							remark: value,
-							dishesId: data.id
-						}
-					},(res) => {
-						if(res.success){
-							this.$message({
-								type: 'success',
-								message: '分享成功'
-							});
+			shareFun(record) {
+        this.dialog = {
+          visible: true,
+          record
+      }
+				// this.$prompt('请输入备注', '分享', {
+				// 	confirmButtonText: '确定',
+				// 	cancelButtonText: '取消',
+				// }).then(({ value }) => {
+				// 	if(value && value.length > 20) {
+				// 		this.$message({
+				// 			type: 'info',
+				// 			message: '长度不能超过20'
+				// 		});
+				// 		return;
+        //             }
+				// 	this.utils.ajax({
+				// 		url: '/api/background/Dishes/share',
+				// 		data: {
+				// 			remark: value,
+				// 			dishesId: data.id
+				// 		}
+				// 	},(res) => {
+				// 		if(res.success){
+				// 			this.$message({
+				// 				type: 'success',
+				// 				message: '分享成功'
+				// 			});
 							
-							return;
-						}
-						this.$message({
-							type: 'error',
-							message: res.msg || '分享失败'
-						});
-					});
+				// 			return;
+				// 		}
+				// 		this.$message({
+				// 			type: 'error',
+				// 			message: res.msg || '分享失败'
+				// 		});
+				// 	});
 					
 					
-				}).catch(() => {
-					this.$message({
-						type: 'info',
-						message: '取消输入'
-					});
-				});
+				// }).catch(() => {
+				// 	this.$message({
+				// 		type: 'info',
+				// 		message: '取消输入'
+				// 	});
+				// });
 				
-            },
-            
-            
+      },
+
+      close() {
+        this.dialog.visible = false
+      },
+
 			//_公共_校验菜品是否被菜谱所引用; true是，false否
 			checkQuote(data) {
 				this.utils.ajax({

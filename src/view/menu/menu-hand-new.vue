@@ -2277,4 +2277,7 @@
     .menu-table-wrap {
       flex: 1;
     }
+    .edit /deep/ .el-date-editor .el-input__inner {
+      text-align: center;
+    }
 </style>

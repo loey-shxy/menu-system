@@ -222,7 +222,7 @@
                             {{scope.row['name0']}}
                         </template>
                     </el-table-column>
-                    <el-table-column  min-width="110" v-for="(itemCol,indexCol) in condition.days" :key="itemCol" align="center">
+                    <el-table-column  min-width="110" v-for="(itemCol,indexCol) in condition.days" :key="indexCol" align="center">
                         <template slot-scope="scope">
                             {{scope.row['name' + (indexCol + 1)]}}
                         </template>

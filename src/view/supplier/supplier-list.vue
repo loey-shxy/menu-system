@@ -11,6 +11,11 @@
               <div class="condition-item" v-if="!$route.query.type">
                   <el-input v-model="condition.tel" maxlength=20 placeholder="请输入手机号码"></el-input>
               </div>
+              <div class="condition-item" v-if="!$route.query.type">
+                  <el-select v-model="condition.supplier" placeholder="请选择供应商">
+                    <el-option v-for="item in suppliers" :key="item.id" :value="item.val" :label="item.name"></el-option>
+                  </el-select>
+              </div>
               <div class="condition-item">
                   <div class="btn background-color" @click="search">确定</div>
               </div>
@@ -18,7 +23,7 @@
 
             <div class="operation" v-if="!$route.query.type">
               <el-badge is-dot class="item">
-                  <div class="btn background-color">添加好友</div>
+                  <div class="btn background-color" @click="addSupplier">添加好友</div>
                 </el-badge>
             </div>
         </div>
@@ -31,7 +36,9 @@
                 <el-col :span="12" v-for="item in friends" :key="item.userId">
                   <div class="supplier-list flex justify-around align-item-end">
                     <div class="info flex flex-one align-item-center">
-                      <div class="logo"></div>
+                      <div class="logo">
+                        <img src="../../assets/img/home/user.png" alt="">
+                      </div>
                       <div class="base-info">
                         <div class="username">{{ item.userName }}</div>
                         <div class="flex justify-content">
@@ -127,7 +134,7 @@
                 </div>
                 <div class="operation" style="padding-top:0;margin: 0 auto;" >
                     <div class="operation-btn flex" style="margin-top: .3rem;">
-                        <div class="save btn background-color" @click="save()">确定</div>
+                        <div class="save btn background-color" @click="save">确定</div>
                         <div class="reset btn" style="margin-right:.1rem;" @click="acceptFlag = false">取消</div>
                     </div>
                 </div>
@@ -143,7 +150,7 @@
 		name: "supplier-list",
 		data() {
 			return {
-				
+				suppliers: [],
 				condition:{
 					pageNo:1,
 					pageSize: 15
@@ -179,6 +186,12 @@
 		},
 		
 		methods: {
+      addSupplier() {
+        this.$router.replace({
+          name: this.$route.name,
+          query: { type: 'add' }
+        })
+      },
 			
 			//请求数据
 			requestData() {
@@ -303,5 +316,47 @@
 </script>
 
 <style scoped>
-
+.supplier-group  {
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.supplier-group .btn {
+  min-width: .58rem !important;
+  padding: 0 .12rem;
+  text-align: center;
+}
+.supplier-group .logo {
+  width: .34rem;
+  height: .34rem;
+  border-radius: 50%;
+  background-color: #F3F4F9;
+}
+.supplier-group .logo img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.supplier-group .base-info {
+  margin-left: .12rem;
+}
+.base-info .username {
+  font-size: .16rem;
+  color: #333;
+  font-weight: 500;
+}
+.base-info .tel {
+  color: #999;
+  margin-top: .05rem;
+}
+.supplier-list {
+  border-bottom: 1px solid #F3F4F9;
+  padding-bottom: .24rem;
+}
+.supplier-group .el-col {
+  margin-top: .48rem;
+}
+.supplier-group .el-col:nth-of-type(1), 
+.supplier-group .el-col:nth-of-type(2) {
+  margin-top: 0;
+}
 </style>

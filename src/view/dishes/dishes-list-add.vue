@@ -1,113 +1,124 @@
 <!--基础菜品 添加、修改 -->
 <template>
     <div class="add-page dishes-list-add">
-        <el-card class="card">
-            <el-form :model="condition" ref="form" :rules="rules"  label-position="left" label-width=".85rem">
-                <div class="title">{{title}}</div>
-                <div style="padding: .5rem 0;">
-                    <el-row type="flex" :gutter="100">
-                        <el-col >
-                            <el-form-item label="名称" prop="name">
-                                <el-input v-model="condition.name"  placeholder="请输入名称"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        
-                        <el-col>
-                            <el-form-item label="类型" prop="type">
-                                <el-select v-model="condition.type">
-                                    <el-option v-for="item in typeList" :key="item" :label="item.name" :value="item.val"></el-option>
-                                </el-select>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row type="flex" :gutter="100">
-                        <el-col >
-                            <el-form-item label="适用人群" prop="persons">
-                                <el-select v-model="condition.persons" multiple placeholder="请选择">
-                                    <el-option v-for="item in personList" :key="item.val" :label="item.name" :value="item.val"></el-option>
-                                </el-select>
-                            </el-form-item>
-                        </el-col>
-                        <el-col >
-                            <el-form-item label="描述" prop="description">
-                                <el-input type="textarea"  placeholder="请输入描述" v-model="condition.description">
-                                </el-input>
-                            </el-form-item>
-                            
-                        </el-col>
-                    </el-row>
-                </div>
-                
-                <section style=" margin-top: .3rem;padding-top: .3rem;">
-                    <div class="flex justify-content" style="margin-bottom: .3rem;">
-                        <div class="title" >食材列表</div>
-                        <div class="save btn background-color" style="background-color: #ff8836;" @click="add">添加</div>
-                    </div>
-                    <div style="padding: 0 0 .3rem;">
-                        <el-table ref="table" :data="condition.dishesMaterials"   style="width: 100%" class="table no-empty" >
-                            <el-table-column prop="materialName" show-overflow-tooltip label="食材名称"  align="center"  > </el-table-column>
-                            <el-table-column prop="materialTypeName" show-overflow-tooltip label="食材类型"  align="center"  > </el-table-column>
-                            <el-table-column prop="num" show-overflow-tooltip label="食材数量"  align="center"  > </el-table-column>
-                            <el-table-column prop="typeDesc" show-overflow-tooltip label="食材单位"  align="center"  > </el-table-column>
-                            <el-table-column label="操作" width="130" align="center">
-                                <template slot-scope="scope" >
-                                    <el-button  style="color: #45bfdd;" @click="add(scope.row,scope.$index)" type="text" size="small" >修改</el-button>
-                                    <el-button  style="color: #ec635e;" @click="del(scope.row,scope.$index)" type="text" size="small">删除</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </div>
-                </section>
-                <el-row type="flex" :gutter="100">
-                    <el-col class="item-condition " >
-                        <el-form-item label="图片" >
-                            <el-upload
-                                    list-type="picture-card"
-                                    class="avatar-uploader"
-                                    action="/api/upload/uploadFile"
-                                    accept="image/*"
-                                    name="picture"
-                                    :before-upload="beforeAvatarUpload"
-                                    :before-remove ="removeImg"
-                                    :on-success="successUploadImg"
-                                    ref="img"
-                                    :file-list="fileList"
-                            >
-                                <el-button class="upload-btn " v-if="!fileList.length">
-                                    <div class="empty-img" style="width: 2.22rem;height: 2.22rem;">
-                                        <p>上传图片</p>
-                                    </div>
-                                </el-button>
-                            </el-upload>
-                            
-                            <p class="tip">只能上传jpg/png文件，且不超过5M</p>
-                        </el-form-item>
-                    </el-col>
-                  
-                </el-row>
-                <div class="operate flex justify-end">
-                    <div class="save btn background-color" @click="save()">
-                        <span v-if="$route.query.quote">引用</span>
-                        <span v-else> 保存</span>
-                    </div>
-                    <div v-if="$route.query.quote" class="cancel btn " @click="commons.close()">取消</div>
-                    <div v-else class="cancel btn " @click="$router.back();">取消</div>
-                </div>
-            
-            </el-form>
-        </el-card>
+      <section class="detail-header flex justify-content align-items-center">
+            <div class="title">编辑菜品</div>
+        </section>
+
+        <el-form :model="condition" ref="form" :rules="rules"  label-position="right" label-width=".85rem">
+          <el-card class="card">
+              <div class="title">{{title}}</div>
+                  <el-row type="flex" :gutter="35">
+                      <el-col >
+                          <el-form-item label="菜品名称" prop="name">
+                              <el-input v-model="condition.name"  placeholder="请输入名称"></el-input>
+                          </el-form-item>
+                      </el-col>
+                      
+                      <el-col>
+                          <el-form-item label="菜品类型" prop="type">
+                              <el-select v-model="condition.type">
+                                  <el-option v-for="item in typeList" :key="item.val" :label="item.name" :value="item.val"></el-option>
+                              </el-select>
+                          </el-form-item>
+                      </el-col>
+                  </el-row>
+                  <el-row type="flex" :gutter="35">
+                      <el-col >
+                          <el-form-item label="适用人群" prop="persons">
+                              <el-select v-model="condition.persons" multiple placeholder="请选择">
+                                  <el-option v-for="item in personList" :key="item.val" :label="item.name" :value="item.val"></el-option>
+                              </el-select>
+                          </el-form-item>
+                      </el-col>
+                      <el-col >
+                          <el-form-item label="菜品颜色" prop="persons">
+                              <el-select v-model="condition.color" multiple placeholder="请选择">
+                                  <el-option v-for="item in colors" :key="item.val" :label="item.name" :value="item.val"></el-option>
+                              </el-select>
+                          </el-form-item>
+                      </el-col>
+                  </el-row>
+
+                  <el-row type="flex">
+                    <el-col>
+                          <el-form-item label="备注" prop="description">
+                              <el-input type="textarea"  placeholder="请输入描述" v-model="condition.description">
+                              </el-input>
+                          </el-form-item>
+                      </el-col>
+                  </el-row>
+          </el-card>
+
+
+          <el-card class="card">
+              <div class="flex justify-content">
+                  <div class="title" >食材列表</div>
+                  <div class="save btn background-color"  @click="add">添加食材</div>
+              </div>
+              <el-table ref="table" :data="condition.dishesMaterials" border class="table no-empty th-color" >
+                  <el-table-column prop="materialName" show-overflow-tooltip label="食材名称"  align="center"  > </el-table-column>
+                  <el-table-column prop="materialTypeName" show-overflow-tooltip label="食材类型"  align="center"  > </el-table-column>
+                  <el-table-column prop="num" show-overflow-tooltip label="食材数量"  align="center"  > </el-table-column>
+                  <el-table-column prop="typeDesc" show-overflow-tooltip label="食材单位"  align="center"  > </el-table-column>
+                  <el-table-column label="操作" width="130" align="center">
+                      <template slot-scope="scope" >
+                          <el-button  style="color: #576EEC !important;" @click="add(scope.row,scope.$index)" type="text">编辑</el-button>
+                          <el-button  style="color: #FF4343 !important;" @click="del(scope.row,scope.$index)" type="text">删除</el-button>
+                      </template>
+                  </el-table-column>
+              </el-table>
+          </el-card>
+
+          <el-card class="card">
+              <el-form-item label-width="0" >
+                  <el-upload
+                          list-type="picture-card"
+                          class="avatar-uploader"
+                          action="/api/upload/uploadFile"
+                          accept="image/*"
+                          name="picture"
+                          :before-upload="beforeAvatarUpload"
+                          :before-remove ="removeImg"
+                          :on-success="successUploadImg"
+                          ref="img"
+                          :file-list="fileList"
+                  >
+                      <el-button class="upload-btn " v-if="!fileList.length">
+                          <div class="empty-img">
+                              <p>上传图片</p>
+                          </div>
+                      </el-button>
+                  </el-upload>
+                  <p class="tip">只能上传jpg/png文件，且不超过5M</p>
+              </el-form-item>
+              <el-form-item label-width="0">
+                <vue-editor v-model="html" />
+              </el-form-item>
+          </el-card>
+
+
+          <div class="operate flex justify-end" style="margin-top: .25rem;">
+              <div v-if="$route.query.quote" class="btn background-color" @click="commons.close()">取消</div>
+              <div v-else class="btn background-color" @click="$router.back();">取消</div>
+              <div class="save btn background-color" @click="save">
+                  <span v-if="$route.query.quote">引用</span>
+                  <span v-else> 保存</span>
+              </div>
+          </div>
+      </el-form>
         
         
         <!--弹框 start-->
         <el-dialog  :title="dialogTitle" :visible.sync="acceptFlag" class="dialog add-page">
-            <el-form :model="addData" ref="rulesForm"  status-icon size="mini"  label-width=".8rem" :rules="rulesDialog" >
-                <div class="dialog-div" style="padding: .2rem ">
+            <el-form :model="addData" ref="rulesForm"  status-icon size="small"  label-width=".8rem" :rules="rulesDialog" >
+                <div class="dialog-div">
                     <div class="title">查询条件</div>
                     <el-row style="margin-bottom:.12rem;" type="flex">
                         <el-col :span="8">
                             <el-form-item label="类型"  prop="materialType">
                                 <el-select v-model="addData.materialType" @change="selectType">
-                                    <el-option v-for="item in typeSmallList" :key="item" :label="item.name" :value="item.val"></el-option>
+                                    <el-option v-for="item in typeSmallList" :key="item.val" :label="item.name" :value="item.val"></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
@@ -134,7 +145,7 @@
                         <el-col>
                             <el-form-item label="食材" prop="materialId">
                                 <el-select class="select-table"   v-model="addData.materialId" filterable remote   placeholder="请选择食材"  :remote-method="querySearchAsync" @change="changeMaterialId">
-                                    <el-option v-for="item in materialList" :key="item" :label="item.materialName" :value="item.materialId" ></el-option>
+                                    <el-option v-for="item in materialList" :key="item.materialId" :label="item.materialName" :value="item.materialId" ></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
@@ -157,7 +168,7 @@
                     </el-row>
                 </div>
                 <div class="operation" style="padding-top:0;margin: 0 auto;" >
-                    <div class="operation-btn flex" style="margin-top: .3rem;">
+                    <div class="operation-btn flex">
                         <div class="save btn background-color" @click="saveFood()">确定</div>
                         <div class="reset btn" style="margin-right:.1rem;" @click="acceptFlag = false">取消</div>
                     </div>
@@ -170,11 +181,15 @@
 </template>
 
 <script>
+  import { VueEditor } from "vue2-editor";
 	export default {
 		name: "dishes-list-add",
+    components: {
+      VueEditor
+    },
 		data() {
 			return {
-				
+				html: '',
 				condition: {
 					videoFileId: "",
 					persons:[],
@@ -192,6 +207,8 @@
 				
 				personList:[  //适用人群
 				],
+
+        colors: [], // 菜品颜色
 				personArray:[],
 				
 				rules: {
@@ -201,8 +218,14 @@
 					type: [
 						{required: true, message: "请选择类型", trigger:['blur','focus']}
 					],
+					persons: [
+						{required: true, message: "请选择适用人群", trigger:['blur','focus']}
+					],
+					color: [
+						{required: true, message: "请选择菜品颜色", trigger:['blur','focus']}
+					],
 					description: [
-						{required: true, message: "请输入描述", trigger:['blur','focus']}
+						{required: false, message: "请输入备注", trigger:['blur','focus']}
 					]
 				},
 				
@@ -547,26 +570,60 @@
 </script>
 
 <style scoped>
-    .fork {
-        position: absolute;
-        right: 2.3rem;
-        top: -.19rem;
-        cursor: pointer;
-        width: .4rem;
-        height:.4rem;
-        /*background: url("../../assets/img/common/pic-fork.png") center no-repeat;*/
-    }
-    .tip {
-        margin-top: .2rem;
-        font-size: .13rem;
-        color: red;
-    }
-    
-    .operate {
-      margin-top: .3rem;
-    }
-    /deep/ .el-upload {
-      width: 2.24rem; 
-      height: 2.24rem;
-    }
+.detail-header .title {
+  font-size: .2rem;
+  color: #333;
+  margin-bottom: .2rem;
+}
+.card .title {
+  font-size: .16rem;
+  color: #333;
+  margin-bottom: .38rem;
+}
+.fork {
+    position: absolute;
+    right: 2.3rem;
+    top: -.19rem;
+    cursor: pointer;
+    width: .4rem;
+    height:.4rem;
+    /*background: url("../../assets/img/common/pic-fork.png") center no-repeat;*/
+}
+.tip {
+    color: #FF4343;
+}
+
+/deep/ .el-upload-list__item,
+/deep/ .el-upload {
+  width: 3.58rem; 
+  height: 2.28rem;
+  border-radius: .03rem;
+}
+
+/deep/ .el-upload-list__item .el-icon-delete {
+  font-size: .2rem;
+}
+.empty-img {
+  width: 3.56rem; 
+  height: 2.26rem;
+  border-radius: .03rem;
+}
+/deep/ .el-upload--picture-card {
+  margin-top: 0;
+}
+.card p {
+  margin: 0;
+}
+.dialog-div {
+  padding: 0;
+}
+.dialog-div .title {
+  margin: .22rem 0;
+}
+.dialog-div /deep/ .el-input-number--small {
+  width: 100%;
+}
+.dialog-div /deep/ .el-input-number .el-input__inner {
+  text-align: left;
+}
 </style>

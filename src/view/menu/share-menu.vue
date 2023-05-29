@@ -7,6 +7,7 @@
             <i :class="['icon', item.select && 'checked']" @click="select(item)"></i>
           </div>
           <div class="logo">
+            <img src="../../assets/img/home/user.png" alt=""></img>
           </div>
           <div class="name">{{ item.name }}</div>
         </div>
@@ -70,6 +71,11 @@ export default {
   height: .36rem;
   border-radius: 50%;
   background-color: #fafafa;
+}
+.info-wrap .logo img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
 }
 .info-wrap .name {
   font-size: .16rem;
