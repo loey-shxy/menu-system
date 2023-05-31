@@ -22,7 +22,7 @@
                     <el-col :span="12">
                         <el-form-item label="菜谱类型"  prop="menuType">
                             <el-select v-model="condition.menuType" filterable clearable>
-                                <el-option  v-for="item in menuTypeList" :key="item.name" :label="item.name" :value="item.val"></el-option>
+                                <el-option  v-for="item in menuTypeList" :key="item.val" :label="item.name" :value="item.val"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
@@ -46,195 +46,18 @@
           <section>
             <div class="operate flex justify-end">
                 <div class="save btn medium background-color" @click="changeTableType">{{ tableType === 'horizontal' ? '切换竖版' : '切换横版' }}</div>
-                <div class="save btn medium background-color" @click="save()">保存</div>
+                <div class="save btn medium background-color" @click="save">保存</div>
                 <div class="cancel medium btn " @click="$router.back();">关闭</div>
             </div>
 
             <section style="margin: .18rem 0;" class="flex justify-content">
-              <div class="menu-table-wrap">
-                <!-- 竖版 -->
-                <el-table v-if="tableType === 'vertical'" ref="table" :data="condition.days" border class="table no-empty menu-table th-color edit" :cell-class-name="tableCellClassName">
-                    <el-table-column prop="date" width="220" label="日期"  align="center" >
-                        <template slot-scope="scope" >
-                            <el-date-picker v-model="scope.row.date" type="date" placeholder="请选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :editable="false"  @change="changeDate(scope.row,scope.$index)"></el-date-picker>
-                            <span style="margin-top: .25rem; display: inline-block;">{{scope.row.week}} </span>
-                            <div>
-                              <i class="el-icon-remove icon"></i>
-                              <i class="el-icon-circle-plus icon"></i>
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column  align="center">
-                        <template slot="header" slot-scope="scope">
-                          <div class="label font-color">早餐</div>
-                          <div>
-                            <i class="el-icon-remove icon"></i>
-                            <i class="el-icon-circle-plus icon"></i>
-                          </div>
-                        </template>
-                        <template slot-scope="scope" >
-                            <div>
-                                <div v-for="(item, index) in scope.row.breakfasts" :key="item.dishesId" class="cell-dishes">
-                                    <el-select filterable clearable v-el-select-lazyloading="lazyloading" v-model="item.dishesId">
-                                        <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
-                                    </el-select>
-                                    <i class="el-icon-circle-close"></i>
-                                </div>
-                                <div class="cell-dishes">
-                                  <el-button round plain class="block" @click="addFood(4,scope.$index)">添加菜品</el-button>
-                                    <i class="el-icon-circle-close"></i>
-                                </div>
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column show-overflow-tooltip align="center">
-                      <template slot="header" slot-scope="scope">
-                          <div class="label font-color">午餐</div>
-                          <div>
-                            <i class="el-icon-remove icon"></i>
-                            <i class="el-icon-circle-plus icon"></i>
-                          </div>
-                        </template>
-                        <template slot-scope="scope" >
-                            <div>
-                                <div v-for="(item, index) in scope.row.lunches" :key="item.dishesId" class="cell-dishes">
-                                    <el-select filterable clearable v-el-select-lazyloading="lazyloading" v-model="item.dishesId">
-                                        <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName">
-                                        </el-option>
-                                    </el-select>
-                                    <i class="el-icon-circle-close"></i>
-                                </div>
-                                <div class="cell-dishes">
-                                  <el-button round plain class="block" @click="addFood(4,scope.$index)">添加菜品</el-button>
-                                    <i class="el-icon-circle-close"></i>
-                                </div>
-                            </div>
-                        </template>
-                    
-                    </el-table-column>
-                    <el-table-column show-overflow-tooltip align="center">
-                      <template slot="header" slot-scope="scope">
-                          <div class="label font-color">晚餐</div>
-                          <div>
-                            <i class="el-icon-remove icon"></i>
-                            <i class="el-icon-circle-plus icon"></i>
-                          </div>
-                        </template>
-                        <template slot-scope="scope" >
-                            <div>
-                                <div v-for="(item,index) in scope.row.dinners" :key="item.dishesId" class="cell-dishes">
-                                    <el-select filterable clearable v-el-select-lazyloading="lazyloading" v-model="item.dishesId">
-                                      <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
-                                    </el-select>
-                                    <i class="el-icon-circle-close"></i>
-                                </div>
-                                <div class="cell-dishes">
-                                  <el-button round plain class="block" @click="addFood(4,scope.$index)">添加菜品</el-button>
-                                    <i class="el-icon-circle-close"></i>
-                                </div>
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="菜量" align="center" width="320">
-                        <template slot-scope="scope" >
-                            <el-row :gutter="10">
-                                <el-col :span="12" v-for="item in scope.row.materialList" :key="item.materialId" style="line-height: .24rem; text-align:left;">
-                                    <span>{{item.materialName}}({{item.materialNum}}{{item.materialUnitDesc}})</span>
-                                </el-col>
-                            </el-row>
-                        </template>
-                    </el-table-column>
-                </el-table>
-
-                <!-- 横版 -->
-                <div class="horizontal-table edit" v-if="tableType === 'horizontal'">
-                    <div class="table__head">
-                      <div class="date">日期</div>
-                      <div class="cell" v-for="item in condition.days" :key="item.date">
-                        <!-- {{ `${item.date}(${item.week})` }} -->
-                        <el-date-picker v-model="item.date" type="date" placeholder="请选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" ></el-date-picker>
-                        <div class="thead-icons">
-                          <i class="el-icon-remove icon"></i>
-                          <i class="el-icon-circle-plus icon"></i>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="table__body">
-                      <div class="row">
-                        <div class="date">
-                          <div class="label">早餐</div>
-                          <div>
-                            <i class="el-icon-remove icon"></i>
-                            <i class="el-icon-circle-plus icon"></i>
-                          </div>
-                        </div>
-                        <div class="cell" v-for="day in condition.days" :key="`breakfasts${day.date}`">
-                          <div v-for="item in day.breakfasts" :key="item.dishesId" class="cell-dishes">
-                            <el-select filterable clearable v-model="item.dishesId">
-                              <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
-                            </el-select>
-                            <i class="el-icon-circle-close"></i>
-                          </div>
-                          <div class="cell-dishes">
-                            <el-button plain round class="block">添加菜品</el-button>
-                            <i class="el-icon-circle-close"></i>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="date">
-                          <div class="label">午餐</div>
-                          <div>
-                            <i class="el-icon-remove icon"></i>
-                            <i class="el-icon-circle-plus icon"></i>
-                          </div>
-                        </div>
-                        <div class="cell" v-for="day in condition.days" :key="`lunches${day.date}`">
-                          <div v-for="item in day.lunches" :key="item.dishesId" class="cell-dishes">
-                            <el-select filterable clearable v-el-select-lazyloading="lazyloading" v-model="item.dishesId">
-                              <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
-                            </el-select>
-                            <i class="el-icon-circle-close"></i>
-                          </div>
-                          <div class="cell-dishes">
-                            <el-button plain round class="block">添加菜品</el-button>
-                            <i class="el-icon-circle-close"></i>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="date">
-                          <div class="label">晚餐</div>
-                          <div>
-                            <i class="el-icon-remove icon"></i>
-                            <i class="el-icon-circle-plus icon"></i>
-                          </div>
-                        </div>
-                        <div class="cell" v-for="day in condition.days" :key="`dinners${day.date}`">
-                          <div v-for="item in day.dinners" :key="item.dishesId" class="cell-dishes">
-                            <el-select filterable clearable v-model="item.dishesId">
-                              <el-option v-for="dishes in dishesSelectList" :key="dishes.dishesId" :value="dishes.dishesId" :label="dishes.dishesName"></el-option>
-                            </el-select>
-                            <i class="el-icon-circle-close"></i>
-                          </div>
-                          <div class="cell-dishes">
-                            <el-button plain round class="block">添加菜品</el-button>
-                            <i class="el-icon-circle-close"></i>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="date">菜<br />量</div>
-                        <div class="cell" v-for="item in condition.days" :key="`material${item.date}`">
-                          <el-row :gutter="20">
-                                <el-col v-for="itemM in item.materialList" :key="itemM.materialId" style="line-height: .24rem; text-align:left; padding-left:.2rem" >
-                                    <span>{{itemM.materialName}}({{itemM.materialNum}}{{itemM.materialUnitDesc}})</span>
-                                </el-col>
-                            </el-row>
-                        </div>
-                      </div>
-                    </div>
-                </div>
+              <div class="menu-table-wrap" id="table-container">
+                <MenuTable 
+                :tableType="tableType" 
+                :list="condition.days" 
+                :dishesSelectList="dishesSelectList"
+                @lazyloading="lazyloading"
+                @change-date="changeDate" />
             </div>
               <div class="recommend-wrap" :style="{maxHeight: recommendHeight}">
                 <el-select v-model="recommendType">
@@ -507,6 +330,8 @@
 </template>
 
 <script>
+  import * as echarts from 'echarts'
+  import MenuTable from './comps/menu-table.vue'
 	export default {
 		name: "menu-hand-new",
     directives: {
@@ -523,6 +348,9 @@
           })
         }
       }
+    },
+    components: {
+      MenuTable
     },
 		data() {
 			return {
@@ -658,6 +486,8 @@
 			document.body.addEventListener('click', ()=> {
 				this.styleCard = "display:none;";
 			})
+
+      this.scrollInit()
 		},
 		
 		methods: {
@@ -801,12 +631,6 @@
 				});
 			},
 			
-			tableCellClassName({row, column, rowIndex, columnIndex}) {
-				
-				if(columnIndex === 3) return 'td-breakfasts'
-				
-			},
-			
       filterDishesList() {
         for (let i = this.dishesList.length-1; i >= 0; i--) {
           if (this.dishesSelectList.find(item => item.dishesId === this.dishesList[i].dishesId)) {
@@ -891,7 +715,7 @@
 				} else if(type === 3) {
 					this.getMenuNutritious();
 					return;
-                }
+        }
 				
 				
 				this.$refs.rulesForm && this.$refs.rulesForm.clearValidate();
@@ -1001,50 +825,31 @@
 			
 			
 			//日期转化为汉字
-			changeDate(data,index) {
-				for(let i = 0 ; i < this.condition.days.length;i++) {
-					if(this.condition.days[i].date === data.date && index !== i) {
-						this.$message({
-							message: '日期已存在',
-							type: 'warning'
-						});
-						data.date = "";
-						return;
-					}
-				}
-				let day = new Date(data.date).getDay();
-				data.week = '星期';
-				if(day === 0)
-					data.week = data.week + '日';
-				else if(day === 1)
-					data.week = data.week + '一';
-				else if(day === 2)
-					data.week = data.week + '二';
-				else if(day === 3)
-					data.week = data.week + '三';
-				else if(day === 4)
-					data.week = data.week + '四';
-				else if(day === 5)
-					data.week = data.week + '五';
-				else if(day === 6)
-					data.week = data.week + '六';
-				
-				for(let i = 0 ; i < this.condition.days.length ;i++) {
-					if(!this.condition.days[i].date) {
-						this.$message({
+			changeDate(row) {
+        if (!row.date) {
+            this.$message({
 							message: '请选择日期',
 							type: 'warning'
 						});
 						return;
-					}
-				}
+        }
+
+        if (this.condition.days.filter(item => item.date === row.date).length > 1) {
+          this.$message({
+            message: '日期已存在',
+            type: 'warning'
+          });
+          return
+        }
+
+        const weeks = ['日', '一', '二', '三', '四', '五', '六']
+        const day = new Date(row.date).getDay()
+        row.week = `星期${weeks[day]}`
+
 				this.ingredient();
 				this.calPrice();
 				this.getMenuNutritious();
-				
 			},
-			
-			
 			
 			//预算价
 			calPrice() {
@@ -1890,7 +1695,8 @@
 					
 					let indexDate = this.condition.days.findIndex( d => (d.date).replace(/[^0-9]/ig,"") === (item.day).replace(/[^0-9]/ig,""));
 					let indexDay = days.findIndex( d => (d.day).replace(/[^0-9]/ig,"") === (item.day).replace(/[^0-9]/ig,""));
-					this.condition.days[indexDate].materialList = [];
+          this.$set(this.condition.days[indexDate], 'materialList', [])
+					// this.condition.days[indexDate].materialList = [];
 					
 					for(let i in item.ingredients) {
 						
@@ -2089,7 +1895,34 @@
 				context.strokeStyle = "#ee7d7d";
 				context.arc(0.8 * this.utils.readLocalStorage('rem'), 0.8 * this.utils.readLocalStorage('rem'), 0.68 *  this.utils.readLocalStorage('rem') , -0.5 * Math.PI,(2 * ratio - 0.5) * Math.PI,false)
 				context.stroke();
-			}
+			},
+      scrollInit() {
+        // 获取要绑定事件的元素
+        const nav = document.getElementById("table-container")
+        let flag; // 鼠标按下
+        let downX; // 鼠标点击的x下标
+        let scrollLeft; // 当前元素滚动条的偏移量
+        nav.addEventListener("mousedown", function (event) {
+          flag = true;
+          downX = event.clientX; // 获取到点击的x下标
+          scrollLeft = this.scrollLeft; // 获取当前元素滚动条的偏移量
+        });
+        nav.addEventListener("mousemove", function (event) {
+          if (flag) { // 判断是否是鼠标按下滚动元素区域
+            let moveX = event.clientX; // 获取移动的x轴
+            let scrollX = moveX - downX; // 当前移动的x轴下标减去刚点击下去的x轴下标得到鼠标滑动距离
+            this.scrollLeft = scrollLeft - scrollX // 鼠标按下的滚动条偏移量减去当前鼠标的滑动距离
+          }
+        });
+        // 鼠标抬起停止拖动
+        nav.addEventListener("mouseup", function () {
+          flag = false;
+        });
+        // 鼠标离开元素停止拖动
+        nav.addEventListener("mouseleave", function (event) {
+          flag = false;
+        });
+      },
 		}
 	}
 </script>
@@ -2276,6 +2109,18 @@
     }
     .menu-table-wrap {
       flex: 1;
+      max-width: 13rem;
+      overflow-x: auto;
+      border-left: 1px solid #DEE0EF;
+    }
+    .menu-table-wrap::-webkit-scrollbar {
+      height: 10px;
+      background: #F3F4F9;
+    }
+
+    .menu-table-wrap::-webkit-scrollbar-thumb {
+      background-color: #576EEC;
+      border-radius: 5px;
     }
     .edit /deep/ .el-date-editor .el-input__inner {
       text-align: center;

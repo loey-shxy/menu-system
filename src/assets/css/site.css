@@ -1040,6 +1040,8 @@
 .horizontal-table {
   flex: 1;
   border: 1px solid #DEE0EF;
+  border-left: 0;
+  border-right: 0;
 }
 .horizontal-table .table__head,
 .horizontal-table .table__body .row {
@@ -1048,10 +1050,13 @@
 
 .horizontal-table .table__head .cell {
   flex: 1;
+  min-width: 2.4rem;
+  flex-shrink: 0;
 }
 .horizontal-table .table__body .date,
 .horizontal-table .table__head .date {
-  width: .58rem;
+  width: .65rem;
+  flex-shrink: 0;
 }
 .horizontal-table .table__body .date,
 .horizontal-table .table__head .cell,
@@ -1063,29 +1068,36 @@
   color: #576EEC;
   font-size: .16rem;
 }
-.horizontal-table .table__head .cell:last-child {
-  border-right: none;
-}
+
 
 .horizontal-table .table__head .date,
 .horizontal-table .table__head .cell,
 .horizontal-table .table__body .date,
 .horizontal-table .table__body .cell {
   text-align: center;
-  padding: .2rem 0;
+  padding: .2rem .1rem;
+  box-sizing: border-box;
+}
+.horizontal-table .table__head .date, 
+.horizontal-table .table__body .date {
+  padding: .2rem .05rem;
 }
 .horizontal-table .table__body .row .date {
   display: flex;
   align-items: center;
   justify-content: center;
 }
+.horizontal-table .table__head .icon {
+  cursor: pointer;
+}
 .horizontal-table .table__body .row .cell {
   flex: 1;
+  min-width: 2.4rem;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   border-bottom: 1px solid #DEE0EF;
-  padding: .1rem;
 }
 .horizontal-table .table__body .row:last-child .date,
 .horizontal-table .table__body .row:last-child .cell {
@@ -1096,7 +1108,7 @@
   background-color: #576EEC;
   color: #fff;
 }
-.horizontal-table .table__body .row .cell:not(:last-child) {
+.horizontal-table .table__body .row .cell {
   border-right: 1px solid #DEE0EF;
 }
 .horizontal-table.edit .table__body .date {
@@ -1184,11 +1196,14 @@
   cursor: pointer;
   margin-top: .4rem;
 }
-.horizontal-table.edit .table__head .cell {
+.horizontal-table.edit .table__head .cell>div {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 0 .12rem;
+  padding: 0 .05rem;
+}
+.horizontal-table.edit .table__head .cell>div:last-child {
+  margin-top: .05rem;
 }
 .horizontal-table.edit .table__head .thead-icons {
   width: max-content;
