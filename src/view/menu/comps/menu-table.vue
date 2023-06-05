@@ -6,8 +6,7 @@
     ref="table" :data="list" 
     border 
     class="table no-empty menu-table th-color edit" 
-    :key="tableKey"
-    :cell-class-name="tableCellClassName">
+    :key="tableKey">
       <el-table-column prop="date" width="220" label="日期" align="center" >
           <template slot-scope="{ row }" >
               <el-date-picker 
@@ -25,7 +24,7 @@
               </div>
           </template>
       </el-table-column>
-      <el-table-column  align="center" v-if="addedMeal.includes('breakfasts')">
+      <el-table-column  align="center" v-if="addedMeal.includes('breakfasts')" class-name="td-breakfasts">
           <template slot="header" slot-scope="scope">
             <div class="label font-color">早餐</div>
             <div>
@@ -34,31 +33,20 @@
             </div>
           </template>
           <template slot-scope="{ row, $index }" >
-              <div>
+              <div class="dishes__cell" @dragover="e => e.preventDefault()" @drop="dropBreakfasts($event, $index)">
                   <div v-for="(item, index) in row.breakfasts" :key="`vertical-breakfasts-${row.date}-${index}`" class="cell-dishes">
-                      <el-select 
-                      filterable 
-                      clearable 
-                      v-el-select-lazyloading="lazyloading" 
-                      v-model="item.dishesId" 
-                      @change="selectDishes(row, 'breakfasts', item.dishesId, index)">
-                          <el-option 
-                          v-for="(dishes, dIndex) in dishesSelectList" 
-                          :key="`breakfasts-select-${row.date}-${dishes.dishesId}-${dIndex}`" 
-                          :value="dishes.dishesId" 
-                          :label="dishes.dishesName"
-                          :disabled="row.breakfasts.map(item => item.dishesId).includes(dishes.dishesId)"></el-option>
-                      </el-select>
-                      <i class="el-icon-circle-close" @click="removeFood('breakfasts', row, index)"></i>
+                    <div class="dishes-span" draggable="true" @dragstart="startBreakfasts($event, item)" @dragend="endBreakfasts($index, index)">
+                        {{ item.dishesName }}
+                        <i class="el-icon-close" @click="removeFood('breakfasts', row, index)"></i>
+                    </div>
                   </div>
                   <div class="cell-dishes">
-                    <el-button round plain class="block" @click="addFood('breakfasts', row)">添加菜品</el-button>
-                      <i class="el-icon-circle-close" hidden></i>
+                    <el-button round plain class="block" @click="addFood(4, $index)">添加菜品</el-button>
                   </div>
               </div>
           </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip align="center" v-if="addedMeal.includes('lunches')">
+      <el-table-column align="center" v-if="addedMeal.includes('lunches')" class-name="td-lunches">
         <template slot="header" slot-scope="scope">
             <div class="label font-color">午餐</div>
             <div>
@@ -67,33 +55,25 @@
             </div>
           </template>
           <template slot-scope="{ row, $index }">
-              <div>
+              <div class="dishes__cell" @dragover="e => e.preventDefault()" @drop="dropLunches($event, $index)">
                   <div v-for="(item, index) in row.lunches" :key="`vertical-lunches-${row.date}-${index}`" class="cell-dishes">
-                      <el-select 
-                      filterable 
-                      clearable 
-                      v-el-select-lazyloading="lazyloading" 
-                      v-model="item.dishesId"
-                      @change="selectDishes(row, 'lunches', item.dishesId, index)">
-                          <el-option 
-                          v-for="(dishes, dIndex) in dishesSelectList" 
-                          :key="`lunches-select-${row.date}-${dishes.dishesId}-${dIndex}`" 
-                          :value="dishes.dishesId" 
-                          :label="dishes.dishesName"
-                          :disabled="row.lunches.map(item => item.dishesId).includes(dishes.dishesId)">
-                          </el-option>
-                      </el-select>
-                      <i class="el-icon-circle-close" @click="removeFood('lunches', row, index)"></i>
+                    <div 
+                    class="dishes-span" 
+                    draggable="true"
+                    @dragstart="startLunches($event, item)"
+                    @dragend="endLunches($index, index)">
+                      {{ item.dishesName }}
+                      <i class="el-icon-close" @click="removeFood('lunches', row, index)"></i>
+                    </div>
                   </div>
                   <div class="cell-dishes">
-                    <el-button round plain class="block" @click="addFood('lunches', row)">添加菜品</el-button>
-                      <i class="el-icon-circle-close" hidden></i>
+                    <el-button round plain class="block" @click="addFood(5, $index)">添加菜品</el-button>
                   </div>
               </div>
           </template>
       
       </el-table-column>
-      <el-table-column show-overflow-tooltip align="center" v-if="addedMeal.includes('dinners')">
+      <el-table-column align="center" v-if="addedMeal.includes('dinners')" class-name="td-dinner">
         <template slot="header" slot-scope="{ row }">
             <div class="label font-color">晚餐</div>
             <div>
@@ -102,26 +82,20 @@
             </div>
           </template>
           <template slot-scope="{ row, $index }">
-              <div>
+              <div class="dishes__cell" @dragover="e => e.preventDefault()" @drop="dropDinner($event, $index)">
                   <div v-for="(item, index) in row.dinners" :key="`vertical-dinners-${row.date}-${index}`" class="cell-dishes">
-                      <el-select 
-                      filterable 
-                      clearable 
-                      v-el-select-lazyloading="lazyloading" 
-                      v-model="item.dishesId"
-                      @change="selectDishes(row, 'dinners', item.dishesId, index)">
-                        <el-option 
-                        v-for="(dishes, dIndex) in dishesSelectList" 
-                        :key="`dinners-select-${row.date}-${dishes.dishesId}-${dIndex}`" 
-                        :value="dishes.dishesId" 
-                        :label="dishes.dishesName"
-                        :disabled="row.dinners.map(item => item.dishesId).includes(dishes.dishesId)"></el-option>
-                      </el-select>
-                      <i class="el-icon-circle-close" @click="removeFood('dinners', row, index)"></i>
+                      <div 
+                      class="dishes-span" 
+                      draggable="true" 
+                      @dragstart="startDinner($event, item)"
+                      @dragend="endDinner($index, index)"
+                      >
+                        {{ item.dishesName }}
+                        <i class="el-icon-close" @click="removeFood('dinners', row, index)"></i>
+                      </div>
                   </div>
                   <div class="cell-dishes">
-                    <el-button round plain class="block" @click="addFood('dinners', row)">添加菜品</el-button>
-                      <i class="el-icon-circle-close" hidden></i>
+                    <el-button round plain class="block" @click="addFood(6, $index)">添加菜品</el-button>
                   </div>
               </div>
           </template>
@@ -167,25 +141,20 @@
               <i class="el-icon-circle-plus icon" @click="openAdd" v-if="meals.length"></i>
             </div>
           </div>
-          <div class="cell" v-for="(row, $index) in list" :key="`breakfasts-${row.date}-${$index}`">
+          <div 
+          class="cell" 
+          v-for="(row, $index) in list" 
+          :key="`breakfasts-${row.date}-${$index}`"
+          @dragover="e => e.preventDefault()" 
+          @drop="dropBreakfasts($event, $index)">
             <div v-for="(item, index) in row.breakfasts" :key="`horizontal-breakfasts-${row.date}-${item.dishesId}-${index}`" class="cell-dishes">
-              <el-select 
-              filterable 
-              clearable 
-              v-model="item.dishesId"
-              @change="selectDishes(row, 'breakfasts', item.dishesId, index)">
-                <el-option 
-                v-for="(dishes, dIndex) in dishesSelectList" 
-                :key="`breakfasts-option-${row}-${dishes.dishesId}-${dIndex}`" 
-                :value="dishes.dishesId" 
-                :label="dishes.dishesName"
-                :disabled="row.breakfasts.map(item => item.dishesId).includes(dishes.dishesId)"></el-option>
-              </el-select>
-              <i class="el-icon-circle-close" @click="removeFood('breakfasts', row, index)"></i>
+              <div class="dishes-span" draggable="true" @dragstart="startBreakfasts($event, item)" @dragend="endBreakfasts($index, index)">
+                {{ item.dishesName }}
+                <i class="el-icon-close" @click="removeFood('breakfasts', row, index)"></i>
+              </div>
             </div>
             <div class="cell-dishes">
-              <el-button plain round class="block" @click="addFood('breakfasts', row)">添加菜品</el-button>
-              <i class="el-icon-circle-close" hidden></i>
+              <el-button plain round class="block" @click="addFood(4, $index)">添加菜品</el-button>
             </div>
           </div>
         </div>
@@ -197,26 +166,20 @@
               <i class="el-icon-circle-plus icon" @click="openAdd" v-if="meals.length"></i>
             </div>
           </div>
-          <div class="cell" v-for="(row, $index) in list" :key="`lunches-${row.date}-${$index}`">
+          <div 
+          class="cell" 
+          v-for="(row, $index) in list" 
+          :key="`lunches-${row.date}-${$index}`"
+          @dragover="e => e.preventDefault()"
+          @drop="dropLunches($event, $index)">
             <div v-for="(item, index) in row.lunches" :key="`horizontal-lunches-${row.date}-${item.dishesId}-${index}`" class="cell-dishes">
-              <el-select 
-              filterable 
-              clearable 
-              v-el-select-lazyloading="lazyloading" 
-              v-model="item.dishesId"
-              @change="selectDishes(row, 'lunches', item.dishesId, index)">
-                <el-option 
-                v-for="(dishes, dIndex) in dishesSelectList" 
-                :key="`lunches-option-${row}-${dishes.dishesId}-${dIndex}`" 
-                :value="dishes.dishesId" 
-                :label="dishes.dishesName"
-                :disabled="row.lunches.map(item => item.dishesId).includes(dishes.dishesId)"></el-option>
-              </el-select>
-              <i class="el-icon-circle-close" @click="removeFood('lunches', row, index)"></i>
+              <div class="dishes-span" draggable="true"  @dragstart="startLunches($event, item)" @dragend="endLunches($index, index)">
+                {{ item.dishesName }}
+                <i class="el-icon-close" @click="removeFood('lunches', row, index)"></i>
+              </div>
             </div>
             <div class="cell-dishes">
-              <el-button plain round class="block" @click="addFood('lunches', row)">添加菜品</el-button>
-              <i class="el-icon-circle-close" hidden></i>
+              <el-button plain round class="block" @click="addFood(5, $index)">添加菜品</el-button>
             </div>
           </div>
         </div>
@@ -228,25 +191,20 @@
               <i class="el-icon-circle-plus icon" @click="openAdd" v-if="meals.length"></i>
             </div>
           </div>
-          <div class="cell" v-for="(row, $index) in list" :key="`dinners-${row.date}-${$index}`">
+          <div 
+          class="cell" 
+          v-for="(row, $index) in list" 
+          :key="`dinners-${row.date}-${$index}`"
+          @dragover="e => e.preventDefault()"
+          @drop="dropDinner($event, $index)">
             <div v-for="(item, index) in row.dinners" :key="`horizontal-dinners-${row.date}-${item.dishesId}-${index}`" class="cell-dishes">
-              <el-select 
-              filterable 
-              clearable 
-              v-model="item.dishesId"
-              @change="selectDishes(row, 'dinners', item.dishesId, index)">
-                <el-option 
-                v-for="(dishes, dIndex) in dishesSelectList" 
-                :key="`dinners-option-${row}-${dishes.dishesId}-${dIndex}`" 
-                :value="dishes.dishesId" 
-                :label="dishes.dishesName"
-                :disabled="row.dinners.map(item => item.dishesId).includes(dishes.dishesId)"></el-option>
-              </el-select>
-              <i class="el-icon-circle-close" @click="removeFood('dinners', row, index)"></i>
+              <div class="dishes-span" draggable="true" @dragstart="startDinner($event, item)" @dragend="endDinner($index, index)">
+                {{ item.dishesName }}
+                <i class="el-icon-close" @click="removeFood('dinners', row, index)"></i>
+              </div>
             </div>
             <div class="cell-dishes">
-              <el-button plain round class="block" @click="addFood('dinners', row)">添加菜品</el-button>
-              <i class="el-icon-circle-close" hidden></i>
+              <el-button plain round class="block" @click="addFood(6, $index)">添加菜品</el-button>
             </div>
           </div>
         </div>
@@ -268,10 +226,10 @@
       :visible.sync="popVisible"
       width="30%"
       :before-close="close">
-      <el-select v-model="meal" size="small">
-        <el-option v-for="meal in meals" :key="meal.val" :value="meal.val" :label="meal.name"></el-option>
-      </el-select>
-      <div slot="footer" class="operate flex justify-end">
+      <el-radio-group v-model="meal">
+        <el-radio v-for="meal in meals" :key="meal.val" :value="meal.val" :label="meal.val">{{ meal.name }}</el-radio>
+      </el-radio-group>
+      <div slot="footer" class="operate flex justify-center">
         <div class="btn background-color" @click="addMeal">确定</div>
         <div class="btn default" @click="close">取消</div>
       </div>
@@ -307,6 +265,10 @@ export default {
     dishesSelectList: {
       type: Array,
       default: () => []
+    },
+    foodTypeList: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -329,16 +291,19 @@ export default {
       return meals
     },
     addedMeal() {
+      if (!this.list.length) {
+        return ''
+      }
       let meal = []
-      if (this.list[0].breakfasts) {
+      if (this.list.some(item => item.breakfasts)) {
         meal = ['breakfasts']
       }
 
-      if (this.list[0].lunches) {
+      if (this.list.some(item => item.lunches)) {
         meal = [...meal, 'lunches']
       }
 
-      if (this.list[0].dinners) {
+      if (this.list.some(item => item.dinners)) {
         meal = [...meal, 'dinners']
       }
       return meal
@@ -366,10 +331,6 @@ export default {
       }
       this.popVisible = false
     },
-    tableCellClassName({row, column, rowIndex, columnIndex}) {
-      if(columnIndex === 3) return 'td-breakfasts'
-      return ''
-    },
     addDate() {
       this.list.push({
         date: '',
@@ -392,29 +353,47 @@ export default {
       })
       this.tableKey = Date.now()
     },
-    addFood(mealType, row) {
-      row[mealType].push({})
+    addFood(type, index) {
+      this.$emit('add-food', type, index)
     },
     removeFood(mealType, row, index) {
       row[mealType].splice(index, 1)
     },
-    selectDishes(row, mealType, dishesId, mealIndex) {
-      if (row[mealType].filter(item => item.dishesId === dishesId).length > 1) {
-        this.$message({
-          message: '请勿重复添加',
-          type: 'warning'
-        })
-        this.$set(row[mealType], mealIndex, {})
-        return
-      }
-      const dishes = this.dishesSelectList.find(item => item.dishesId === dishesId)
-      if (dishes) {
-        this.$set(row[mealType], mealIndex, dishes)
-      }
+    startBreakfasts(evt, item) {
+      evt.dataTransfer.setData('Text', JSON.stringify(item))
+    },
+    endBreakfasts($index, index) {
+      this.list[$index].breakfasts.splice(index, 1)
+    },
+    dropBreakfasts(evt, index) {
+      const data = evt.dataTransfer.getData("Text")
+      this.list[index].breakfasts.push(JSON.parse(data))
+    },
+    startLunches(evt, item) {
+      evt.dataTransfer.setData("Text", JSON.stringify(item));
+    },
+    endLunches($index, index) {
+      this.list[$index].lunches.splice(index, 1)
+    },
+    dropLunches(evt, index) {
+      const data = evt.dataTransfer.getData("Text")
+      this.list[index].lunches.push(JSON.parse(data))
+    },
+    startDinner(evt, item) {
+      evt.dataTransfer.setData("Text", JSON.stringify(item));
+    },
+    endDinner($index, index) {
+      this.list[$index].dinners.splice(index, 1)
+    },
+    dropDinner(evt, index) {
+      const data = evt.dataTransfer.getData("Text")
+      this.list[index].dinners.push(JSON.parse(data))
     }
   }
 }
 </script>
-<style lang="">
-  
+<style scoped>
+.td-content {
+  height: 100%;
+}
 </style>

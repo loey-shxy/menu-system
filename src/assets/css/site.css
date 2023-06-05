@@ -410,12 +410,6 @@
   cursor: pointer;
   color: #666;
 }
-.cell-dishes .el-icon-circle-close:hover {
-  color: #FF5252;
-}
-.cell-dishes:last-child .el-icon-circle-close {
-  visibility: hidden;
-}
 .btn {
     padding: 0 .12rem;
     line-height: .38rem;
@@ -1228,7 +1222,32 @@
 .menu-table.edit .el-table__row td:first-child {
   vertical-align: middle;
 }
-
+.horizontal-table.edit .dishes-span,
+.menu-table.edit .dishes-span {
+  height: 0.24rem;
+  line-height: .24rem;
+  border-radius: 0.12rem;
+  border: 1px solid #DCDFE6;
+  width: 100%;
+  position: relative;
+  cursor: pointer;
+  background-color: #fff;
+}
+.horizontal-table.edit .dishes-span .el-icon-close,
+.menu-table.edit .dishes-span .el-icon-close {
+  position: absolute;
+  right: .1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #FF5252;
+}
+.menu-table td {
+  height: 1px;
+}
+.menu-table td .cell> .dishes__cell,
+.menu-table td .cell {
+  height: 100%;
+}
 .dishes .item-content-dishes {
   margin-top: .25rem;
   display: flex;

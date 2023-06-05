@@ -19,17 +19,17 @@
             <div class="card-header">基础信息</div>
             <el-form :model="condition" ref="form" :rules="rules"  label-position="right" label-width=".8rem">
                 <el-row>
-                    <el-col :span="12">
+                  <el-col :span="24">
+                        <el-form-item label="标题" prop="title">
+                            <el-input v-model="condition.title" maxlength=50 placeholder="请输入标题"></el-input>
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span="24">
                         <el-form-item label="菜谱类型"  prop="menuType">
                             <el-select v-model="condition.menuType" filterable clearable>
                                 <el-option  v-for="item in menuTypeList" :key="item.val" :label="item.name" :value="item.val"></el-option>
                             </el-select>
-                        </el-form-item>
-                    </el-col>
-
-                    <el-col :span="12">
-                        <el-form-item label="标题" prop="title">
-                            <el-input v-model="condition.title" maxlength=50 placeholder="请输入标题"></el-input>
                         </el-form-item>
                     </el-col>
 
@@ -56,8 +56,11 @@
                 :tableType="tableType" 
                 :list="condition.days" 
                 :dishesSelectList="dishesSelectList"
+                :foodTypeList="foodTypeList"
                 @lazyloading="lazyloading"
-                @change-date="changeDate" />
+                @change-date="changeDate"
+                @add-food="addFood"
+                />
             </div>
               <div class="recommend-wrap" :style="{maxHeight: recommendHeight}">
                 <el-select v-model="recommendType">
@@ -142,7 +145,7 @@
                             {{scope.row['name0']}}
                         </template>
                     </el-table-column>
-                    <el-table-column min-width="110" v-for="(itemCol,indexCol) in condition.days" :key="itemCol" align="center">
+                    <el-table-column min-width="110" v-for="(itemCol,indexCol) in condition.days" :key="itemCol.date" align="center">
                         <template slot-scope="scope">
                             {{scope.row['name' + (indexCol + 1)]}}
                         </template>
@@ -162,7 +165,7 @@
                         <el-form-item label="日期"  >
                             <el-select  v-model="addData.date">
                                 <el-option  label="全部" value=""></el-option>
-                                <el-option  v-for="item in dateList" v-if="item.date" :key="item" :label="item.date" :value="item.date"></el-option>
+                                <el-option  v-for="item in dateList" v-if="item.date" :key="item.date" :label="item.date" :value="item.date"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-row>
@@ -199,7 +202,7 @@
                             <el-form-item label="菜品类型"  >
                                 <el-select  v-model="addData.dishesType" clearable @change="changeDishesType">
                                     <el-option  label="全部" value=""></el-option>
-                                    <el-option  v-for="item in dishesTypeList" :key="item" :label="item.name" :value="item.val"></el-option>
+                                    <el-option  v-for="item in dishesTypeList" :key="item.val" :label="item.name" :value="item.val"></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
@@ -209,7 +212,7 @@
                             <el-form-item label="适用人群"  >
                                 <el-select  v-model="addData.suitPerson" clearable @change="changeDishesType">
                                     <el-option  label="全部" value=""></el-option>
-                                    <el-option  v-for="item in personList" :key="item" :label="item.name" :value="item.id"></el-option>
+                                    <el-option  v-for="item in personList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
@@ -217,8 +220,8 @@
                     <div class="title"> 菜品信息</div>
                     <el-row style="margin-bottom:.12rem;">
                         <el-form-item label="菜品"   prop="dishesId">
-                            <el-select v-el-select-lazyloading="lazyloading" v-model="addData.dishesId" filterable remote   placeholder="请选择菜品"  :remote-method="requestDishesData">
-                                <el-option  v-for="item in dishesSelectList" :key="item" :label="item.dishesName+' ('+item.price.toFixed(2)+'￥)'" :value="item.dishesId"></el-option>
+                            <el-select v-model="addData.dishesId" filterable remote   placeholder="请选择菜品"  :remote-method="requestDishesData">
+                                <el-option  v-for="item in dishesList" :key="item.dishesId" :label="item.dishesName+' ('+item.price.toFixed(2)+'￥)'" :value="item.dishesId"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-row>
@@ -244,7 +247,7 @@
                         <el-col >
                             <el-form-item label="菜品类型" >
                                 <el-select v-model="addData.dishesTypesArr" multiple placeholder="请选择" @change="selectLunch" @remove-tag="removeLunch">
-                                    <el-option v-for="item in foodTypeList" :key="item" :value="item.val" :label="item.label">
+                                    <el-option v-for="item in foodTypeList" :key="item.val" :value="item.val" :label="item.label">
                                         <div class="flex">
                                             <p style="width:1.5rem">{{item.name}}</p>
                                             <div class="flex-one"  @click.stop="()=>{}">
@@ -416,6 +419,7 @@
 					{id: "8",name: "幼儿餐"},
 					{id: "9",name: "养老院"},
 				],
+        dishesAllList: [],
 				dishesList:[],      //菜品列表
 				foodTypeList:[],     //菜品类型,
 				dishesTypeList:[],  //菜品类型
@@ -445,10 +449,10 @@
 					vegetablesRatio: 0,
 					otherRatio:0,
 					meatRatio:0
-                },
-                
-                titleList: [],   //列表的标题
-                tableData: [],   //营养成分的列表
+        },
+        
+        titleList: [],   //列表的标题
+        tableData: [],   //营养成分的列表
 				listChart:[],
 				priceDataChart:[],
         tableType: 'vertical',
@@ -460,9 +464,9 @@
     computed: {
       recommendList() {
         if (this.recommendType) {
-          return this.dishesList.filter(item => item.dishesType === this.recommendType)
+          return this.dishesAllList.filter(item => item.dishesType === this.recommendType)
         }
-        return this.dishesList
+        return this.dishesAllList
       },
 
       recommendHeight() {
@@ -478,10 +482,8 @@
 			this.requestMenuType();
 			this.requestDishesType();
 			this.requestDishesData();
+			this.requestAllDishesData();
 			this.requestDishesList();
-			
-			
-			
 			
 			document.body.addEventListener('click', ()=> {
 				this.styleCard = "display:none;";
@@ -492,12 +494,12 @@
 		
 		methods: {
       lazyloading() {
-        if (this.dishesSelectList.length < this.dishesList.length) {
+        if (this.dishesSelectList.length < this.dishesAllList.length) {
           this.dishesPage.page++
           const start = this.dishesPage.pageSize*this.dishesPage.page
-          const end = start + this.dishesPage.pageSize > this.dishesList.length ? this.dishesList.length : start + this.dishesPage.pageSize
+          const end = start + this.dishesPage.pageSize > this.dishesAllList.length ? this.dishesAllList.length : start + this.dishesPage.pageSize
           
-          this.dishesSelectList = [...this.dishesSelectList, ...this.dishesList.slice(start, end)]
+          this.dishesSelectList = [...this.dishesSelectList, ...this.dishesAllList.slice(start, end)]
         }
       },
       changeTableType() {
@@ -554,7 +556,7 @@
         })
 
         this.dishesSelectList = list
-        if (this.dishesList.length) {
+        if (this.dishesAllList.length) {
           this.filterDishesList()
         }
       },
@@ -574,16 +576,16 @@
 					if(index === 0) {
 						this.condition.days[0].date = item;
 						this.condition.days[0].week = data.weeks[0];
-						this.condition.days[0].breakfasts = data.breakfasts[0]
-						this.condition.days[0].lunches = data.lunches[0]
-						this.condition.days[0].dinners = data.dinners[0]
+						this.condition.days[0].breakfasts = data.breakfasts[0].length ? data.breakfasts[0] : ''
+						this.condition.days[0].lunches = data.lunches[0].length ? data.lunches[0] : ''
+						this.condition.days[0].dinners = data.dinners[0].length ? data.dinners[0] : ''
 					} else {
 						this.condition.days.push({
 							date: item,
 							week:data.weeks[index],
-							breakfasts:data.breakfasts[index],
-							lunches:data.lunches[index],
-							dinners:data.dinners[index],
+							breakfasts:data.breakfasts[index].length ? data.breakfasts[index] : '',
+							lunches:data.lunches[index].length ? data.lunches[index] : '',
+							dinners:data.dinners[index].length ? data.dinners[index] : '',
 						})
 					}
 					
@@ -632,9 +634,9 @@
 			},
 			
       filterDishesList() {
-        for (let i = this.dishesList.length-1; i >= 0; i--) {
-          if (this.dishesSelectList.find(item => item.dishesId === this.dishesList[i].dishesId)) {
-            this.dishesList.splice(i, 1)
+        for (let i = this.dishesAllList.length-1; i >= 0; i--) {
+          if (this.dishesSelectList.find(item => item.dishesId === this.dishesAllList[i].dishesId)) {
+            this.dishesAllList.splice(i, 1)
           }
         }
       },
@@ -652,13 +654,29 @@
 				},(res) => {
 					if(res.success){
 						this.dishesList = res.data;
+					}
+				});
+			},
+			//获取菜品列表
+			requestAllDishesData(val) {
+				this.utils.ajax({
+					url: '/api/background/Dishes/getDishes',
+					data:  {
+						dishesType: '',
+						name: val,
+						suitPerson:  this.addData.suitPerson,
+						shareDishes:0
+					}
+				},(res) => {
+					if(res.success){
+						this.dishesAllList = res.data;
             if (this.dishesSelectList.length) {
               this.filterDishesList()
             }
 					}
 				});
 			},
-			
+
 			//获取菜品类型
 			requestDishesType() {
 				this.utils.ajax({
@@ -814,7 +832,8 @@
 					addType:"",
 					dishesTypes: [],
 					dishesTypesArr: []
-				}, this.acceptFlag  = true;
+				}
+        this.acceptFlag  = true;
 				this.dialogType  = type ;
 				this.dialogTitle = '添加菜品';
 				this._index      = _index;
@@ -1020,7 +1039,7 @@
 						}
 					});
 					window.open(link.href, '_blank');
-                }
+        }
 			},
 			
 			//获取菜品详情
@@ -1151,7 +1170,7 @@
 								return;
 							}
 							
-							if(!this.condition.days[i].breakfasts.length && !this.condition.days[i].lunches.length && !this.condition.days[i].dinners.length) {
+							if(!this.condition.days[i].breakfasts && !this.condition.days[i].lunches && !this.condition.days[i].dinners) {
 								this.$message({
 									message: this.condition.days[i].date + '菜品数量为空',
 									type: 'warning'
@@ -1159,6 +1178,9 @@
 								return;
 							}
 							
+              this.condition.days[i].breakfasts = this.condition.days[i].breakfasts ? this.condition.days[i].breakfasts : []
+              this.condition.days[i].lunches = this.condition.days[i].lunches ? this.condition.days[i].lunches : []
+              this.condition.days[i].dinners = this.condition.days[i].dinners ? this.condition.days[i].dinners : []
 						}
 						
 						this.utils.ajax({
@@ -1182,223 +1204,6 @@
 					}
 				})
 			},
-			
-			
-			
-			endBreakfasts(evt,item,index,$index) {
-				
-				let addIndexX,addIndexY,moveIndex ;
-				let width       = 200;
-				let height      = evt.target.parentNode.parentNode.parentNode.clientHeight;
-				let offsetX     = evt.offsetX
-				let offsetY     = evt.offsetY;
-				addIndexX       = parseInt(offsetX / width);
-				let td = document.getElementsByClassName("td-breakfasts");
-				let clientHeight = 0;
-				if(offsetX > 0)
-					addIndexX       = parseInt(offsetX / width);
-				else {
-					if(Math.abs(offsetX) > evt.target.offsetLeft) {
-						addIndexX       = -1 + parseInt((offsetX + evt.target.offsetLeft ) / width) ;
-					}
-					
-				}
-				if(addIndexX < 0) return;
-				
-				if(offsetY > 0) {
-					for(let i = $index ; i < td.length;i++) {
-						clientHeight = clientHeight + td[i].clientHeight;
-						if ( offsetY < clientHeight) {
-							addIndexY = i;
-							break;
-						}
-					}
-					
-				} else {
-					let clientHeight = 0;
-					for(let i = $index ; i > -1;i--) {
-						
-						if(i === $index)
-							clientHeight = clientHeight + evt.target.offsetTop;
-						else
-							clientHeight = clientHeight + td[i].clientHeight;
-						if ( Math.abs(offsetY) < clientHeight) {
-							addIndexY = i;
-							break;
-						}
-					}
-				}
-				if(addIndexX === 0 && addIndexY === $index ) {
-					moveIndex = offsetY / (0.4 * this.utils.readLocalStorage('rem') + 2) ;
-					this.moveCell(this.condition.days[$index].breakfasts,index, index + Math.floor(moveIndex));
-					return;
-                };
-				
-				if((addIndexX || addIndexX === 0) && (addIndexY || addIndexY === 0)) {
-					this.condition.days[$index].breakfasts.splice(index,1);
-					if(addIndexX === 0) {
-						this.condition.days[ addIndexY].breakfasts.push(item);
-						this.condition.days[ addIndexY].breakfasts = this.sortDishes(this.condition.days[ addIndexY].breakfasts)
-						
-					}
-					else if(addIndexX === 1) {             //午餐
-						this.condition.days[ addIndexY].lunches.push(item);
-						this.condition.days[ addIndexY].lunches = this.sortDishes(this.condition.days[ addIndexY].lunches)
-						
-					} else if (addIndexX === 2) {    //晚餐
-						this.condition.days[ addIndexY].dinners.push(item);
-						this.condition.days[ addIndexY].dinners = this.sortDishes(this.condition.days[ addIndexY].dinners)
-						
-					}
-				}
-				
-			},
-			
-			endLunches(evt,item,index,$index) {
-				
-				let addIndexX,addIndexY,moveIndex ;
-				let width        = 200;
-				let height       = evt.target.parentNode.parentNode.parentNode.clientHeight;
-				let offsetX      = evt.offsetX
-				let offsetY      = evt.offsetY;
-				let td           = document.getElementsByClassName("td-breakfasts");
-				let clientHeight = 0;
-				
-				if(offsetX > 0)
-					addIndexX       = parseInt(offsetX / width);
-				else {
-					if(Math.abs(offsetX) > evt.target.offsetLeft) {
-						addIndexX       = -1 + parseInt((offsetX + evt.target.offsetLeft ) / width) ;
-					}
-					
-				}
-				
-				if(offsetY > 0) {
-					for(let i = $index ; i < td.length;i++) {
-						clientHeight = clientHeight  + td[i].clientHeight;
-						if ( offsetY < clientHeight) {
-							addIndexY = i;
-							break;
-						}
-					}
-					
-				} else {
-					let clientHeight = 0;
-					for(let i = $index ; i > -1;i--) {
-						
-						if(i === $index)
-							clientHeight = clientHeight + evt.target.offsetTop;
-						else
-							clientHeight = clientHeight + td[i].clientHeight;
-						if ( Math.abs(offsetY) < clientHeight) {
-							addIndexY = i;
-							break;
-						}
-					}
-				}
-				if(addIndexX === undefined || addIndexY === undefined) return;
-				
-				if(addIndexX === 0 && addIndexY === $index) {
-                    moveIndex = offsetY / (0.4 * this.utils.readLocalStorage('rem') + 2) ;
-					this.moveCell(this.condition.days[$index].lunches,index, index + Math.floor(moveIndex));
-					return;
-                }
-				
-				if((addIndexX || addIndexX === 0) && (addIndexY || addIndexY === 0)) {
-					this.condition.days[$index].lunches.splice(index,1);
-					
-					if(addIndexX === -1) {       //早餐
-						this.condition.days[ addIndexY].breakfasts.push(item);
-						this.condition.days[ addIndexY].breakfasts = this.sortDishes(this.condition.days[ addIndexY].breakfasts)
-					}
-					else if(addIndexX === 0) {             //午餐
-						this.condition.days[ addIndexY].lunches.push(item);
-						this.condition.days[ addIndexY].lunches = this.sortDishes(this.condition.days[ addIndexY].lunches)
-						
-					} else if (addIndexX === 1) {    //晚餐
-						this.condition.days[ addIndexY].dinners.push(item);
-						this.condition.days[ addIndexY].dinners = this.sortDishes(this.condition.days[ addIndexY].dinners)
-					}
-				}
-				
-			},
-            
-   
-			
-			
-			endDinner(evt,item,index,$index) {
-				
-				let addIndexX,addIndexY,moveIndex ;
-				let width       = 200;
-				let height      = evt.target.parentNode.parentNode.parentNode.clientHeight;
-				let offsetX     = evt.offsetX
-				let offsetY     = evt.offsetY;
-				addIndexX       = parseInt(offsetX / width);
-				let td = document.getElementsByClassName("td-breakfasts");
-				let clientHeight = 0;
-				
-				
-				if(offsetX > 0)
-					addIndexX       = parseInt(offsetX / width);
-				else {
-					if(Math.abs(offsetX) > evt.target.offsetLeft) {
-						addIndexX       = -1 + parseInt((offsetX + evt.target.offsetLeft ) / width) ;
-					}
-					
-				}
-				
-				if(addIndexX > 0) return;
-				
-				if(offsetY > 0) {
-					for(let i = $index ; i < td.length;i++) {
-						clientHeight = clientHeight + td[i].clientHeight;
-						if ( offsetY < clientHeight) {
-							addIndexY = i;
-							break;
-						}
-					}
-					
-				} else {
-					let clientHeight = 0;
-					for(let i = $index ; i > -1;i--) {
-						if(i === $index)
-							clientHeight = clientHeight + evt.target.offsetTop;
-						else
-							clientHeight = clientHeight + td[i].clientHeight;
-						if ( Math.abs(offsetY) < clientHeight) {
-							addIndexY = i;
-							break;
-						}
-					}
-				}
-				if(addIndexX === 0 && addIndexY === $index ) {
-					moveIndex = offsetY / (0.4 * this.utils.readLocalStorage('rem') + 2) ;
-					this.moveCell(this.condition.days[$index].dinners,index, index + Math.floor(moveIndex));
-					return;
-                };
-				
-				if((addIndexX || addIndexX === 0) && (addIndexY || addIndexY === 0)) {
-					this.condition.days[$index].dinners.splice(index,1);
-					
-					if(addIndexX === -2) {
-						this.condition.days[ addIndexY].breakfasts.push(item);
-						this.condition.days[ addIndexY].breakfasts = this.sortDishes(this.condition.days[ addIndexY].breakfasts)
-						
-					}
-					else if(addIndexX === -1) {             //午餐
-						this.condition.days[ addIndexY].lunches.push(item);
-						this.condition.days[ addIndexY].lunches = this.sortDishes(this.condition.days[ addIndexY].lunches);
-						
-						
-					} else if (addIndexX === 0) {    //晚餐
-						this.condition.days[ addIndexY].dinners.push(item);
-						this.condition.days[ addIndexY].dinners = this.sortDishes(this.condition.days[ addIndexY].dinners);
-					}
-				}
-				
-			},
-			
-			
 			
 			//单元格内部移动
 			moveCell(arr,index,tindex) {
@@ -1626,52 +1431,59 @@
 						dishesIds:[],
 						dishesList:{}
 					})
-					item.breakfasts.forEach(item => {
-						let index = days[days.length - 1].dishesIds.findIndex( d => d === item.dishesId);
-						if(index === -1) {
-							days[days.length - 1].dishesIds.push(item.dishesId);
-							days[days.length - 1].dishesList[item.dishesId] = item.dishesNum;
-						}
-						else {
-							days[days.length - 1].dishesList[item.dishesId] = days[days.length - 1].dishesList[item.dishesId] + item.dishesNum;
-						}
-					})
+
+          if (item.breakfasts) {
+            item.breakfasts.forEach(item => {
+              let index = days[days.length - 1].dishesIds.findIndex( d => d === item.dishesId);
+              if(index === -1) {
+                days[days.length - 1].dishesIds.push(item.dishesId);
+                days[days.length - 1].dishesList[item.dishesId] = item.dishesNum;
+              }
+              else {
+                days[days.length - 1].dishesList[item.dishesId] = days[days.length - 1].dishesList[item.dishesId] + item.dishesNum;
+              }
+            })
+          }
 					
-					item.lunches.forEach(item => {
-						let index = days[days.length - 1].dishesIds.findIndex( d => d === item.dishesId);
-						if(index === -1) {
-							days[days.length - 1].dishesIds.push(item.dishesId);
-							days[days.length - 1].dishesList[item.dishesId] = item.dishesNum;
-						}
-						else {
-							let index = days[days.length - 1].dishesIds.findIndex( d => d === item.dishesId);
-							if(index === -1) {
-								days[days.length - 1].dishesIds.push(item.dishesId);
-								days[days.length - 1].dishesList[item.dishesId] = item.dishesNum;
-							}
-							else {
-								days[days.length - 1].dishesList[item.dishesId] = days[days.length - 1].dishesList[item.dishesId] + item.dishesNum;
-							}
-						}
-					})
+          if (item.lunches) {
+            item.lunches.forEach(item => {
+              let index = days[days.length - 1].dishesIds.findIndex( d => d === item.dishesId);
+              if(index === -1) {
+                days[days.length - 1].dishesIds.push(item.dishesId);
+                days[days.length - 1].dishesList[item.dishesId] = item.dishesNum;
+              }
+              else {
+                let index = days[days.length - 1].dishesIds.findIndex( d => d === item.dishesId);
+                if(index === -1) {
+                  days[days.length - 1].dishesIds.push(item.dishesId);
+                  days[days.length - 1].dishesList[item.dishesId] = item.dishesNum;
+                }
+                else {
+                  days[days.length - 1].dishesList[item.dishesId] = days[days.length - 1].dishesList[item.dishesId] + item.dishesNum;
+                }
+              }
+            })
+          }
 					
-					item.dinners.forEach(item => {
-						let index = days[days.length - 1].dishesIds.findIndex( d => d === item.dishesId);
-						if(index === -1) {
-							days[days.length - 1].dishesIds.push(item.dishesId);
-							days[days.length - 1].dishesList[item.dishesId] = item.dishesNum;
-						}
-						else {
-							let index = days[days.length - 1].dishesIds.findIndex( d => d === item.dishesId);
-							if(index === -1) {
-								days[days.length - 1].dishesIds.push(item.dishesId);
-								days[days.length - 1].dishesList[item.dishesId] = item.dishesNum;
-							}
-							else {
-								days[days.length - 1].dishesList[item.dishesId] = days[days.length - 1].dishesList[item.dishesId] + item.dishesNum;
-							}
-						}
-					})
+          if (item.dinners) {
+            item.dinners.forEach(item => {
+              let index = days[days.length - 1].dishesIds.findIndex( d => d === item.dishesId);
+              if(index === -1) {
+                days[days.length - 1].dishesIds.push(item.dishesId);
+                days[days.length - 1].dishesList[item.dishesId] = item.dishesNum;
+              }
+              else {
+                let index = days[days.length - 1].dishesIds.findIndex( d => d === item.dishesId);
+                if(index === -1) {
+                  days[days.length - 1].dishesIds.push(item.dishesId);
+                  days[days.length - 1].dishesList[item.dishesId] = item.dishesNum;
+                }
+                else {
+                  days[days.length - 1].dishesList[item.dishesId] = days[days.length - 1].dishesList[item.dishesId] + item.dishesNum;
+                }
+              }
+            })
+          }
 				})
 				
 				for(let i  = 0 ; i < days.length ; i++) {
@@ -1964,6 +1776,10 @@
     }
     .dialog .condition-item .message {
         width: auto;
+    }
+
+    .dialog .title {
+      margin-bottom: .2rem;
     }
 
     .dishes {

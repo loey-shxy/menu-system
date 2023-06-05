@@ -169,6 +169,9 @@ a img {
 .justify-around {
   justify-content: space-around !important;
 }
+.justify-center {
+  justify-content: center !important;
+}
 .justify-content .more {
   /*color: rgb(41, 187, 157);*/
   padding-right: .05rem;

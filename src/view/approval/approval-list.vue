@@ -1,39 +1,38 @@
 <!--审批列表 -->
 
 <template>
-    <div class="card list-wrap">
+    <div class="">
         <!--查询条件 start-->
-        <div class="condition flex">
-            <div class="condition-item flex" v-if="config.userMessage.userType === 1">
-                <p>审批类型</p>
-                <el-select v-model="condition.approveType">
-                    <el-option label="全部" value=""></el-option>
-                    <el-option label="供应商注册" value="VENDOR_REGISTER_ONE"></el-option>
-                    <el-option label="补充食材" value="VENDOR_MATERIAL"></el-option>
-                    <el-option label="会员分享菜谱" value="MENU_SHARE"></el-option>
-                </el-select>
-            </div>
-            <div class="condition-item flex">
-                <p>状态</p>
-                <el-select v-model="condition.status">
-                    <el-option label="全部" value=""></el-option>
-                    <el-option label="待审批" value=0></el-option>
-                    <el-option label="已审批" value=1></el-option>
-                    <el-option label="已撤销" value=2></el-option>
-                </el-select>
-            </div>
-            <div class="condition-item flex">
-                <p>审批结果</p>
-                <el-select v-model="condition.result">
-                    <el-option label="全部" value=""></el-option>
-                    <el-option label="通过" value=1></el-option>
-                    <el-option label="未通过" value=0></el-option>
-                </el-select>
-            </div>
-            
-            <div class="operation flex">
-                <div class="search btn background-color" @click="search">确定</div>
-            </div>
+        <div class="header">
+          <div class="condition flex justify-start">
+              <div class="condition-item flex" v-if="config.userMessage.userType === 1">
+                  <el-select v-model="condition.approveType" placeholder="请选择审批类型">
+                      <el-option label="全部" value=""></el-option>
+                      <el-option label="供应商注册" value="VENDOR_REGISTER_ONE"></el-option>
+                      <el-option label="补充食材" value="VENDOR_MATERIAL"></el-option>
+                      <el-option label="会员分享菜谱" value="MENU_SHARE"></el-option>
+                  </el-select>
+              </div>
+              <div class="condition-item flex">
+                  <el-select v-model="condition.status" placeholder="请选择状态">
+                      <el-option label="全部" value=""></el-option>
+                      <el-option label="待审批" value=0></el-option>
+                      <el-option label="已审批" value=1></el-option>
+                      <el-option label="已撤销" value=2></el-option>
+                  </el-select>
+              </div>
+              <div class="condition-item flex">
+                  <el-select v-model="condition.result" placeholder="请选择审批结果">
+                      <el-option label="全部" value=""></el-option>
+                      <el-option label="通过" value=1></el-option>
+                      <el-option label="未通过" value=0></el-option>
+                  </el-select>
+              </div>
+              
+              <div class="operation flex">
+                  <div class="btn background-color" @click="search">确定</div>
+              </div>
+          </div>
         </div>
         <!--查询条件 end-->
         
@@ -61,15 +60,15 @@
                     </template>
                 </el-table-column>
             </el-table>
+          
+          <!--分页 start-->
+          <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
+                        :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
+          </el-pagination>
+          <!--分页 end-->
         </div>
         <!--列表 end-->
         
-        
-        <!--分页 start-->
-        <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
-                       :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
-        </el-pagination>
-        <!--分页 end-->
         
         <!--弹框 start-->
         <el-dialog  :title="addData.bizTypeDesc" :visible.sync="acceptFlag" class="dialog add-page">

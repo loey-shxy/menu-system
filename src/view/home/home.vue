@@ -29,16 +29,16 @@
           <img :src="config.fileUrl + item.picFilePath">
           <p class="ell">{{ item.name }}</p>
           <div class="ingredient">
-            <div class="item">猪肉</div>
+            <!-- <div class="item">猪肉</div>
             <div class="item">茄子</div>
             <div class="item">猪肉</div>
             <div class="item">茄子</div>
             <div class="item">猪肉</div>
-            <div class="item">茄子</div>
+            <div class="item">茄子</div> -->
           </div>
           <div class="footer">
-            <div class="time">05.23分享</div>
-            <div class="quote">引用</div>
+            <!-- <div class="time">05.23分享</div> -->
+            <!-- <div class="quote">引用</div> -->
           </div>
         </div>
       </div>
@@ -78,14 +78,17 @@
     <div class="supplier-wrap">
       <div class="supplier">
         <div class="header">供应商
-          <div class="more">更多</div>
+            <router-link  class="more" :to="{name: 'supplier-list'}">
+              更多
+            </router-link>
+          
         </div>
-        <div class="supplier-list" v-for="item in suppliers" :key="item.id">
+        <div class="supplier-list" v-for="item in suppliers.models" :key="item.id">
           <div class="supplier-info">
             <i class="icon"></i>
-            <div class="name ell">{{ item.name }}</div>
+            <div class="name ell">{{ item.userName }}</div>
           </div>
-          <div class="addr">{{ item.addr }}</div>
+          <div class="addr">{{ item.tel }}</div>
         </div>
       </div>
       <div class="supplier">
@@ -128,39 +131,57 @@ export default {
       typeList: [],    //菜品类型
       dishesList: [],  //菜品
       menuList: [],  //菜谱
-      noteList: [
-        { id: 1, msg: '公告：今日推荐营养搭配饭前炒鸡蛋' },
-        { id: 2, msg: '公告：今日推荐营养搭配饭前炒鸡蛋' },
-        { id: 3, msg: '公告：今日推荐营养搭配饭前炒鸡蛋' }
-      ],
-      suppliers: [
-        { id: 1, name: '美食供应有限公司', addr: '重庆'},
-        { id: 2, name: '美食供应有限公司', addr: '重庆'},
-        { id: 3, name: '美食供应有限公司', addr: '重庆'}
-      ],
-      users: [
-        { id: 1, name: '会员昵称' },
-        { id: 2, name: '会员昵称' },
-        { id: 3, name: '会员昵称' },
-        { id: 4, name: '会员昵称' },
-        { id: 5, name: '会员昵称' },
-        { id: 6, name: '会员昵称' },
-        { id: 7, name: '会员昵称' },
-        { id: 8, name: '会员昵称' },
-        { id: 9, name: '会员昵称' }
-      ]
+      noteList: [],
+      suppliers: {},
+      users: []
     }
   },
   mounted() {
     this.requestMenuList();
     this.requestType();
     this.requestDishesList();
+    this.requestSupplier();
 
-    this.initCostPrice();
-    this.initNutrients();
-
+    this.$nextTick(() => {
+      this.initCostPrice();
+      this.initNutrients();
+    })
   },
   methods: {
+    //请求数据
+			requestSupplier() {
+				this.utils.ajax({
+					url: this.config.userMessage.userType === 1 ?'/api/background/User/queryVendor' : '/api/background/User/queryVendorForMember',
+					data:  {
+            pageNo:1,
+            pageSize: 15
+          },
+				},(res) => {
+					if(res.success){
+						res.data.models && res.data.models.forEach( item => {
+							if(item.status === 1)
+								item.statusName = "管理员审核通过";
+							else if(item.status === 0)
+								item.statusName = "管理员审核中";
+							else
+								item.statusName = "管理员审核不通过";
+							item.createTime = this.utils.dateFormat({
+								date: new Date(item.createTime),
+								noFormat: true,
+								sFormat: 'yyyy-MM-dd HH:mm:ss'
+							});
+							item.updateTime = this.utils.dateFormat({
+								date: new Date(item.updateTime),
+								noFormat: true,
+								sFormat: 'yyyy-MM-dd HH:mm:ss'
+							});
+							
+						})
+						this.suppliers = res.data;
+					}
+				});
+			},
+
     //请求菜谱
     requestMenuList() {
       this.utils.ajax({

@@ -285,6 +285,7 @@
 </template>
 
 <script>
+  import * as echarts from 'echarts'
 	export default {
 		name: "menu-list-detail",
 		data() {
