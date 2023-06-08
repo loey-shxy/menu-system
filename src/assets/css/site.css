@@ -1330,4 +1330,5 @@
   line-height: .22rem;
   text-align: center;
   box-sizing: border-box;
+  cursor: pointer;
 }

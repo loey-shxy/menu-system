@@ -1,7 +1,7 @@
 <template>
   <div class="message-wrap">
-    <div class="content">
-      <div class="message-list" v-for="item in messageList" :key="item.id">
+    <div class="content" v-if="noteList.length">
+      <div class="message-list" v-for="item in noteList" :key="item.id">
         <div class="header">
           <div class="title">{{ item.title }}</div>
           <div class="time">{{ item.createTime }}</div>
@@ -9,33 +9,33 @@
         <div class="desc">{{ item.desc }}</div>
       </div>
     </div>
+    <div class="content empty" v-else>
+      <img src="../../assets/img/common/empty.png" alt="">
+    </div>
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      messageList: [
-        {
-          id: 1,
-          title: '公告：今日推荐营养搭配饭前炒鸡蛋',
-          createTime: '2023.05.24',
-          desc: '最近看到好多人都在说海参营养价值比较高，也建议多吃点海参，说是有滋补元气的功效，对身体特好！海参有什么功效？适合什么人吃？？'
-        },
-        {
-          id: 2,
-          title: '公告：今日推荐营养搭配饭前炒鸡蛋',
-          createTime: '2023.05.24',
-          desc: '最近看到好多人都在说海参营养价值比较高，也建议多吃点海参，说是有滋补元气的功效，对身体特好！海参有什么功效？适合什么人吃？？'
-        },
-        {
-          id: 3,
-          title: '公告：今日推荐营养搭配饭前炒鸡蛋',
-          createTime: '2023.05.24',
-          desc: '最近看到好多人都在说海参营养价值比较高，也建议多吃点海参，说是有滋补元气的功效，对身体特好！海参有什么功效？适合什么人吃？？'
-        }
-      ]
+      noteList: []
     }
+  },
+  mounted() {
+    this.requestNote()
+  },
+  methods: {
+    //请求数据
+			requestNote() {
+      this.utils.ajax({
+        url: '/api/notify/query',
+        data:  this.condition,
+      },(res) => {
+        if(res.success){
+          this.noteList = res.data;
+        }
+      });
+    },
   }
 }
 </script>
@@ -54,6 +54,11 @@ export default {
 .message-list:not(:last-child) {
   border-bottom: 1px solid #EFEEF3;
   padding-bottom: .45rem;
+}
+
+.empty {
+  text-align: center;
+  padding: 1rem 0;
 }
 
 .message-list .header {

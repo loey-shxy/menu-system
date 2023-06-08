@@ -340,14 +340,39 @@
           title: '收到菜谱'
         }
       },
-      shareMenu(record) {
-        this.dialog = {
-          visible: true,
-          type: 'share',
-          width: '6.58rem',
-          title: '请选择分享对象',
-          record
-        }
+      shareMenu(data) {
+        // this.dialog = {
+        //   visible: true,
+        //   type: 'share',
+        //   width: '6.58rem',
+        //   title: '请选择分享对象',
+        //   data
+        // }
+        if(data.share === 0 ) {
+					this.commons.delTIP({
+						title:'确认分享此菜谱吗，分享成功后不可撤回？',
+						errorMessage: '分享失败',
+						successMessage: '分享成功',
+						data:{
+							menuId: data.id
+						},
+						url:'/api/background/Menu/changeShare'
+					},()=> {
+						this.requestData();
+					})
+				} else if(data.share === 1) {
+					this.commons.delTIP({
+						title:'确认撤销菜谱分享吗？',
+						errorMessage: '撤销失败',
+						successMessage: '撤销成功',
+						data:{
+							menuId: data.id
+						},
+						url:'/api/background/ApproveRecord/revokeApproveMenu'
+					},()=> {
+						this.requestData();
+					})
+				}
       },
       close() {
         this.dialog.visible = false

@@ -41,7 +41,7 @@
             </div>
 
             <section style="margin: .18rem 0;" class="flex justify-content"> 
-                <div class="menu-table-wrap">
+                <div class="menu-table-wrap" id="table-container">
                   <!-- 横版 -->
                   <div class="horizontal-table" v-if="tableType === 'horizontal'">
                     <div class="table__head">
@@ -320,7 +320,7 @@
 			}
 		},
 		mounted () {
-			
+			this.scrollInit()
 			this.requestData();
 			this.requestDishesData();
 			this.requestDishesType();
@@ -345,6 +345,33 @@
     },
 		
 		methods: {
+      scrollInit() {
+        // 获取要绑定事件的元素
+        const nav = document.getElementById("table-container")
+        let flag; // 鼠标按下
+        let downX; // 鼠标点击的x下标
+        let scrollLeft; // 当前元素滚动条的偏移量
+        nav.addEventListener("mousedown", function (event) {
+          flag = true;
+          downX = event.clientX; // 获取到点击的x下标
+          scrollLeft = this.scrollLeft; // 获取当前元素滚动条的偏移量
+        });
+        nav.addEventListener("mousemove", function (event) {
+          if (flag) { // 判断是否是鼠标按下滚动元素区域
+            let moveX = event.clientX; // 获取移动的x轴
+            let scrollX = moveX - downX; // 当前移动的x轴下标减去刚点击下去的x轴下标得到鼠标滑动距离
+            this.scrollLeft = scrollLeft - scrollX // 鼠标按下的滚动条偏移量减去当前鼠标的滑动距离
+          }
+        });
+        // 鼠标抬起停止拖动
+        nav.addEventListener("mouseup", function () {
+          flag = false;
+        });
+        // 鼠标离开元素停止拖动
+        nav.addEventListener("mouseleave", function (event) {
+          flag = false;
+        });
+      },
       //获取菜品列表
 			requestDishesData(val) {
 				this.utils.ajax({
@@ -1272,7 +1299,20 @@
 .dishes-item:nth-of-type(2n+1) {
   background-color: #FFC274;
 }
+
 .menu-table-wrap {
   flex: 1;
+  max-width: 13rem;
+  overflow-x: auto;
+  border-left: 1px solid #DEE0EF;
+}
+.menu-table-wrap::-webkit-scrollbar {
+  height: 10px;
+  background: #F3F4F9;
+}
+
+.menu-table-wrap::-webkit-scrollbar-thumb {
+  background-color: #576EEC;
+  border-radius: 5px;
 }
 </style>

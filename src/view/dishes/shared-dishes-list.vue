@@ -4,17 +4,17 @@
         <div class="dishes-item" v-for="item in dishesList">
             <img :src="config.fileUrl + item.picFilePath">
             <p class="ell">{{item.name}}</p>
-            <div class="ingredient">
+            <!-- <div class="ingredient">
               <div class="item">猪肉</div>
               <div class="item">茄子</div>
               <div class="item">猪肉</div>
               <div class="item">茄子</div>
               <div class="item">猪肉</div>
               <div class="item">茄子</div>
-            </div>
+            </div> -->
             <div class="footer">
-              <div class="time">05.23分享</div>
-              <div class="quote">引用</div>
+              <div class="time"></div>
+              <div class="quote" @click="quote(item)">引用</div>
             </div>
         </div>
     </div>
@@ -26,6 +26,21 @@ export default {
     dishesList: {
       type: Array,
       default: () => []
+    }
+  },
+  methods: {
+    //引用
+    quote(dishes) {
+      this.commons.delTIP({
+        title: "确定要引用该菜品？",
+        successMessage: "引用成功",
+        errorMessage:"引用失败",
+        data:{
+          id: dishes.id
+        },
+        url:'/api/background/Dishes/checkReferMenu'
+      },()=> {
+      })
     }
   }
 }

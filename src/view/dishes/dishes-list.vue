@@ -30,10 +30,10 @@
             </div>
             
             <div class="operation flex">
-                <div v-if="!$route.query.type" class="add btn background-color" @click="add" >添加菜品</div>
-                <el-badge is-dot class="item" style="margin-left: .32rem;">
+                <div v-if="!$route.query.type" class="add btn background-color" @click="add()" >添加菜品</div>
+                <!-- <el-badge is-dot class="item" style="margin-left: .32rem;">
                   <div class="btn background-color">收到菜品</div>
-                </el-badge>
+                </el-badge> -->
             </div>
         </div>
         <!--查询条件 end-->
@@ -256,8 +256,6 @@
 				});
 				window.open(link.href, '_blank');
 			}
-			
-			
 		}
 	}
 </script>

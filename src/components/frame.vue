@@ -398,7 +398,9 @@ export default {
 
     handleCommand(command) {
       switch(command) {
-        case 'user': this.$refs.personInfo.open(); break;
+        case 'user': 
+          this.$router.push({ name: 'user-detail' })
+        break;
         case 'exit': this.exit(); break;
         default:  
           this.$router.replace({

@@ -7,7 +7,7 @@
           <img class="system-note" src="../../assets/img/home/note.png" alt="">
         </div>
         <div class="note-list">
-          <div class="note-item" v-for="item in noteList" :key="item.id">{{ item.msg }}</div>
+          <div class="note-item" v-for="item in noteList" :key="item.id">{{ item.title }}</div>
         </div>
       </div>
       <div class="more" @click="toMessage">全部公告</div>
@@ -29,16 +29,11 @@
           <img :src="config.fileUrl + item.picFilePath">
           <p class="ell">{{ item.name }}</p>
           <div class="ingredient">
-            <!-- <div class="item">猪肉</div>
-            <div class="item">茄子</div>
-            <div class="item">猪肉</div>
-            <div class="item">茄子</div>
-            <div class="item">猪肉</div>
-            <div class="item">茄子</div> -->
+            <!-- <div class="item"></div> -->
           </div>
           <div class="footer">
-            <!-- <div class="time">05.23分享</div> -->
-            <!-- <div class="quote">引用</div> -->
+            <div class="time"></div>
+            <div class="quote" @click.stop="quote(item)">引用</div>
           </div>
         </div>
       </div>
@@ -141,6 +136,7 @@ export default {
     this.requestType();
     this.requestDishesList();
     this.requestSupplier();
+    this.requestNote();
 
     this.$nextTick(() => {
       this.initCostPrice();
@@ -148,6 +144,17 @@ export default {
     })
   },
   methods: {
+    //请求数据
+			requestNote() {
+      this.utils.ajax({
+        url: '/api/notify/query',
+        data:  this.condition,
+      },(res) => {
+        if(res.success){
+          this.noteList = res.data;
+        }
+      });
+    },
     //请求数据
 			requestSupplier() {
 				this.utils.ajax({
@@ -233,6 +240,21 @@ export default {
         }
       });
     },
+
+    //引用
+    quote(dishes) {
+      this.commons.delTIP({
+        title: "确定要引用该菜品？",
+        successMessage: "引用成功",
+        errorMessage:"引用失败",
+        data:{
+          id: dishes.id
+        },
+        url:'/api/background/Dishes/checkReferMenu'
+      },()=> {
+      })
+    },
+
     //初始化成本核算
     initCostPrice(data) {
       let option = {

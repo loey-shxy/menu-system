@@ -32,7 +32,7 @@
                           </el-form-item>
                       </el-col>
                       <el-col >
-                          <el-form-item label="菜品颜色" prop="persons">
+                          <el-form-item label="菜品颜色" prop="color">
                               <el-select v-model="condition.color" multiple placeholder="请选择">
                                   <el-option v-for="item in colors" :key="item.val" :label="item.name" :value="item.val"></el-option>
                               </el-select>
@@ -63,7 +63,7 @@
                   <el-table-column prop="typeDesc" show-overflow-tooltip label="食材单位"  align="center"  > </el-table-column>
                   <el-table-column label="操作" width="130" align="center">
                       <template slot-scope="scope" >
-                          <el-button  style="color: #576EEC !important;" @click="add(scope.row,scope.$index)" type="text">编辑</el-button>
+                          <el-button  style="color: #576EEC !important;" @click="edit(scope.row,scope.$index)" type="text">编辑</el-button>
                           <el-button  style="color: #FF4343 !important;" @click="del(scope.row,scope.$index)" type="text">删除</el-button>
                       </template>
                   </el-table-column>
@@ -222,7 +222,7 @@
 						{required: true, message: "请选择适用人群", trigger:['blur','focus']}
 					],
 					color: [
-						{required: true, message: "请选择菜品颜色", trigger:['blur','focus']}
+						{required: false, message: "请选择菜品颜色", trigger:['blur','focus']}
 					],
 					description: [
 						{required: false, message: "请输入备注", trigger:['blur','focus']}
@@ -393,34 +393,34 @@
 					}
 				})
 			},
+
+      add() {
+        this.$refs.rulesForm && this.$refs.rulesForm.clearValidate();
+				this.acceptFlag  = true;
+				this.dialogTitle = '新增食材';
+        this.addData = {
+          materialId: "",
+          num:        "",
+          materialUnit:"",
+          materialName:""
+        };
+        this.addData.materialId   = "";
+        this.addData.num          = "";
+        this.addData.materialUnit = "";
+        this.addData.materialName = "";
+				this.querySearchAsync();
+      },
 			
 			//修改、新增
-			add(data,index) {
+			edit(data,index) {
 				this.$refs.rulesForm && this.$refs.rulesForm.clearValidate();
 				this.acceptFlag  = true;
-				this.dialogTitle = data ? '修改食材' : '新增食材';
-				if(data) {
-					// 修改
-					this.addData = data;
-					this.addData.materialType = "";
-				} else {
-					// 新增
-					this.addData = {
-						materialId: "",
-						num:        "",
-						materialUnit:"",
-						materialName:""
-					};
-					this.addData.materialId   = "";
-					this.addData.num          = "";
-					this.addData.materialUnit = "";
-					this.addData.materialName = "";
-				}
-				
+				this.dialogTitle = '修改食材'
+        // 修改
+        this.addData = data;
+        this.addData.materialType = "";
 				this.addData.index = index;
 				this.querySearchAsync();
-				
-				
 			},
 			
 			//上传前文件大小判断
@@ -595,7 +595,7 @@
 
 /deep/ .el-upload-list__item,
 /deep/ .el-upload {
-  width: 3.58rem; 
+  width: 3.6rem; 
   height: 2.28rem;
   border-radius: .03rem;
 }

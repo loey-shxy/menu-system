@@ -15,16 +15,16 @@
                     <img :src="config.fileUrl + item.picFilePath">
                     <p class="ell">{{item.name}}</p>
                     <div class="ingredient">
-                      <div class="item">猪肉</div>
+                    <!--  <div class="item">猪肉</div>
                       <div class="item">茄子</div>
                       <div class="item">猪肉</div>
                       <div class="item">茄子</div>
                       <div class="item">猪肉</div>
-                      <div class="item">茄子</div>
+                      <div class="item">茄子</div> -->
                     </div>
                     <div class="footer">
-                      <div class="time">05.23分享</div>
-                      <div class="quote">引用</div>
+                      <div class="time"></div>
+                      <div class="quote" @click="quote(item)">引用</div>
                     </div>
                 </div>
             </div>
@@ -282,49 +282,48 @@
             
             //分享菜品
 			shareFun(record) {
-        this.dialog = {
-          visible: true,
-          record
-      }
-				// this.$prompt('请输入备注', '分享', {
-				// 	confirmButtonText: '确定',
-				// 	cancelButtonText: '取消',
-				// }).then(({ value }) => {
-				// 	if(value && value.length > 20) {
-				// 		this.$message({
-				// 			type: 'info',
-				// 			message: '长度不能超过20'
-				// 		});
-				// 		return;
-        //             }
-				// 	this.utils.ajax({
-				// 		url: '/api/background/Dishes/share',
-				// 		data: {
-				// 			remark: value,
-				// 			dishesId: data.id
-				// 		}
-				// 	},(res) => {
-				// 		if(res.success){
-				// 			this.$message({
-				// 				type: 'success',
-				// 				message: '分享成功'
-				// 			});
+      //   this.dialog = {
+      //     visible: true,
+      //     record
+				this.$prompt('请输入备注', '分享', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+				}).then(({ value }) => {
+					if(value && value.length > 20) {
+						this.$message({
+							type: 'info',
+							message: '长度不能超过20'
+						});
+						return;
+          }
+					this.utils.ajax({
+						url: '/api/background/Dishes/share',
+						data: {
+							remark: value,
+							dishesId: record.id
+						}
+					},(res) => {
+						if(res.success){
+							this.$message({
+								type: 'success',
+								message: '分享成功'
+							});
 							
-				// 			return;
-				// 		}
-				// 		this.$message({
-				// 			type: 'error',
-				// 			message: res.msg || '分享失败'
-				// 		});
-				// 	});
+							return;
+						}
+						this.$message({
+							type: 'error',
+							message: res.msg || '分享失败'
+						});
+					});
 					
 					
-				// }).catch(() => {
-				// 	this.$message({
-				// 		type: 'info',
-				// 		message: '取消输入'
-				// 	});
-				// });
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '取消输入'
+					});
+				});
 				
       },
 
@@ -443,98 +442,98 @@
 				nutrientChart.setOption(option);
 			},
             
-            //初始化成本核算
-            initCostPrice(data) {
-	            let option = {
-		            title: {
-			            text: '成本核算',
-			            left: 'left',
-			            textStyle: {
-				            fontSize: '.2rem',
-				            color:'#333333',
-			            },
-		            },
-		            legend: {
-			            orient: 'horizontal',
-			            left: 'right',
-			            textStyle: {
-				            fontSize: '.14rem',
-				            color:'#333333',
-			            },
-		            },
-		            color: ['#5972e9', '#dc5f88', '#79bebb',],
-		            dataset: {
-			            source: [
-				            ['product', '早餐', '午餐', '晚餐'],
-				            ['星期一', 43.3, 85.8, 93.7],
-				            ['星期二', 83.1, 73.4, 55.1],
-				            ['星期三', 86.4, 65.2, 82.5],
-				            ['星期四', 72.4, 53.9, 39.1]
-			            ]
-		            },
-		            grid: {
-		                 top: '60px',
-		                 bottom: '35px',
-	                },
-		            xAxis: { type: 'category',name:'时间' },
-		            yAxis: {name:'价格（元）'},
-		            series: [
-		            	{
-		            		type: 'bar' ,
-                            label: {
-                                normal: {
-                                    show: true,
-                                    position: "top",
-                                    textStyle: {
-                                        color: "#4d4d4d",
-	                                    fontSize:'.14rem'
-                                    }
-                                }
-			                }
-                        },
-                        {
-                        	type: 'bar',
-	                        label: {
-		                        normal: {
-			                        show: true,
-			                        position: "top",
-			                        textStyle: {
-				                        color: "#4d4d4d",
-				                        fontSize:'.14rem'
-			                        }
-		                        }
-	                        }
-                        }, {
-		            	    type: 'bar',
-				            label: {
-					            normal: {
-						            show: true,
-						            position: "top",
-						            textStyle: {
-							            color: "#4d4d4d",
-							            fontSize:'.14rem'
-						            }
-					            }
-				            }
-		                }
-                    ]
-	            };
-	
-	            let priceChart = echarts.init(document.getElementById('priceChart'));
-	            // 绘制图表
-	            priceChart.setOption(option);
+      //初始化成本核算
+      initCostPrice(data) {
+        let option = {
+          title: {
+            text: '成本核算',
+            left: 'left',
+            textStyle: {
+              fontSize: '.2rem',
+              color:'#333333',
             },
-            
-            initMeatCanvas(ratio) {
-	            let canvas          = document.getElementById("meatMix");
-	            let context         = canvas.getContext("2d");
-	            canvas.width        = 1.6 * this.utils.readLocalStorage('rem');
-	            canvas.height       = 1.6 * this.utils.readLocalStorage('rem');
-	            context.lineWidth   = 0.22 * this.utils.readLocalStorage('rem');
-	            context.strokeStyle = "#f6d483";
-	            context.arc(0.8 * this.utils.readLocalStorage('rem'), 0.8 * this.utils.readLocalStorage('rem'), 0.68 *  this.utils.readLocalStorage('rem') , -0.5 * Math.PI,(2 * ratio - 0.5) * Math.PI,false)
-	            context.stroke();
+          },
+          legend: {
+            orient: 'horizontal',
+            left: 'right',
+            textStyle: {
+              fontSize: '.14rem',
+              color:'#333333',
             },
+          },
+          color: ['#5972e9', '#dc5f88', '#79bebb',],
+          dataset: {
+            source: [
+              ['product', '早餐', '午餐', '晚餐'],
+              ['星期一', 43.3, 85.8, 93.7],
+              ['星期二', 83.1, 73.4, 55.1],
+              ['星期三', 86.4, 65.2, 82.5],
+              ['星期四', 72.4, 53.9, 39.1]
+            ]
+          },
+          grid: {
+                top: '60px',
+                bottom: '35px',
+            },
+          xAxis: { type: 'category',name:'时间' },
+          yAxis: {name:'价格（元）'},
+          series: [
+            {
+              type: 'bar' ,
+                      label: {
+                          normal: {
+                              show: true,
+                              position: "top",
+                              textStyle: {
+                                  color: "#4d4d4d",
+                                fontSize:'.14rem'
+                              }
+                          }
+                }
+                  },
+                  {
+                    type: 'bar',
+                    label: {
+                      normal: {
+                        show: true,
+                        position: "top",
+                        textStyle: {
+                          color: "#4d4d4d",
+                          fontSize:'.14rem'
+                        }
+                      }
+                    }
+                  }, {
+                type: 'bar',
+              label: {
+                normal: {
+                  show: true,
+                  position: "top",
+                  textStyle: {
+                    color: "#4d4d4d",
+                    fontSize:'.14rem'
+                  }
+                }
+              }
+              }
+              ]
+        };
+
+        let priceChart = echarts.init(document.getElementById('priceChart'));
+        // 绘制图表
+        priceChart.setOption(option);
+      },
+      
+      initMeatCanvas(ratio) {
+        let canvas          = document.getElementById("meatMix");
+        let context         = canvas.getContext("2d");
+        canvas.width        = 1.6 * this.utils.readLocalStorage('rem');
+        canvas.height       = 1.6 * this.utils.readLocalStorage('rem');
+        context.lineWidth   = 0.22 * this.utils.readLocalStorage('rem');
+        context.strokeStyle = "#f6d483";
+        context.arc(0.8 * this.utils.readLocalStorage('rem'), 0.8 * this.utils.readLocalStorage('rem'), 0.68 *  this.utils.readLocalStorage('rem') , -0.5 * Math.PI,(2 * ratio - 0.5) * Math.PI,false)
+        context.stroke();
+      },
 			
 			initOtherCanvas(ratio) {
 				let canvas          = document.getElementById("otherMix");
@@ -556,8 +555,20 @@
 				context.strokeStyle = "#ee7d7d";
 				context.arc(0.8 * this.utils.readLocalStorage('rem'), 0.8 * this.utils.readLocalStorage('rem'), 0.68 *  this.utils.readLocalStorage('rem') , -0.5 * Math.PI,(2 * ratio - 0.5) * Math.PI,false)
 				context.stroke();
-			}
-			
+			},
+			//引用
+      quote(dishes) {
+        this.commons.delTIP({
+          title: "确定要引用该菜品？",
+          successMessage: "引用成功",
+          errorMessage:"引用失败",
+          data:{
+            id: dishes.id
+          },
+          url:'/api/background/Dishes/checkReferMenu'
+        },()=> {
+        })
+      },
 		}
 	}
 </script>
