@@ -47,7 +47,7 @@
                     </div>
                   </div>
                   <div class="cell-dishes" slot="footer">
-                    <el-button round plain class="block" @click="addFood(4, $index)">添加菜品</el-button>
+                    <el-button round plain class="block" @click="addFood('breakfasts', 4, $index)">添加菜品</el-button>
                   </div>
                 </draggable>
               </div>
@@ -75,7 +75,7 @@
                       </div>
                     </div>
                     <div class="cell-dishes" slot="footer">
-                      <el-button round plain class="block" @click="addFood(5, $index)">添加菜品</el-button>
+                      <el-button round plain class="block" @click="addFood('lunches', 5, $index)">添加菜品</el-button>
                     </div>
                   </draggable>
               </div>
@@ -105,7 +105,7 @@
                       </div>
                   </div>
                   <div class="cell-dishes" slot="footer">
-                    <el-button round plain class="block" @click="addFood(6, $index)">添加菜品</el-button>
+                    <el-button round plain class="block" @click="addFood('dinners', 6, $index)">添加菜品</el-button>
                   </div>
                 </draggable>
               </div>
@@ -167,7 +167,7 @@
                 </div>
               </div>
               <div class="cell-dishes" slot="footer">
-                <el-button plain round class="block" @click="addFood(4, $index)">添加菜品</el-button>
+                <el-button plain round class="block" @click="addFood('breakfasts', 4, $index)">添加菜品</el-button>
               </div>
             </draggable>
           </div>
@@ -192,7 +192,7 @@
                 </div>
               </div>
               <div class="cell-dishes" slot="footer">
-                <el-button plain round class="block" @click="addFood(5, $index)">添加菜品</el-button>
+                <el-button plain round class="block" @click="addFood('lunches',5, $index)">添加菜品</el-button>
               </div>
             </draggable>
           </div>
@@ -217,7 +217,7 @@
                 </div>
               </div>
               <div class="cell-dishes" slot="footer">
-                <el-button plain round class="block" @click="addFood(6, $index)">添加菜品</el-button>
+                <el-button plain round class="block" @click="addFood('dinners',6, $index)">添加菜品</el-button>
               </div>
             </draggable>
           </div>
@@ -374,7 +374,8 @@ export default {
       })
       this.tableKey = Date.now()
     },
-    addFood(type, index) {
+    addFood(meal, type, index) {
+      this.$set(this.list[index], meal, [])
       this.$emit('add-food', type, index)
     },
     removeFood(mealType, row, index) {

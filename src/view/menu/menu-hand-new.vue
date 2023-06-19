@@ -822,6 +822,7 @@
 					item.dishesNum = 0;
 				});
 				this.$set(this,'foodTypeList',this.foodTypeList);
+        
 				
 				this.$refs.rulesForm && this.$refs.rulesForm.clearValidate();
 				this.addData = {
@@ -900,26 +901,32 @@
 				this.condition.days.forEach( item => {
 					let findIndex = days.findIndex( d => d.day === item.date);
 					if(findIndex > -1) {
-						item.breakfasts.forEach(itemBreakfasts => {
-							days[findIndex].dishesList.push({
-								dishesId: itemBreakfasts.dishesId,
-								num: itemBreakfasts.dishesNum
-							})
-                        })
+            if (item.breakfasts) {
+              item.breakfasts.forEach(itemBreakfasts => {
+                days[findIndex].dishesList.push({
+                  dishesId: itemBreakfasts.dishesId,
+                  num: itemBreakfasts.dishesNum
+                })
+              })
+            }
 						
-						item.lunches.forEach(itemLunches => {
-							days[findIndex].dishesList.push({
-								dishesId: itemLunches.dishesId,
-								num: itemLunches.dishesNum
-							})
-						})
+            if (item.lunches) {
+              item.lunches.forEach(itemLunches => {
+                days[findIndex].dishesList.push({
+                  dishesId: itemLunches.dishesId,
+                  num: itemLunches.dishesNum
+                })
+              })
+            }
 						
-						item.dinners.forEach(itemDinners => {
-							days[findIndex].dishesList.push({
-								dishesId: itemDinners.dishesId,
-								num: itemDinners.dishesNum
-							})
-						})
+            if (item.dinners) {
+              item.dinners.forEach(itemDinners => {
+                days[findIndex].dishesList.push({
+                  dishesId: itemDinners.dishesId,
+                  num: itemDinners.dishesNum
+                })
+              })
+            }
 						
 					} else {
 						days.push({
@@ -927,29 +934,34 @@
 							dishesList:[]
 						});
       
-						item.breakfasts.forEach(itemBreakfasts => {
-							days[days.length - 1].dishesList.push({
-								dishesId: itemBreakfasts.dishesId,
-								num: itemBreakfasts.dishesNum
-							})
-						})
-						
-						item.lunches.forEach(itemLunches => {
-							days[days.length - 1].dishesList.push({
-								dishesId: itemLunches.dishesId,
-								num: itemLunches.dishesNum
-							})
-						})
-						
-						item.dinners.forEach(itemDinners => {
-							days[days.length - 1].dishesList.push({
-								dishesId: itemDinners.dishesId,
-								num: itemDinners.dishesNum
-							})
-						})
-                    }
-					
+            if (item.breakfasts) {
+              item.breakfasts.forEach(itemBreakfasts => {
+                days[days.length - 1].dishesList.push({
+                  dishesId: itemBreakfasts.dishesId,
+                  num: itemBreakfasts.dishesNum
                 })
+              })
+            }
+						
+            if (item.lunches) {
+              item.lunches.forEach(itemLunches => {
+                days[days.length - 1].dishesList.push({
+                  dishesId: itemLunches.dishesId,
+                  num: itemLunches.dishesNum
+                })
+              })
+            }
+						
+            if (item.dinners) {
+              item.dinners.forEach(itemDinners => {
+                days[days.length - 1].dishesList.push({
+                  dishesId: itemDinners.dishesId,
+                  num: itemDinners.dishesNum
+                })
+              })
+            }
+          }
+        })
 			
 				
 				this.utils.ajax({
@@ -1580,12 +1592,14 @@
 				};
 				
 				// if(this.listChart.length)
-                    setTimeout(()=> {
-                        let nutrientChart = echarts.init(document.getElementById('nutrientChart'));
-                        // 绘制图表
-                        nutrientChart.setOption(option);
-                    },1000)
-				
+        setTimeout(()=> {
+          const nutrient = document.getElementById('nutrientChart')
+          if (nutrient) {
+            let nutrientChart = echarts.init(document.getElementById('nutrientChart'));
+            // 绘制图表
+            nutrientChart.setOption(option);
+          }
+        },1000)
 			},
 			
 			//初始化成本核算
@@ -1678,35 +1692,41 @@
 			
 			initMeatCanvas(ratio) {
 				let canvas          = document.getElementById("meatMix");
-				let context         = canvas.getContext("2d");
-				canvas.width        = 1.6 * this.utils.readLocalStorage('rem');
-				canvas.height       = 1.6 * this.utils.readLocalStorage('rem');
-				context.lineWidth   = 0.22 * this.utils.readLocalStorage('rem');
-				context.strokeStyle = "#f6d483";
-				context.arc(0.8 * this.utils.readLocalStorage('rem'), 0.8 * this.utils.readLocalStorage('rem'), 0.68 *  this.utils.readLocalStorage('rem') , -0.5 * Math.PI,(2 * ratio - 0.5) * Math.PI,false)
-				context.stroke();
+        if (canvas) {
+          let context         = canvas.getContext("2d");
+          canvas.width        = 1.6 * this.utils.readLocalStorage('rem');
+          canvas.height       = 1.6 * this.utils.readLocalStorage('rem');
+          context.lineWidth   = 0.22 * this.utils.readLocalStorage('rem');
+          context.strokeStyle = "#f6d483";
+          context.arc(0.8 * this.utils.readLocalStorage('rem'), 0.8 * this.utils.readLocalStorage('rem'), 0.68 *  this.utils.readLocalStorage('rem') , -0.5 * Math.PI,(2 * ratio - 0.5) * Math.PI,false)
+          context.stroke();
+        }
 			},
 			
 			initOtherCanvas(ratio) {
 				let canvas          = document.getElementById("otherMix");
-				let context         = canvas.getContext("2d");
-				canvas.width        = 1.6 * this.utils.readLocalStorage('rem');
-				canvas.height       = 1.6 * this.utils.readLocalStorage('rem');
-				context.lineWidth   = 0.22 * this.utils.readLocalStorage('rem');
-				context.strokeStyle = "#75c177";
-				context.arc(0.8 * this.utils.readLocalStorage('rem'), 0.8 * this.utils.readLocalStorage('rem'), 0.68 *  this.utils.readLocalStorage('rem') , -0.5 * Math.PI,(2 * ratio - 0.5) * Math.PI,false)
-				context.stroke();
+        if (canvas) {
+          let context         = canvas.getContext("2d");
+          canvas.width        = 1.6 * this.utils.readLocalStorage('rem');
+          canvas.height       = 1.6 * this.utils.readLocalStorage('rem');
+          context.lineWidth   = 0.22 * this.utils.readLocalStorage('rem');
+          context.strokeStyle = "#75c177";
+          context.arc(0.8 * this.utils.readLocalStorage('rem'), 0.8 * this.utils.readLocalStorage('rem'), 0.68 *  this.utils.readLocalStorage('rem') , -0.5 * Math.PI,(2 * ratio - 0.5) * Math.PI,false)
+          context.stroke();
+        }
 			},
 			
 			initVegetablesCanvas(ratio) {
 				let canvas          = document.getElementById("vegetablesMix");
-				let context         = canvas.getContext("2d");
-				canvas.width        = 1.6 * this.utils.readLocalStorage('rem');
-				canvas.height       = 1.6 * this.utils.readLocalStorage('rem');
-				context.lineWidth   = 0.22 * this.utils.readLocalStorage('rem');
-				context.strokeStyle = "#ee7d7d";
-				context.arc(0.8 * this.utils.readLocalStorage('rem'), 0.8 * this.utils.readLocalStorage('rem'), 0.68 *  this.utils.readLocalStorage('rem') , -0.5 * Math.PI,(2 * ratio - 0.5) * Math.PI,false)
-				context.stroke();
+        if (canvas) {
+          let context         = canvas.getContext("2d");
+          canvas.width        = 1.6 * this.utils.readLocalStorage('rem');
+          canvas.height       = 1.6 * this.utils.readLocalStorage('rem');
+          context.lineWidth   = 0.22 * this.utils.readLocalStorage('rem');
+          context.strokeStyle = "#ee7d7d";
+          context.arc(0.8 * this.utils.readLocalStorage('rem'), 0.8 * this.utils.readLocalStorage('rem'), 0.68 *  this.utils.readLocalStorage('rem') , -0.5 * Math.PI,(2 * ratio - 0.5) * Math.PI,false)
+          context.stroke();
+        }
 			},
       scrollInit() {
         // 获取要绑定事件的元素
