@@ -50,33 +50,16 @@
                 <div class="cancel medium btn " @click="$router.back();">关闭</div>
             </div>
 
-            <section style="margin: .18rem 0;" class="flex justify-content">
-              <div class="menu-table-wrap" id="table-container">
-                <MenuTable 
-                :tableType="tableType" 
-                :list="condition.days" 
-                :dishesSelectList="dishesSelectList"
-                :foodTypeList="foodTypeList"
-                @lazyloading="lazyloading"
-                @change-date="changeDate"
-                @add-food="addFood"
-                />
-            </div>
-              <div class="recommend-wrap" :style="{maxHeight: recommendHeight}">
-                <el-select v-model="recommendType">
-                  <el-option value="hot" label="推荐菜谱" v-for="type in dishesTypeList" :key="type.val" :value="type.val" :label="type.name"></el-option>
-                </el-select>
-
-                <div class="recommend-menu-list">
-                  <div class="recommend-menu-item" v-for="dishes in recommendList" :key="dishes.dishesId">
-                    <div class="img"></div>
-                    <div class="menu-name ell">{{ dishes.dishesName }}</div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <!-- <el-button  class="add-button" style="width: 100%;border: 1px solid #DCDFE6;border-top: 0; color:#ff8836;" @click="add()">新增+</el-button> -->
+            <MenuTable 
+              :tableType="tableType" 
+              :list="condition.days" 
+              :dishesSelectList="dishesSelectList"
+              :foodTypeList="foodTypeList"
+              :dishesAllList="dishesAllList"
+              :dishesTypeList="dishesTypeList"
+              @change-date="changeDate"
+              @add-food="addFood"
+              />
           </section>
         </el-card>
     
@@ -337,21 +320,7 @@
   import MenuTable from './comps/menu-table.vue'
 	export default {
 		name: "menu-hand-new",
-    directives: {
-      'el-select-lazyloading': {
-        bind(el, binding) {
-          const SELECT_DOM = el.querySelector(
-            '.el-select-dropdown .el-select-dropdown__wrap'
-          )
-          SELECT_DOM.addEventListener('scroll', function() {
-            const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
-            if (condition) {
-              binding.value()
-            }
-          })
-        }
-      }
-    },
+   
     components: {
       MenuTable
     },
@@ -456,27 +425,8 @@
 				listChart:[],
 				priceDataChart:[],
         tableType: 'vertical',
-        recommendType: '',
-        menuTableHeight: 0,
 			}
 		},
-
-    computed: {
-      recommendList() {
-        if (this.recommendType) {
-          return this.dishesAllList.filter(item => item.dishesType === this.recommendType)
-        }
-        return this.dishesAllList
-      },
-
-      recommendHeight() {
-        if (this.menuTableHeight) {
-          return this.menuTableHeight / 100 + 'rem'
-        }
-        return '10rem'
-      }
-    },
-		
 		mounted () {
 			this.requestData();
 			this.requestMenuType();
@@ -488,20 +438,9 @@
 			document.body.addEventListener('click', ()=> {
 				this.styleCard = "display:none;";
 			})
-
-      this.scrollInit()
 		},
 		
 		methods: {
-      lazyloading() {
-        if (this.dishesSelectList.length < this.dishesAllList.length) {
-          this.dishesPage.page++
-          const start = this.dishesPage.pageSize*this.dishesPage.page
-          const end = start + this.dishesPage.pageSize > this.dishesAllList.length ? this.dishesAllList.length : start + this.dishesPage.pageSize
-          
-          this.dishesSelectList = [...this.dishesSelectList, ...this.dishesAllList.slice(start, end)]
-        }
-      },
       changeTableType() {
         if (this.tableType === 'vertical') {
           this.tableType = 'horizontal'
@@ -528,16 +467,10 @@
 				},(res) => {
 					if(res.success){
 						this.initData(res.data);
-
-            this.$nextTick(() => {
-              const el = document.querySelector('.menu-table-wrap')
-              this.menuTableHeight = el.clientHeight
-            })
 					}
 				});
 			},
             
-   
 			//选择菜品
 			selectDishesType (type) {
 				this.selectType = type;
@@ -1728,33 +1661,7 @@
           context.stroke();
         }
 			},
-      scrollInit() {
-        // 获取要绑定事件的元素
-        const nav = document.getElementById("table-container")
-        let flag; // 鼠标按下
-        let downX; // 鼠标点击的x下标
-        let scrollLeft; // 当前元素滚动条的偏移量
-        nav.addEventListener("mousedown", function (event) {
-          flag = true;
-          downX = event.clientX; // 获取到点击的x下标
-          scrollLeft = this.scrollLeft; // 获取当前元素滚动条的偏移量
-        });
-        nav.addEventListener("mousemove", function (event) {
-          if (flag) { // 判断是否是鼠标按下滚动元素区域
-            let moveX = event.clientX; // 获取移动的x轴
-            let scrollX = moveX - downX; // 当前移动的x轴下标减去刚点击下去的x轴下标得到鼠标滑动距离
-            this.scrollLeft = scrollLeft - scrollX // 鼠标按下的滚动条偏移量减去当前鼠标的滑动距离
-          }
-        });
-        // 鼠标抬起停止拖动
-        nav.addEventListener("mouseup", function () {
-          flag = false;
-        });
-        // 鼠标离开元素停止拖动
-        nav.addEventListener("mouseleave", function (event) {
-          flag = false;
-        });
-      },
+      
 		}
 	}
 </script>
@@ -1942,23 +1849,5 @@
       color: #333;
       font-weight: 800;
       margin-bottom: .38rem;
-    }
-    .menu-table-wrap {
-      flex: 1;
-      max-width: 13rem;
-      overflow-x: auto;
-      border-left: 1px solid #DEE0EF;
-    }
-    .menu-table-wrap::-webkit-scrollbar {
-      height: 10px;
-      background: #F3F4F9;
-    }
-
-    .menu-table-wrap::-webkit-scrollbar-thumb {
-      background-color: #576EEC;
-      border-radius: 5px;
-    }
-    .edit /deep/ .el-date-editor .el-input__inner {
-      text-align: center;
     }
 </style>
