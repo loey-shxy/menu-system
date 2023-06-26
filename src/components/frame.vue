@@ -50,7 +50,7 @@
                         <p>{{config.userMessage.trueName}} <img src="../assets/img/home/vip.png" alt=""> </p>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <template v-if="config.userMessage.userType !== 1">
+                        <template v-if="config.userMessage.userType">
                           <el-dropdown-item command="user">个人信息</el-dropdown-item>
                           <el-dropdown-item command="exit">退出系统</el-dropdown-item>
                         </template>

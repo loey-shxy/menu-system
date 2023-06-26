@@ -1,15 +1,21 @@
 <!--食材补充列表 -->
 
 <template>
-    <div class="card list-wrap">
+    <div class="list-wrap">
         <!--查询条件 start-->
         <div class="condition flex">
-            <div class="condition-item flex">
-                <p>企业名称</p>
-                <el-select v-model="condition.memberId">
-                    <el-option label="全部" value=""></el-option>
-                    <el-option v-for="item in memberList" :key="item" :label="item.memberName" :value="item.memberId"></el-option>
-                </el-select>
+            <div class="left flex">
+              <div class="condition-item">
+                  <el-select v-model="condition.memberId" clearable placeholder="企业名称">
+                      <el-option v-for="item in memberList" :key="item" :label="item.memberName" :value="item.memberId"></el-option>
+                  </el-select>
+              </div>
+              <div class="condition-item">
+                  <el-date-picker  v-model="condition.day" type="date" placeholder="请选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :editable="false"></el-date-picker>
+              </div>
+              <div class="condition-item">
+                <div class="btn background-color" @click="search()">确定</div>
+              </div>
             </div>
             <!--<div class="condition-item flex">-->
                 <!--<p>食材类型</p>-->
@@ -19,13 +25,7 @@
                 <!--</el-select>-->
             <!--</div>-->
             
-            <div class="condition-item flex">
-                <p>日期</p>
-                <el-date-picker  v-model="condition.day" type="date" placeholder="请选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :editable="false"></el-date-picker>
-            </div>
-            
             <div class="operation flex">
-                <div class="search btn background-color" @click="search()">确定</div>
                 <div class="add btn background-color" style="background-color: #ff8836 !important;" @click="createBill()" >生成清单</div>
             </div>
         </div>
@@ -49,15 +49,15 @@
                 <el-table-column prop="day" show-overflow-tooltip label="日期"  align="center"  > </el-table-column>
                 
             </el-table>
+            <!--分页 start-->
+            <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
+                          :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
+            </el-pagination>
+            <!--分页 end-->
         </div>
         <!--列表 end-->
         
         
-        <!--分页 start-->
-        <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
-                       :page-sizes="[15,30,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
-        </el-pagination>
-        <!--分页 end-->
     
     
         <!--弹框 start-->

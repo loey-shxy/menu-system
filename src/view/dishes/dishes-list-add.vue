@@ -182,6 +182,7 @@
 
 <script>
   import { VueEditor } from "vue2-editor";
+  
 	export default {
 		name: "dishes-list-add",
     components: {
@@ -481,12 +482,6 @@
 			save() {
 				this.$refs['form'].validate(valid => {
 					if (valid) {
-						this.condition.personArray = this.condition.persons
-						if(this.condition.persons && this.condition.persons.length)
-							this.condition.persons = JSON.stringify(this.condition.persons);
-						else
-							this.condition.persons = "";
-						
 						if(!this.condition.dishesMaterials || !this.condition.dishesMaterials.length) {
 							this.$message({
 								message: '至少包含一种食材',
@@ -494,6 +489,13 @@
 							});
 							return;
 						}
+
+            this.condition.personArray = this.condition.persons
+						if(this.condition.persons && this.condition.persons.length)
+							this.condition.persons = JSON.stringify(this.condition.persons);
+						else
+							this.condition.persons = "";
+            
 						this.condition.dishesMaterials.forEach( item=> {
 							item.materialNum = item.num;
 						})

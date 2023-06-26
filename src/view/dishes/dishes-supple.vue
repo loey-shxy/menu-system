@@ -1,23 +1,25 @@
 <!--基础菜品列表 -->
 
 <template>
-    <div class="card list-wrap">
+    <div class="list-wrap">
         <!--查询条件 start-->
         <div class="condition flex">
-            <div class="condition-item flex">
-                <p>名称</p>
-                <el-input v-model="condition.name" maxlength=20 placeholder="请输入名称"></el-input>
-            </div>
-            <div class="condition-item flex">
-                <p>菜品类型</p>
-                <el-select v-model="condition.type">
-                    <el-option label="全部" value=""></el-option>
-                    <el-option v-for="item in typeList" :key="item" :label="item.name" :value="item.val"></el-option>
-                </el-select>
+            <div class="left flex">
+              <div class="condition-item">
+                  <el-input v-model="condition.name" maxlength=20 placeholder="请输入名称"></el-input>
+              </div>
+              <div class="condition-item">
+                  <el-select v-model="condition.type" placeholder="请选择菜品类型" clearable>
+                      <el-option label="全部" value=""></el-option>
+                      <el-option v-for="item in typeList" :key="item" :label="item.name" :value="item.val"></el-option>
+                  </el-select>
+              </div>
+              <div class="condition-item">
+                <div class="btn background-color" @click="search()">确定</div>
+              </div>
             </div>
             
             <div class="operation flex">
-                <div class="search btn background-color" @click="search()">确定</div>
                 <div v-if="!$route.query.type " class="add btn background-color" style="background-color: #ff8836 !important;" @click="add()" >补充菜品</div>
             </div>
         </div>
@@ -44,15 +46,15 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <!--分页 start-->
+            <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
+                          :page-sizes="[10,20,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
+            </el-pagination>
+            <!--分页 end-->
         </div>
         <!--列表 end-->
         
         
-        <!--分页 start-->
-        <el-pagination v-if="tableData.totalRecords"  :current-page.sync="condition.pageNo" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="total,sizes,prev, pager, next"
-                       :page-sizes="[10,20,50,100]" :page-size="condition.pageSize"  :total="tableData.totalRecords" class="flex-one pagination">
-        </el-pagination>
-        <!--分页 end-->
     
     
     

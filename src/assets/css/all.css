@@ -194,3 +194,9 @@ textarea {
 .align-item-end {
   align-items: end;
 }
+
+.el-table {
+  .el-button+.el-button, .el-checkbox.is-bordered+.el-checkbox.is-bordered {
+    margin-left: 0;
+  }
+}
