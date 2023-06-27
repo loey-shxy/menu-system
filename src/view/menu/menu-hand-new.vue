@@ -509,16 +509,16 @@
 					if(index === 0) {
 						this.condition.days[0].date = item;
 						this.condition.days[0].week = data.weeks[0];
-						this.condition.days[0].breakfasts = data.breakfasts[0].length ? data.breakfasts[0] : ''
-						this.condition.days[0].lunches = data.lunches[0].length ? data.lunches[0] : ''
-						this.condition.days[0].dinners = data.dinners[0].length ? data.dinners[0] : ''
+						this.condition.days[0].breakfasts = data.breakfasts[0]
+						this.condition.days[0].lunches = data.lunches[0]
+						this.condition.days[0].dinners = data.dinners[0]
 					} else {
 						this.condition.days.push({
 							date: item,
 							week:data.weeks[index],
-							breakfasts:data.breakfasts[index].length ? data.breakfasts[index] : '',
-							lunches:data.lunches[index].length ? data.lunches[index] : '',
-							dinners:data.dinners[index].length ? data.dinners[index] : '',
+							breakfasts: data.breakfasts[index],
+							lunches:data.lunches[index],
+							dinners:data.dinners[index],
 						})
 					}
 					
@@ -834,32 +834,26 @@
 				this.condition.days.forEach( item => {
 					let findIndex = days.findIndex( d => d.day === item.date);
 					if(findIndex > -1) {
-            if (item.breakfasts) {
               item.breakfasts.forEach(itemBreakfasts => {
                 days[findIndex].dishesList.push({
                   dishesId: itemBreakfasts.dishesId,
                   num: itemBreakfasts.dishesNum
                 })
               })
-            }
 						
-            if (item.lunches) {
               item.lunches.forEach(itemLunches => {
                 days[findIndex].dishesList.push({
                   dishesId: itemLunches.dishesId,
                   num: itemLunches.dishesNum
                 })
               })
-            }
 						
-            if (item.dinners) {
               item.dinners.forEach(itemDinners => {
                 days[findIndex].dishesList.push({
                   dishesId: itemDinners.dishesId,
                   num: itemDinners.dishesNum
                 })
               })
-            }
 						
 					} else {
 						days.push({
@@ -867,32 +861,26 @@
 							dishesList:[]
 						});
       
-            if (item.breakfasts) {
               item.breakfasts.forEach(itemBreakfasts => {
                 days[days.length - 1].dishesList.push({
                   dishesId: itemBreakfasts.dishesId,
                   num: itemBreakfasts.dishesNum
                 })
               })
-            }
 						
-            if (item.lunches) {
               item.lunches.forEach(itemLunches => {
                 days[days.length - 1].dishesList.push({
                   dishesId: itemLunches.dishesId,
                   num: itemLunches.dishesNum
                 })
               })
-            }
-						
-            if (item.dinners) {
+            
               item.dinners.forEach(itemDinners => {
                 days[days.length - 1].dishesList.push({
                   dishesId: itemDinners.dishesId,
                   num: itemDinners.dishesNum
                 })
               })
-            }
           }
         })
 			
@@ -1123,9 +1111,9 @@
 								return;
 							}
 							
-              this.condition.days[i].breakfasts = this.condition.days[i].breakfasts ? this.condition.days[i].breakfasts : []
-              this.condition.days[i].lunches = this.condition.days[i].lunches ? this.condition.days[i].lunches : []
-              this.condition.days[i].dinners = this.condition.days[i].dinners ? this.condition.days[i].dinners : []
+              this.condition.days[i].breakfasts = this.condition.days[i].breakfasts
+              this.condition.days[i].lunches = this.condition.days[i].lunches
+              this.condition.days[i].dinners = this.condition.days[i].dinners
 						}
 						
 						this.utils.ajax({

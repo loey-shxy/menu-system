@@ -346,15 +346,15 @@ export default {
         return ''
       }
       let meal = []
-      if (this.list.some(item => item.breakfasts)) {
+      if (this.list.some(item => item.breakfasts.length)) {
         meal = ['breakfasts']
       }
 
-      if (this.list.some(item => item.lunches)) {
+      if (this.list.some(item => item.lunches.length)) {
         meal = [...meal, 'lunches']
       }
 
-      if (this.list.some(item => item.dinners)) {
+      if (this.list.some(item => item.dinners.length)) {
         meal = [...meal, 'dinners']
       }
       return meal
@@ -436,9 +436,9 @@ export default {
       this.tableKey = Date.now()
     },
     addFood(meal, type, index) {
-      if (!this.list[index][meal]) {
+      // if (!this.list[index][meal]) {
         this.$set(this.list[index], meal, [])
-      }
+      // }
       this.$emit('add-food', type, index)
     },
     removeFood(mealType, row, index) {
