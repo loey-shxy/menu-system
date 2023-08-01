@@ -437,7 +437,7 @@ export default {
     },
     addFood(meal, type, index) {
       // if (!this.list[index][meal]) {
-        this.$set(this.list[index], meal, [])
+      //   this.$set(this.list[index], meal, [])
       // }
       this.$emit('add-food', type, index)
     },
